@@ -124,7 +124,7 @@ def generate_data_json(repo) -> dict:
 
 
 def generate_html(data: dict) -> str:
-    """Generate the HTML dashboard page."""
+    """Generate the HTML dashboard page with 2025 dark mode design."""
     latest = data.get("latest_date", "N/A")
     generated = data.get("generated_at", "")[:19].replace("T", " ")
     total = data.get("total_records", 0)
@@ -139,30 +139,30 @@ def generate_html(data: dict) -> str:
         theo = pf["theoretical"] if pf["theoretical"] is not None else ""
         days = pf["days"] if pf["days"] is not None else ""
         cat = pf.get("category", "") or ""
-        power_rows += f"""        <tr>
-          <td>{pf['name']}</td>
-          <td>{cat}</td>
-          <td>{pf['month']}</td>
-          <td class="num">{settle}</td>
-          <td class="num">{theo}</td>
-          <td class="num">{days}</td>
-        </tr>\n"""
+        power_rows += f"""            <tr>
+              <td>{pf['name']}</td>
+              <td>{cat}</td>
+              <td>{pf['month']}</td>
+              <td class="num">{settle}</td>
+              <td class="num">{theo}</td>
+              <td class="num">{days}</td>
+            </tr>\n"""
 
     # Summary table rows
     summary_rows = ""
     for s in data.get("summary", []):
-        summary_rows += f"""        <tr>
-          <td>{s['underlying_name']}</td>
-          <td class="num">{s['total']}</td>
-          <td class="num">{s['fut']}</td>
-          <td class="num">{s['cal']}</td>
-          <td class="num">{s['put']}</td>
-        </tr>\n"""
+        summary_rows += f"""            <tr>
+              <td>{s['underlying_name']}</td>
+              <td class="num">{s['total']}</td>
+              <td class="num">{s['fut']}</td>
+              <td class="num">{s['cal']}</td>
+              <td class="num">{s['put']}</td>
+            </tr>\n"""
 
     # Build curve selector options
     curve_options = ""
     for cat_name in sorted(data.get("forward_curves", {}).keys()):
-        curve_options += f'    <option value="{cat_name}">{cat_name}</option>\n'
+        curve_options += f'          <option value="{cat_name}">{cat_name}</option>\n'
 
     # Inline JSON for chart data (avoids fetch/CORS issues on file://)
     chart_data = {
@@ -176,144 +176,269 @@ def generate_html(data: dict) -> str:
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DataServer In-House — 電力先物データダッシュボード</title>
+  <title>DataServer In-House — Energy Futures Dashboard</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts@3"></script>
 </head>
 <body>
 
-<div class="header">
-  <div>
-    <h1>DataServer In-House</h1>
-    <div class="subtitle">電力先物データ分析基盤 — JPXデリバティブ理論価格</div>
-  </div>
-  <div class="updated">
-    最新データ: {latest}<br>
-    生成日時: {generated}
-  </div>
-</div>
+<div class="bg-gradient"></div>
 
-<div class="container">
+<div class="app-layout">
 
-  <!-- KPI -->
-  <div class="kpi-row">
-    <div class="kpi-box">
-      <div class="value">{total:,}</div>
-      <div class="label">総レコード数</div>
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">DS</div>
+    <div class="sidebar-nav">
+      <a href="#overview" class="nav-item active">
+        <span>&#9670;</span>
+        <span class="nav-tooltip">Overview</span>
+      </a>
+      <a href="#curves" class="nav-item">
+        <span>&#9699;</span>
+        <span class="nav-tooltip">Forward Curves</span>
+      </a>
+      <a href="#spread" class="nav-item">
+        <span>&#8651;</span>
+        <span class="nav-tooltip">East-West Spread</span>
+      </a>
+      <a href="#futures" class="nav-item">
+        <span>&#9783;</span>
+        <span class="nav-tooltip">Futures Data</span>
+      </a>
+      <a href="#summary" class="nav-item">
+        <span>&#9881;</span>
+        <span class="nav-tooltip">Summary</span>
+      </a>
     </div>
-    <div class="kpi-box">
-      <div class="value">{underlying_count}</div>
-      <div class="label">原資産数</div>
-    </div>
-    <div class="kpi-box">
-      <div class="value">{power_count}</div>
-      <div class="label">電力先物契約数</div>
-    </div>
-    <div class="kpi-box">
-      <div class="value">{len(dates)}</div>
-      <div class="label">取り込み済み日数</div>
-    </div>
-  </div>
+  </nav>
 
-  <!-- Overview: 4 main curves comparison -->
-  <div class="card">
-    <div class="card-header">電力先物フォワードカーブ 比較（月次 4エリア）</div>
-    <div class="card-body">
-      <div class="chart-container" style="height:400px">
-        <canvas id="overviewChart"></canvas>
+  <!-- Main Content -->
+  <div class="main-content">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <h1>DataServer In-House</h1>
+        <div class="subtitle">JPX Derivative Theoretical Price — Energy Futures Analytics</div>
       </div>
-    </div>
-  </div>
-
-  <!-- Interactive Forward Curve Selector -->
-  <div class="card">
-    <div class="card-header">フォワードカーブ（プルダウン選択）</div>
-    <div class="card-body">
-      <div class="curve-selector">
-        <label for="curveSelect">カーブ選択:</label>
-        <select id="curveSelect">
-{curve_options}        </select>
-        <span class="curve-info" id="curveInfo"></span>
+      <div class="header-right">
+        <div class="header-badge">
+          <span class="dot"></span>
+          Live
+        </div>
+        <div class="header-date">{latest}</div>
       </div>
-      <div class="chart-container" style="height:350px">
-        <canvas id="curveChart"></canvas>
+    </header>
+
+    <div class="container">
+
+      <!-- KPI Cards -->
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-icon">&#128202;</div>
+          <div class="kpi-value" data-target="{total}">{total:,}</div>
+          <div class="kpi-label">Total Records</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon">&#127968;</div>
+          <div class="kpi-value" data-target="{underlying_count}">{underlying_count}</div>
+          <div class="kpi-label">Underlying Assets</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon">&#9889;</div>
+          <div class="kpi-value" data-target="{power_count}">{power_count}</div>
+          <div class="kpi-label">Power Futures</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon">&#128197;</div>
+          <div class="kpi-value" data-target="{len(dates)}">{len(dates)}</div>
+          <div class="kpi-label">Import Days</div>
+        </div>
       </div>
-      <div id="curveTable"></div>
+
+      <!-- Bento Grid -->
+      <div class="bento-grid">
+
+        <!-- Overview Chart (large) -->
+        <div class="card card-full" id="overview">
+          <div class="card-header">
+            <div class="card-title"><span class="icon">&#9670;</span> Forward Curve Comparison (Monthly)</div>
+            <div class="card-badge">4 Areas</div>
+          </div>
+          <div class="card-body">
+            <div class="chart-container" id="overviewChart" style="min-height:380px"></div>
+          </div>
+        </div>
+
+        <!-- Curve Selector (feature) -->
+        <div class="card card-feature" id="curves">
+          <div class="card-header">
+            <div class="card-title"><span class="icon">&#9699;</span> Interactive Forward Curve</div>
+            <div class="card-badge" id="curveCountBadge">12 Curves</div>
+          </div>
+          <div class="card-body">
+            <div class="curve-selector">
+              <label for="curveSelect">Curve:</label>
+              <select id="curveSelect">
+{curve_options}          </select>
+              <span class="curve-info" id="curveInfo"></span>
+            </div>
+            <div class="chart-container" id="curveChart" style="min-height:320px"></div>
+          </div>
+        </div>
+
+        <!-- Spread Chart (side) -->
+        <div class="card card-side" id="spread">
+          <div class="card-header">
+            <div class="card-title"><span class="icon">&#8651;</span> E-W Spread</div>
+          </div>
+          <div class="card-body">
+            <div class="chart-container" id="spreadChart" style="min-height:320px"></div>
+          </div>
+        </div>
+
+        <!-- Curve Detail Table -->
+        <div class="card card-full">
+          <div class="card-header">
+            <div class="card-title"><span class="icon">&#9783;</span> Curve Detail</div>
+          </div>
+          <div class="card-body">
+            <div class="table-wrapper" id="curveTable"></div>
+          </div>
+        </div>
+
+        <!-- Power Futures Table -->
+        <div class="card card-wide" id="futures">
+          <div class="card-header">
+            <div class="card-title"><span class="icon">&#9889;</span> Power Futures ({latest})</div>
+            <div class="card-badge">{power_count} contracts</div>
+          </div>
+          <div class="card-body">
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Instrument</th>
+                    <th>Category</th>
+                    <th>Month</th>
+                    <th class="num">Settlement</th>
+                    <th class="num">Theoretical</th>
+                    <th class="num">DTE</th>
+                  </tr>
+                </thead>
+                <tbody>
+{power_rows}                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Summary Table -->
+        <div class="card card-wide" id="summary">
+          <div class="card-header">
+            <div class="card-title"><span class="icon">&#9881;</span> Underlying Summary ({latest})</div>
+            <div class="card-badge">{underlying_count} assets</div>
+          </div>
+          <div class="card-body">
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Underlying</th>
+                    <th class="num">Total</th>
+                    <th class="num">Futures</th>
+                    <th class="num">Calls</th>
+                    <th class="num">Puts</th>
+                  </tr>
+                </thead>
+                <tbody>
+{summary_rows}                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /bento-grid -->
+
+    </div><!-- /container -->
+
+    <div class="footer">
+      DataServer In-House — JPX Derivative Data Analytics Platform &middot; Generated {generated}
     </div>
-  </div>
 
-  <!-- East vs West Spread -->
-  <div class="card">
-    <div class="card-header">東西スプレッド（東ベース − 西ベース、月次）</div>
-    <div class="card-body">
-      <div class="chart-container" style="height:300px">
-        <canvas id="spreadChart"></canvas>
-      </div>
-    </div>
-  </div>
-
-  <!-- Power Futures Table -->
-  <div class="card">
-    <div class="card-header">電力先物 全データ一覧（{latest}）</div>
-    <div class="card-body">
-      <table>
-        <thead>
-          <tr>
-            <th>銘柄名称</th>
-            <th>カテゴリ</th>
-            <th>限月</th>
-            <th class="num">清算価格</th>
-            <th class="num">理論価格</th>
-            <th class="num">残日数</th>
-          </tr>
-        </thead>
-        <tbody>
-{power_rows}        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- All Underlying Summary -->
-  <div class="card">
-    <div class="card-header">原資産別データ件数（{latest}）</div>
-    <div class="card-body">
-      <table>
-        <thead>
-          <tr>
-            <th>原資産名称</th>
-            <th class="num">合計</th>
-            <th class="num">先物</th>
-            <th class="num">コール</th>
-            <th class="num">プット</th>
-          </tr>
-        </thead>
-        <tbody>
-{summary_rows}        </tbody>
-      </table>
-    </div>
-  </div>
-
-</div>
-
-<div class="footer">
-  DataServer In-House — Generated automatically from JPX derivative data
-</div>
+  </div><!-- /main-content -->
+</div><!-- /app-layout -->
 
 <script>
-let curveChartInstance = null;
-
-const data = {chart_data_json};
+const chartData = {chart_data_json};
 
 (function() {{
+    'use strict';
+
     // ============================================
-    // 1. Overview: 4 main monthly curves (line chart)
+    // Theme config
     // ============================================
-    const overview = data.overview_chart;
-    const lineColors = {{
-      '東・ベース(月次)': {{ border: '#2E75B6', bg: 'rgba(46,117,182,0.1)' }},
-      '東・日中(月次)': {{ border: '#5DADE2', bg: 'rgba(93,173,226,0.1)' }},
-      '西・ベース(月次)': {{ border: '#E67E22', bg: 'rgba(230,126,34,0.1)' }},
-      '西・日中(月次)': {{ border: '#F5B041', bg: 'rgba(245,176,65,0.1)' }}
+    const colors = {{
+      blue: '#3B82F6',
+      cyan: '#06B6D4',
+      purple: '#8B5CF6',
+      amber: '#F59E0B',
+      pink: '#EC4899',
+      green: '#22C55E',
+      red: '#EF4444',
+      grid: 'rgba(255,255,255,0.05)',
+      text: '#94A3B8',
+      textLight: '#64748B'
+    }};
+
+    const baseChartOpts = {{
+      chart: {{
+        background: 'transparent',
+        fontFamily: "'Inter', sans-serif",
+        toolbar: {{ show: true, tools: {{ download: true, selection: false, zoom: true, zoomin: true, zoomout: true, pan: true, reset: true }} }},
+      }},
+      theme: {{ mode: 'dark', palette: 'palette1' }},
+      grid: {{
+        borderColor: colors.grid,
+        strokeDashArray: 3,
+        xaxis: {{ lines: {{ show: false }} }},
+        yaxis: {{ lines: {{ show: true }} }},
+        padding: {{ left: 10, right: 10 }}
+      }},
+      tooltip: {{
+        theme: 'dark',
+        style: {{ fontSize: '12px', fontFamily: "'JetBrains Mono', monospace" }},
+        y: {{ formatter: v => v !== null && v !== undefined ? v.toFixed(2) + ' JPY/kWh' : 'N/A' }}
+      }},
+      xaxis: {{
+        labels: {{ style: {{ colors: colors.text, fontSize: '11px', fontFamily: "'Inter', sans-serif" }} }},
+        axisBorder: {{ color: colors.grid }},
+        axisTicks: {{ color: colors.grid }}
+      }},
+      yaxis: {{
+        labels: {{
+          style: {{ colors: colors.text, fontSize: '11px', fontFamily: "'JetBrains Mono', monospace" }},
+          formatter: v => v !== null ? v.toFixed(1) : ''
+        }}
+      }},
+      legend: {{
+        labels: {{ colors: colors.text }},
+        fontSize: '12px',
+        fontFamily: "'Inter', sans-serif",
+        itemMargin: {{ horizontal: 12 }}
+      }}
+    }};
+
+    // ============================================
+    // 1. Overview: 4 main monthly curves
+    // ============================================
+    const overview = chartData.overview_chart;
+    const lineConfigs = {{
+      '\u6771\u30fb\u30d9\u30fc\u30b9(\u6708\u6b21)': {{ color: colors.blue, name: 'East Base' }},
+      '\u6771\u30fb\u65e5\u4e2d(\u6708\u6b21)': {{ color: colors.cyan, name: 'East Peak' }},
+      '\u897f\u30fb\u30d9\u30fc\u30b9(\u6708\u6b21)': {{ color: colors.amber, name: 'West Base' }},
+      '\u897f\u30fb\u65e5\u4e2d(\u6708\u6b21)': {{ color: colors.pink, name: 'West Peak' }}
     }};
 
     const allMonths = new Set();
@@ -321,69 +446,50 @@ const data = {chart_data_json};
       items.forEach(item => allMonths.add(item.month));
     }});
     const months = Array.from(allMonths).sort();
+    const monthLabels = months.map(m => m.substring(0, 4) + '/' + m.substring(4));
 
-    const overviewDatasets = Object.entries(overview).map(([cat, items]) => {{
+    const overviewSeries = Object.entries(overview).map(([cat, items]) => {{
       const priceMap = {{}};
       items.forEach(item => {{ priceMap[item.month] = item.price; }});
-      const c = lineColors[cat] || {{ border: '#999', bg: 'rgba(153,153,153,0.1)' }};
+      const cfg = lineConfigs[cat] || {{ color: '#999', name: cat }};
       return {{
-        label: cat,
-        data: months.map(m => priceMap[m] || null),
-        borderColor: c.border,
-        backgroundColor: c.bg,
-        borderWidth: 2.5,
-        pointRadius: 4,
-        pointHoverRadius: 6,
-        tension: 0.3,
-        fill: false,
-        spanGaps: true
+        name: cfg.name,
+        data: months.map(m => priceMap[m] || null)
       }};
     }});
 
-    new Chart(document.getElementById('overviewChart'), {{
-      type: 'line',
-      data: {{
-        labels: months.map(m => m.substring(0, 4) + '/' + m.substring(4)),
-        datasets: overviewDatasets
-      }},
-      options: {{
-        responsive: true,
-        maintainAspectRatio: false,
-        interaction: {{ mode: 'index', intersect: false }},
-        plugins: {{
-          legend: {{ position: 'top' }},
-          tooltip: {{
-            callbacks: {{
-              label: ctx => ctx.dataset.label + ': ' + (ctx.parsed.y !== null ? ctx.parsed.y.toFixed(2) + ' 円/kWh' : 'N/A')
-            }}
-          }}
-        }},
-        scales: {{
-          y: {{
-            title: {{ display: true, text: '円/kWh' }},
-            grid: {{ color: 'rgba(0,0,0,0.06)' }}
-          }},
-          x: {{
-            title: {{ display: true, text: '限月' }},
-            grid: {{ display: false }}
-          }}
-        }}
-      }}
+    const overviewColors = Object.entries(overview).map(([cat]) => {{
+      const cfg = lineConfigs[cat] || {{ color: '#999' }};
+      return cfg.color;
     }});
+
+    new ApexCharts(document.getElementById('overviewChart'), {{
+      ...baseChartOpts,
+      chart: {{ ...baseChartOpts.chart, type: 'area', height: 380, animations: {{ enabled: true, easing: 'easeinout', speed: 800 }} }},
+      series: overviewSeries,
+      colors: overviewColors,
+      stroke: {{ curve: 'smooth', width: 2.5 }},
+      fill: {{
+        type: 'gradient',
+        gradient: {{ shadeIntensity: 1, opacityFrom: 0.3, opacityTo: 0.02, stops: [0, 95, 100] }}
+      }},
+      xaxis: {{ ...baseChartOpts.xaxis, categories: monthLabels, title: {{ text: 'Contract Month', style: {{ color: colors.textLight, fontSize: '11px' }} }} }},
+      yaxis: {{ ...baseChartOpts.yaxis, title: {{ text: 'JPY/kWh', style: {{ color: colors.textLight, fontSize: '11px' }} }} }},
+      markers: {{ size: 3, strokeWidth: 0, hover: {{ size: 6 }} }},
+      legend: {{ ...baseChartOpts.legend, position: 'top', horizontalAlign: 'right' }},
+      dataLabels: {{ enabled: false }}
+    }}).render();
 
     // ============================================
     // 2. Interactive curve selector
     // ============================================
-    const curves = data.forward_curves;
+    const curves = chartData.forward_curves;
     const select = document.getElementById('curveSelect');
+    let curveChartInstance = null;
 
     function renderCurve(catName) {{
       const items = curves[catName] || [];
-      const info = document.getElementById('curveInfo');
-      info.textContent = items.length + ' 限月';
-
-      // Destroy previous chart
-      if (curveChartInstance) curveChartInstance.destroy();
+      document.getElementById('curveInfo').textContent = items.length + ' contracts';
 
       const labels = items.map(i => {{
         const m = i.month;
@@ -392,71 +498,60 @@ const data = {chart_data_json};
         return m;
       }});
 
-      const datasets = [
-        {{
-          label: '清算価格',
-          data: items.map(i => i.settlement),
-          borderColor: '#2E75B6',
-          backgroundColor: 'rgba(46,117,182,0.15)',
-          borderWidth: 2.5,
-          pointRadius: 5,
-          pointHoverRadius: 8,
-          pointBackgroundColor: '#2E75B6',
-          tension: 0.3,
-          fill: true
-        }}
-      ];
+      const series = [{{
+        name: 'Settlement',
+        data: items.map(i => i.settlement)
+      }}];
 
-      // Add theoretical price if available
+      const chartColors = [colors.blue];
+
       const hasTheo = items.some(i => i.theoretical !== null);
       if (hasTheo) {{
-        datasets.push({{
-          label: '理論価格',
-          data: items.map(i => i.theoretical),
-          borderColor: '#E74C3C',
-          backgroundColor: 'rgba(231,76,60,0.05)',
-          borderWidth: 1.5,
-          borderDash: [5, 3],
-          pointRadius: 3,
-          pointHoverRadius: 6,
-          tension: 0.3,
-          fill: false
+        series.push({{
+          name: 'Theoretical',
+          data: items.map(i => i.theoretical)
         }});
+        chartColors.push(colors.purple);
       }}
 
-      curveChartInstance = new Chart(document.getElementById('curveChart'), {{
-        type: 'line',
-        data: {{ labels, datasets }},
-        options: {{
-          responsive: true,
-          maintainAspectRatio: false,
-          interaction: {{ mode: 'index', intersect: false }},
-          plugins: {{
-            title: {{ display: true, text: catName + ' フォワードカーブ', font: {{ size: 16, weight: 'bold' }}, color: '#0C2140' }},
-            tooltip: {{
-              callbacks: {{
-                afterLabel: ctx => {{
-                  const item = items[ctx.dataIndex];
-                  return '残日数: ' + (item.days || 'N/A');
-                }}
-              }}
+      if (curveChartInstance) curveChartInstance.destroy();
+
+      curveChartInstance = new ApexCharts(document.getElementById('curveChart'), {{
+        ...baseChartOpts,
+        chart: {{ ...baseChartOpts.chart, type: 'area', height: 320, animations: {{ enabled: true, easing: 'easeinout', speed: 600 }} }},
+        series: series,
+        colors: chartColors,
+        stroke: {{ curve: 'smooth', width: [2.5, 1.5], dashArray: hasTheo ? [0, 5] : [0] }},
+        fill: {{
+          type: 'gradient',
+          gradient: {{ shadeIntensity: 1, opacityFrom: 0.25, opacityTo: 0.01, stops: [0, 95, 100] }}
+        }},
+        xaxis: {{ ...baseChartOpts.xaxis, categories: labels }},
+        yaxis: {{ ...baseChartOpts.yaxis, title: {{ text: 'JPY/kWh', style: {{ color: colors.textLight, fontSize: '11px' }} }} }},
+        markers: {{ size: 4, strokeWidth: 0, hover: {{ size: 7 }} }},
+        title: {{ text: catName, align: 'left', style: {{ fontSize: '14px', fontWeight: 600, color: '#F1F5F9' }} }},
+        legend: {{ ...baseChartOpts.legend, position: 'top', horizontalAlign: 'right' }},
+        dataLabels: {{ enabled: false }},
+        tooltip: {{
+          ...baseChartOpts.tooltip,
+          custom: function({{ series: s, seriesIndex, dataPointIndex, w }}) {{
+            const item = items[dataPointIndex];
+            let html = '<div style="padding:8px 12px;font-family:JetBrains Mono,monospace;font-size:12px">';
+            html += '<div style="color:#F1F5F9;font-weight:600;margin-bottom:4px">' + item.name + '</div>';
+            html += '<div style="color:#94A3B8">Settlement: <span style="color:#3B82F6">' + (item.settlement !== null ? item.settlement.toFixed(2) : 'N/A') + '</span></div>';
+            if (item.theoretical !== null) {{
+              html += '<div style="color:#94A3B8">Theoretical: <span style="color:#8B5CF6">' + item.theoretical.toFixed(2) + '</span></div>';
             }}
-          }},
-          scales: {{
-            y: {{
-              title: {{ display: true, text: '円/kWh' }},
-              grid: {{ color: 'rgba(0,0,0,0.06)' }}
-            }},
-            x: {{
-              title: {{ display: true, text: '限月' }},
-              grid: {{ display: false }}
-            }}
+            html += '<div style="color:#64748B;margin-top:2px">DTE: ' + (item.days || 'N/A') + '</div>';
+            html += '</div>';
+            return html;
           }}
         }}
       }});
+      curveChartInstance.render();
 
       // Render detail table
-      let tableHtml = '<table><thead><tr><th>銘柄</th><th>限月</th><th class="num">清算価格</th><th class="num">理論価格</th><th class="num">残日数</th></tr></thead><tbody>';
+      let tableHtml = '<table><thead><tr><th>Instrument</th><th>Month</th><th class="num">Settlement</th><th class="num">Theoretical</th><th class="num">DTE</th></tr></thead><tbody>';
       items.forEach(i => {{
         const s = i.settlement !== null ? i.settlement : '';
         const t = i.theoretical !== null ? i.theoretical : '';
@@ -473,62 +568,99 @@ const data = {chart_data_json};
     // ============================================
     // 3. East vs West spread chart
     // ============================================
-    const eastBase = curves['東・ベース(月次)'] || [];
-    const westBase = curves['西・ベース(月次)'] || [];
+    const eastBase = curves['\u6771\u30fb\u30d9\u30fc\u30b9(\u6708\u6b21)'] || [];
+    const westBase = curves['\u897f\u30fb\u30d9\u30fc\u30b9(\u6708\u6b21)'] || [];
 
     if (eastBase.length && westBase.length) {{
       const westMap = {{}};
       westBase.forEach(w => {{ westMap[w.month] = w.settlement; }});
 
-      const spreadMonths = [];
+      const spreadLabels = [];
       const spreadValues = [];
       const spreadColors = [];
 
       eastBase.forEach(e => {{
         if (e.settlement !== null && westMap[e.month] !== undefined && westMap[e.month] !== null) {{
-          const spread = e.settlement - westMap[e.month];
-          const m = e.month;
-          spreadMonths.push(m.substring(0, 4) + '/' + m.substring(4));
-          spreadValues.push(Math.round(spread * 100) / 100);
-          spreadColors.push(spread >= 0 ? 'rgba(46,117,182,0.7)' : 'rgba(231,76,60,0.7)');
+          const spread = Math.round((e.settlement - westMap[e.month]) * 100) / 100;
+          spreadLabels.push(e.month.substring(0, 4) + '/' + e.month.substring(4));
+          spreadValues.push(spread);
+          spreadColors.push(spread >= 0 ? colors.blue : colors.red);
         }}
       }});
 
-      new Chart(document.getElementById('spreadChart'), {{
-        type: 'bar',
-        data: {{
-          labels: spreadMonths,
-          datasets: [{{
-            label: '東西スプレッド（東−西）',
-            data: spreadValues,
-            backgroundColor: spreadColors,
-            borderColor: spreadColors.map(c => c.replace('0.7', '1')),
-            borderWidth: 1
-          }}]
-        }},
-        options: {{
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {{
-            tooltip: {{
-              callbacks: {{
-                label: ctx => '東−西: ' + ctx.parsed.y.toFixed(2) + ' 円/kWh'
-              }}
-            }}
-          }},
-          scales: {{
-            y: {{
-              title: {{ display: true, text: '円/kWh' }},
-              grid: {{ color: 'rgba(0,0,0,0.06)' }}
-            }},
-            x: {{
-              title: {{ display: true, text: '限月' }},
-              grid: {{ display: false }}
+      new ApexCharts(document.getElementById('spreadChart'), {{
+        ...baseChartOpts,
+        chart: {{ ...baseChartOpts.chart, type: 'bar', height: 320, animations: {{ enabled: true, easing: 'easeinout', speed: 600 }} }},
+        series: [{{ name: 'E-W Spread', data: spreadValues }}],
+        plotOptions: {{
+          bar: {{
+            borderRadius: 4,
+            columnWidth: '65%',
+            colors: {{
+              ranges: [
+                {{ from: -9999, to: -0.001, color: colors.red }},
+                {{ from: 0, to: 9999, color: colors.blue }}
+              ]
             }}
           }}
+        }},
+        colors: [colors.blue],
+        xaxis: {{ ...baseChartOpts.xaxis, categories: spreadLabels }},
+        yaxis: {{ ...baseChartOpts.yaxis, title: {{ text: 'JPY/kWh', style: {{ color: colors.textLight, fontSize: '11px' }} }} }},
+        dataLabels: {{ enabled: false }},
+        tooltip: {{
+          ...baseChartOpts.tooltip,
+          y: {{ formatter: v => (v >= 0 ? '+' : '') + v.toFixed(2) + ' JPY/kWh' }}
+        }}
+      }}).render();
+    }}
+
+    // ============================================
+    // 4. KPI count-up animation
+    // ============================================
+    function animateValue(el, end) {{
+      const duration = 1200;
+      const start = 0;
+      const range = end - start;
+      const startTime = performance.now();
+      function update(currentTime) {{
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = Math.round(start + range * eased);
+        el.textContent = current.toLocaleString();
+        if (progress < 1) requestAnimationFrame(update);
+      }}
+      requestAnimationFrame(update);
+    }}
+
+    document.querySelectorAll('.kpi-value[data-target]').forEach(el => {{
+      const target = parseInt(el.dataset.target, 10);
+      if (!isNaN(target)) animateValue(el, target);
+    }});
+
+    // ============================================
+    // 5. Sidebar active state on scroll
+    // ============================================
+    const sections = document.querySelectorAll('[id]');
+    const navItems = document.querySelectorAll('.nav-item');
+
+    const observer = new IntersectionObserver(entries => {{
+      entries.forEach(entry => {{
+        if (entry.isIntersecting) {{
+          navItems.forEach(item => item.classList.remove('active'));
+          const target = document.querySelector('.nav-item[href="#' + entry.target.id + '"]');
+          if (target) target.classList.add('active');
         }}
       }});
-    }}
+    }}, {{ threshold: 0.3, rootMargin: '-80px 0px -50% 0px' }});
+
+    sections.forEach(sec => {{
+      if (sec.id && document.querySelector('.nav-item[href="#' + sec.id + '"]')) {{
+        observer.observe(sec);
+      }}
+    }});
+
 }})();
 </script>
 
