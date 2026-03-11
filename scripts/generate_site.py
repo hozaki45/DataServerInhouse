@@ -1,6 +1,6 @@
 """Generate static HTML dashboard for GitHub Pages.
 
-Reads data from SQLite, outputs docs/site/index.html + data.json.
+Reads data from SQLite, outputs docs/index.html + data.json.
 
 Usage:
     uv run python scripts/generate_site.py
@@ -17,7 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from src.query import get_power_futures, summary_by_underlying
 from src.repository import get_repository
 
-SITE_DIR = Path(__file__).resolve().parent.parent / "docs" / "site"
+SITE_DIR = Path(__file__).resolve().parent.parent / "docs"
 
 # Mapping of instrument name patterns to curve categories
 CURVE_CATEGORIES = {
