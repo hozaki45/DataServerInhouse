@@ -577,6 +577,27 @@ tbody tr:hover td {
     margin-top: 1rem;
 }
 
+/* ========== Change Cells (DoD) ========== */
+.change {
+    white-space: nowrap;
+}
+
+.change-pct {
+    font-size: 0.65rem;
+    margin-left: 0.3rem;
+    opacity: 0.7;
+}
+
+tbody td.positive,
+td.positive {
+    color: var(--positive) !important;
+}
+
+tbody td.negative,
+td.negative {
+    color: var(--negative) !important;
+}
+
 /* ========== Footer ========== */
 .footer {
     text-align: center;

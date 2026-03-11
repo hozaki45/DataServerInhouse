@@ -48,20 +48,67 @@ def classify_power_future(instrument_name: str) -> str | None:
     return None
 
 
+def _build_prev_price_map(repo, prev_date: str | None) -> dict[str, float]:
+    """Build instrument_name -> settlement_price map for previous date."""
+    if not prev_date:
+        return {}
+    prev_power = get_power_futures(repo, prev_date)
+    return {
+        r["instrument_name"]: r.get("settlement_price")
+        for r in prev_power
+        if not r.get("put_call") and r.get("settlement_price") is not None
+    }
+
+
+def _calc_change(current: float | None, prev: float | None) -> dict:
+    """Calculate absolute and percentage change."""
+    if current is None or prev is None or prev == 0:
+        return {"diff": None, "pct": None}
+    diff = round(current - prev, 2)
+    pct = round((current - prev) / prev * 100, 2)
+    return {"diff": diff, "pct": pct}
+
+
 def generate_data_json(repo) -> dict:
-    """Generate data.json from database for Chart.js consumption."""
+    """Generate data.json from database for chart consumption."""
     log = repo.get_import_log()
     if not log:
         return {}
 
-    latest_date = log[0]["trade_date"]
+    success_dates = sorted(
+        [e["trade_date"] for e in log if e["status"] == "success"],
+        reverse=True,
+    )
+    latest_date = success_dates[0]
+    prev_date = success_dates[1] if len(success_dates) > 1 else None
+
+    # Previous day price map
+    prev_map = _build_prev_price_map(repo, prev_date)
 
     # Power futures
     power = get_power_futures(repo, latest_date)
     power_fut = [r for r in power if not r.get("put_call")]
 
-    # Build forward curves per category
+    # Build forward curves per category (with prev day comparison)
     forward_curves = {}
+    # Also build prev day curves for overlay
+    prev_forward_curves = {}
+    if prev_date:
+        prev_power = get_power_futures(repo, prev_date)
+        prev_power_fut = [r for r in prev_power if not r.get("put_call")]
+        for r in prev_power_fut:
+            cat = classify_power_future(r["instrument_name"])
+            if cat is None:
+                continue
+            if cat not in prev_forward_curves:
+                prev_forward_curves[cat] = []
+            prev_forward_curves[cat].append({
+                "month": r.get("contract_month", ""),
+                "settlement": r.get("settlement_price"),
+            })
+        for cat in prev_forward_curves:
+            prev_forward_curves[cat].sort(key=lambda x: x["month"])
+
     for r in power_fut:
         cat = classify_power_future(r["instrument_name"])
         if cat is None:
@@ -70,19 +117,26 @@ def generate_data_json(repo) -> dict:
             forward_curves[cat] = []
 
         month = r.get("contract_month", "")
+        settlement = r.get("settlement_price")
+        prev_price = prev_map.get(r["instrument_name"])
+        change = _calc_change(settlement, prev_price)
+
         forward_curves[cat].append({
             "month": month,
-            "settlement": r.get("settlement_price"),
+            "settlement": settlement,
             "theoretical": r.get("theoretical_price"),
             "days": r.get("days_to_expiry"),
             "name": r["instrument_name"],
+            "prev_settlement": prev_price,
+            "change_diff": change["diff"],
+            "change_pct": change["pct"],
         })
 
     # Sort each curve by month/date
     for cat in forward_curves:
         forward_curves[cat].sort(key=lambda x: x["month"])
 
-    # Overview bar chart: monthly curves for the 4 main types
+    # Overview chart: monthly curves for the 4 main types
     overview_chart = {}
     for cat_name in ["東・ベース(月次)", "東・日中(月次)", "西・ベース(月次)", "西・日中(月次)"]:
         if cat_name in forward_curves:
@@ -92,6 +146,35 @@ def generate_data_json(repo) -> dict:
                 if p["settlement"] is not None
             ]
 
+    # Previous day overview for comparison
+    prev_overview_chart = {}
+    for cat_name in ["東・ベース(月次)", "東・日中(月次)", "西・ベース(月次)", "西・日中(月次)"]:
+        if cat_name in prev_forward_curves:
+            prev_overview_chart[cat_name] = [
+                {"month": p["month"], "price": p["settlement"]}
+                for p in prev_forward_curves[cat_name]
+                if p["settlement"] is not None
+            ]
+
+    # Top movers: biggest absolute changes in settlement price
+    all_changes = []
+    for r in power_fut:
+        name = r["instrument_name"]
+        settlement = r.get("settlement_price")
+        prev_price = prev_map.get(name)
+        change = _calc_change(settlement, prev_price)
+        if change["diff"] is not None:
+            all_changes.append({
+                "name": name,
+                "category": classify_power_future(name) or "",
+                "month": r.get("contract_month", ""),
+                "settlement": settlement,
+                "prev_settlement": prev_price,
+                "diff": change["diff"],
+                "pct": change["pct"],
+            })
+    top_movers = sorted(all_changes, key=lambda x: abs(x["diff"]), reverse=True)[:15]
+
     # Summary by underlying
     summary = summary_by_underlying(repo, latest_date)
 
@@ -100,13 +183,17 @@ def generate_data_json(repo) -> dict:
 
     return {
         "latest_date": latest_date,
+        "prev_date": prev_date,
         "generated_at": datetime.now().isoformat(),
         "total_records": sum(s["total"] for s in summary),
         "underlying_count": len(summary),
         "import_dates": import_dates,
         "power_futures_count": len(power_fut),
         "overview_chart": overview_chart,
+        "prev_overview_chart": prev_overview_chart,
         "forward_curves": forward_curves,
+        "prev_forward_curves": prev_forward_curves,
+        "top_movers": top_movers,
         "power_futures": [
             {
                 "name": r["instrument_name"],
@@ -116,6 +203,13 @@ def generate_data_json(repo) -> dict:
                 "theoretical": r.get("theoretical_price"),
                 "days": r.get("days_to_expiry"),
                 "category": classify_power_future(r["instrument_name"]),
+                "prev_settlement": prev_map.get(r["instrument_name"]),
+                "change_diff": _calc_change(
+                    r.get("settlement_price"), prev_map.get(r["instrument_name"])
+                )["diff"],
+                "change_pct": _calc_change(
+                    r.get("settlement_price"), prev_map.get(r["instrument_name"])
+                )["pct"],
             }
             for r in power_fut
         ],
@@ -123,29 +217,61 @@ def generate_data_json(repo) -> dict:
     }
 
 
+def _change_html(diff, pct) -> str:
+    """Generate HTML for a day-over-day change cell."""
+    if diff is None:
+        return '<td class="num change">-</td>'
+    sign = "+" if diff >= 0 else ""
+    css = "positive" if diff > 0 else "negative" if diff < 0 else ""
+    return (
+        f'<td class="num change {css}">'
+        f'{sign}{diff:.2f}'
+        f'<span class="change-pct">({sign}{pct:.1f}%)</span>'
+        f'</td>'
+    )
+
+
 def generate_html(data: dict) -> str:
     """Generate the HTML dashboard page with 2025 dark mode design."""
     latest = data.get("latest_date", "N/A")
+    prev_date = data.get("prev_date", "")
     generated = data.get("generated_at", "")[:19].replace("T", " ")
     total = data.get("total_records", 0)
     underlying_count = data.get("underlying_count", 0)
     dates = data.get("import_dates", [])
     power_count = data.get("power_futures_count", 0)
 
-    # Power futures table rows
+    # Power futures table rows (with change column)
     power_rows = ""
     for pf in data.get("power_futures", []):
         settle = pf["settlement"] if pf["settlement"] is not None else ""
         theo = pf["theoretical"] if pf["theoretical"] is not None else ""
         days = pf["days"] if pf["days"] is not None else ""
         cat = pf.get("category", "") or ""
+        change_cell = _change_html(pf.get("change_diff"), pf.get("change_pct"))
         power_rows += f"""            <tr>
               <td>{pf['name']}</td>
               <td>{cat}</td>
               <td>{pf['month']}</td>
               <td class="num">{settle}</td>
+              {change_cell}
               <td class="num">{theo}</td>
               <td class="num">{days}</td>
+            </tr>\n"""
+
+    # Top movers table rows
+    movers_rows = ""
+    for m in data.get("top_movers", []):
+        sign = "+" if m["diff"] >= 0 else ""
+        css = "positive" if m["diff"] > 0 else "negative"
+        movers_rows += f"""            <tr>
+              <td>{m['name']}</td>
+              <td>{m['category']}</td>
+              <td>{m['month']}</td>
+              <td class="num">{m['settlement']:.2f}</td>
+              <td class="num">{m['prev_settlement']:.2f}</td>
+              <td class="num {css}">{sign}{m['diff']:.2f}</td>
+              <td class="num {css}">{sign}{m['pct']:.1f}%</td>
             </tr>\n"""
 
     # Summary table rows
@@ -167,9 +293,12 @@ def generate_html(data: dict) -> str:
     # Inline JSON for chart data (avoids fetch/CORS issues on file://)
     chart_data = {
         "overview_chart": data.get("overview_chart", {}),
+        "prev_overview_chart": data.get("prev_overview_chart", {}),
         "forward_curves": data.get("forward_curves", {}),
+        "prev_forward_curves": data.get("prev_forward_curves", {}),
     }
     chart_data_json = json.dumps(chart_data, ensure_ascii=False)
+    prev_label = prev_date or "N/A"
 
     return f"""<!DOCTYPE html>
 <html lang="ja">
@@ -202,6 +331,10 @@ def generate_html(data: dict) -> str:
         <span>&#8651;</span>
         <span class="nav-tooltip">East-West Spread</span>
       </a>
+      <a href="#movers" class="nav-item">
+        <span>&#128293;</span>
+        <span class="nav-tooltip">Top Movers</span>
+      </a>
       <a href="#futures" class="nav-item">
         <span>&#9783;</span>
         <span class="nav-tooltip">Futures Data</span>
@@ -227,7 +360,7 @@ def generate_html(data: dict) -> str:
           <span class="dot"></span>
           Live
         </div>
-        <div class="header-date">{latest}</div>
+        <div class="header-date">{latest}<br><span style="font-size:0.65rem;color:#64748B">vs {prev_label}</span></div>
       </div>
     </header>
 
@@ -298,6 +431,33 @@ def generate_html(data: dict) -> str:
           </div>
         </div>
 
+        <!-- Top Movers -->
+        <div class="card card-full" id="movers">
+          <div class="card-header">
+            <div class="card-title"><span class="icon">&#128293;</span> Top Movers (Day-over-Day)</div>
+            <div class="card-badge">{latest} vs {prev_label}</div>
+          </div>
+          <div class="card-body">
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Instrument</th>
+                    <th>Category</th>
+                    <th>Month</th>
+                    <th class="num">Today</th>
+                    <th class="num">Prev</th>
+                    <th class="num">Change</th>
+                    <th class="num">%</th>
+                  </tr>
+                </thead>
+                <tbody>
+{movers_rows}                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
         <!-- Curve Detail Table -->
         <div class="card card-full">
           <div class="card-header">
@@ -323,6 +483,7 @@ def generate_html(data: dict) -> str:
                     <th>Category</th>
                     <th>Month</th>
                     <th class="num">Settlement</th>
+                    <th class="num">DoD Change</th>
                     <th class="num">Theoretical</th>
                     <th class="num">DTE</th>
                   </tr>
@@ -448,19 +609,40 @@ const chartData = {chart_data_json};
     const months = Array.from(allMonths).sort();
     const monthLabels = months.map(m => m.substring(0, 4) + '/' + m.substring(4));
 
-    const overviewSeries = Object.entries(overview).map(([cat, items]) => {{
+    const prevOverview = chartData.prev_overview_chart || {{}};
+
+    const overviewSeries = [];
+    const overviewColors = [];
+    const overviewDash = [];
+    const overviewWidths = [];
+
+    Object.entries(overview).forEach(([cat, items]) => {{
       const priceMap = {{}};
       items.forEach(item => {{ priceMap[item.month] = item.price; }});
       const cfg = lineConfigs[cat] || {{ color: '#999', name: cat }};
-      return {{
+      overviewSeries.push({{
         name: cfg.name,
         data: months.map(m => priceMap[m] || null)
-      }};
+      }});
+      overviewColors.push(cfg.color);
+      overviewDash.push(0);
+      overviewWidths.push(2.5);
     }});
 
-    const overviewColors = Object.entries(overview).map(([cat]) => {{
-      const cfg = lineConfigs[cat] || {{ color: '#999' }};
-      return cfg.color;
+    // Add previous day lines (dashed, dimmed)
+    Object.entries(overview).forEach(([cat, items]) => {{
+      const prevItems = prevOverview[cat] || [];
+      if (prevItems.length === 0) return;
+      const prevMap = {{}};
+      prevItems.forEach(item => {{ prevMap[item.month] = item.price; }});
+      const cfg = lineConfigs[cat] || {{ color: '#999', name: cat }};
+      overviewSeries.push({{
+        name: cfg.name + ' (prev)',
+        data: months.map(m => prevMap[m] || null)
+      }});
+      overviewColors.push(cfg.color + '55');
+      overviewDash.push(5);
+      overviewWidths.push(1.2);
     }});
 
     new ApexCharts(document.getElementById('overviewChart'), {{
@@ -468,11 +650,8 @@ const chartData = {chart_data_json};
       chart: {{ ...baseChartOpts.chart, type: 'area', height: 380, animations: {{ enabled: true, easing: 'easeinout', speed: 800 }} }},
       series: overviewSeries,
       colors: overviewColors,
-      stroke: {{ curve: 'smooth', width: 2.5 }},
-      fill: {{
-        type: 'gradient',
-        gradient: {{ shadeIntensity: 1, opacityFrom: 0.3, opacityTo: 0.02, stops: [0, 95, 100] }}
-      }},
+      stroke: {{ curve: 'smooth', width: overviewWidths, dashArray: overviewDash }},
+      fill: {{ type: 'gradient', gradient: {{ shadeIntensity: 1, opacityFrom: 0.15, opacityTo: 0.01, stops: [0, 95, 100] }} }},
       xaxis: {{ ...baseChartOpts.xaxis, categories: monthLabels, title: {{ text: 'Contract Month', style: {{ color: colors.textLight, fontSize: '11px' }} }} }},
       yaxis: {{ ...baseChartOpts.yaxis, title: {{ text: 'JPY/kWh', style: {{ color: colors.textLight, fontSize: '11px' }} }} }},
       markers: {{ size: 3, strokeWidth: 0, hover: {{ size: 6 }} }},
@@ -487,8 +666,11 @@ const chartData = {chart_data_json};
     const select = document.getElementById('curveSelect');
     let curveChartInstance = null;
 
+    const prevCurves = chartData.prev_forward_curves || {{}};
+
     function renderCurve(catName) {{
       const items = curves[catName] || [];
+      const prevItems = prevCurves[catName] || [];
       document.getElementById('curveInfo').textContent = items.length + ' contracts';
 
       const labels = items.map(i => {{
@@ -504,6 +686,21 @@ const chartData = {chart_data_json};
       }}];
 
       const chartColors = [colors.blue];
+      const dashArrays = [0];
+      const widths = [2.5];
+
+      // Previous day curve
+      if (prevItems.length > 0) {{
+        const prevMap = {{}};
+        prevItems.forEach(p => {{ prevMap[p.month] = p.settlement; }});
+        series.push({{
+          name: 'Prev Day',
+          data: items.map(i => prevMap[i.month] || null)
+        }});
+        chartColors.push(colors.amber);
+        dashArrays.push(5);
+        widths.push(1.5);
+      }}
 
       const hasTheo = items.some(i => i.theoretical !== null);
       if (hasTheo) {{
@@ -512,6 +709,8 @@ const chartData = {chart_data_json};
           data: items.map(i => i.theoretical)
         }});
         chartColors.push(colors.purple);
+        dashArrays.push(3);
+        widths.push(1.2);
       }}
 
       if (curveChartInstance) curveChartInstance.destroy();
@@ -521,11 +720,8 @@ const chartData = {chart_data_json};
         chart: {{ ...baseChartOpts.chart, type: 'area', height: 320, animations: {{ enabled: true, easing: 'easeinout', speed: 600 }} }},
         series: series,
         colors: chartColors,
-        stroke: {{ curve: 'smooth', width: [2.5, 1.5], dashArray: hasTheo ? [0, 5] : [0] }},
-        fill: {{
-          type: 'gradient',
-          gradient: {{ shadeIntensity: 1, opacityFrom: 0.25, opacityTo: 0.01, stops: [0, 95, 100] }}
-        }},
+        stroke: {{ curve: 'smooth', width: widths, dashArray: dashArrays }},
+        fill: {{ type: 'gradient', gradient: {{ shadeIntensity: 1, opacityFrom: 0.2, opacityTo: 0.01, stops: [0, 95, 100] }} }},
         xaxis: {{ ...baseChartOpts.xaxis, categories: labels }},
         yaxis: {{ ...baseChartOpts.yaxis, title: {{ text: 'JPY/kWh', style: {{ color: colors.textLight, fontSize: '11px' }} }} }},
         markers: {{ size: 4, strokeWidth: 0, hover: {{ size: 7 }} }},
@@ -539,6 +735,14 @@ const chartData = {chart_data_json};
             let html = '<div style="padding:8px 12px;font-family:JetBrains Mono,monospace;font-size:12px">';
             html += '<div style="color:#F1F5F9;font-weight:600;margin-bottom:4px">' + item.name + '</div>';
             html += '<div style="color:#94A3B8">Settlement: <span style="color:#3B82F6">' + (item.settlement !== null ? item.settlement.toFixed(2) : 'N/A') + '</span></div>';
+            if (item.prev_settlement !== null && item.prev_settlement !== undefined) {{
+              html += '<div style="color:#94A3B8">Prev Day: <span style="color:#F59E0B">' + item.prev_settlement.toFixed(2) + '</span></div>';
+            }}
+            if (item.change_diff !== null && item.change_diff !== undefined) {{
+              const chgColor = item.change_diff >= 0 ? '#22C55E' : '#EF4444';
+              const chgSign = item.change_diff >= 0 ? '+' : '';
+              html += '<div style="color:' + chgColor + ';font-weight:600">' + chgSign + item.change_diff.toFixed(2) + ' (' + chgSign + item.change_pct.toFixed(1) + '%)</div>';
+            }}
             if (item.theoretical !== null) {{
               html += '<div style="color:#94A3B8">Theoretical: <span style="color:#8B5CF6">' + item.theoretical.toFixed(2) + '</span></div>';
             }}
@@ -550,13 +754,20 @@ const chartData = {chart_data_json};
       }});
       curveChartInstance.render();
 
-      // Render detail table
-      let tableHtml = '<table><thead><tr><th>Instrument</th><th>Month</th><th class="num">Settlement</th><th class="num">Theoretical</th><th class="num">DTE</th></tr></thead><tbody>';
+      // Render detail table with change column
+      let tableHtml = '<table><thead><tr><th>Instrument</th><th>Month</th><th class="num">Settlement</th><th class="num">DoD Change</th><th class="num">Theoretical</th><th class="num">DTE</th></tr></thead><tbody>';
       items.forEach(i => {{
         const s = i.settlement !== null ? i.settlement : '';
         const t = i.theoretical !== null ? i.theoretical : '';
         const d = i.days !== null ? i.days : '';
-        tableHtml += '<tr><td>' + i.name + '</td><td>' + i.month + '</td><td class="num">' + s + '</td><td class="num">' + t + '</td><td class="num">' + d + '</td></tr>';
+        let chg = '-';
+        let chgClass = '';
+        if (i.change_diff !== null && i.change_diff !== undefined) {{
+          const sign = i.change_diff >= 0 ? '+' : '';
+          chgClass = i.change_diff > 0 ? 'positive' : i.change_diff < 0 ? 'negative' : '';
+          chg = sign + i.change_diff.toFixed(2) + ' <span class="change-pct">(' + sign + i.change_pct.toFixed(1) + '%)</span>';
+        }}
+        tableHtml += '<tr><td>' + i.name + '</td><td>' + i.month + '</td><td class="num">' + s + '</td><td class="num change ' + chgClass + '">' + chg + '</td><td class="num">' + t + '</td><td class="num">' + d + '</td></tr>';
       }});
       tableHtml += '</tbody></table>';
       document.getElementById('curveTable').innerHTML = tableHtml;
