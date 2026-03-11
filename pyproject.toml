@@ -1,0 +1,10 @@
+[project]
+name = "dataserver-inhouse"
+version = "0.1.0"
+description = "In-house data server for JPX derivative market data collection and analysis"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pandas>=2.2",
+    "python-pptx>=1.0",
+]

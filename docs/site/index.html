@@ -1,0 +1,1745 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DataServer In-House — 電力先物データダッシュボード</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>DataServer In-House</h1>
+    <div class="subtitle">電力先物データ分析基盤 — JPXデリバティブ理論価格</div>
+  </div>
+  <div class="updated">
+    最新データ: 2026-03-10<br>
+    生成日時: 2026-03-11 13:58:35
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- KPI -->
+  <div class="kpi-row">
+    <div class="kpi-box">
+      <div class="value">43,637</div>
+      <div class="label">総レコード数</div>
+    </div>
+    <div class="kpi-box">
+      <div class="value">54</div>
+      <div class="label">原資産数</div>
+    </div>
+    <div class="kpi-box">
+      <div class="value">124</div>
+      <div class="label">電力先物契約数</div>
+    </div>
+    <div class="kpi-box">
+      <div class="value">1</div>
+      <div class="label">取り込み済み日数</div>
+    </div>
+  </div>
+
+  <!-- Overview: 4 main curves comparison -->
+  <div class="card">
+    <div class="card-header">電力先物フォワードカーブ 比較（月次 4エリア）</div>
+    <div class="card-body">
+      <div class="chart-container" style="height:400px">
+        <canvas id="overviewChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Forward Curve Selector -->
+  <div class="card">
+    <div class="card-header">フォワードカーブ（プルダウン選択）</div>
+    <div class="card-body">
+      <div class="curve-selector">
+        <label for="curveSelect">カーブ選択:</label>
+        <select id="curveSelect">
+    <option value="東・ベース(年度)">東・ベース(年度)</option>
+    <option value="東・ベース(月次)">東・ベース(月次)</option>
+    <option value="東・ベース(週間)">東・ベース(週間)</option>
+    <option value="東・日中(年度)">東・日中(年度)</option>
+    <option value="東・日中(月次)">東・日中(月次)</option>
+    <option value="東・日中(週間)">東・日中(週間)</option>
+    <option value="西・ベース(年度)">西・ベース(年度)</option>
+    <option value="西・ベース(月次)">西・ベース(月次)</option>
+    <option value="西・ベース(週間)">西・ベース(週間)</option>
+    <option value="西・日中(年度)">西・日中(年度)</option>
+    <option value="西・日中(月次)">西・日中(月次)</option>
+    <option value="西・日中(週間)">西・日中(週間)</option>
+        </select>
+        <span class="curve-info" id="curveInfo"></span>
+      </div>
+      <div class="chart-container" style="height:350px">
+        <canvas id="curveChart"></canvas>
+      </div>
+      <div id="curveTable"></div>
+    </div>
+  </div>
+
+  <!-- East vs West Spread -->
+  <div class="card">
+    <div class="card-header">東西スプレッド（東ベース − 西ベース、月次）</div>
+    <div class="card-body">
+      <div class="chart-container" style="height:300px">
+        <canvas id="spreadChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Power Futures Table -->
+  <div class="card">
+    <div class="card-header">電力先物 全データ一覧（2026-03-10）</div>
+    <div class="card-body">
+      <table>
+        <thead>
+          <tr>
+            <th>銘柄名称</th>
+            <th>カテゴリ</th>
+            <th>限月</th>
+            <th class="num">清算価格</th>
+            <th class="num">理論価格</th>
+            <th class="num">残日数</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>FUT_EEB_260330</td>
+          <td>東・ベース(月次)</td>
+          <td>202603</td>
+          <td class="num">19.11</td>
+          <td class="num"></td>
+          <td class="num">22</td>
+        </tr>
+        <tr>
+          <td>FUT_EEB_260428</td>
+          <td>東・ベース(月次)</td>
+          <td>202604</td>
+          <td class="num">22.35</td>
+          <td class="num"></td>
+          <td class="num">52</td>
+        </tr>
+        <tr>
+          <td>FUT_EEB_260529</td>
+          <td>東・ベース(月次)</td>
+          <td>202605</td>
+          <td class="num">22.0</td>
+          <td class="num"></td>
+          <td class="num">83</td>
+        </tr>
+        <tr>
+          <td>FUT_EEB_260629</td>
+          <td>東・ベース(月次)</td>
+          <td>202606</td>
+          <td class="num">21.33</td>
+          <td class="num"></td>
+          <td class="num">113</td>
+        </tr>
+        <tr>
+          <td>FUT_EEB_260730</td>
+          <td>東・ベース(月次)</td>
+          <td>202607</td>
+          <td class="num">20.38</td>
+          <td class="num"></td>
+          <td class="num">146</td>
+        </tr>
+        <tr>
+          <td>FUT_EEB_260828</td>
+          <td>東・ベース(月次)</td>
+          <td>202608</td>
+          <td class="num">20.44</td>
+          <td class="num"></td>
+          <td class="num">175</td>
+        </tr>
+        <tr>
+          <td>FUT_EEB_260929</td>
+          <td>東・ベース(月次)</td>
+          <td>202609</td>
+          <td class="num">20.59</td>
+          <td class="num"></td>
+          <td class="num">205</td>
+        </tr>
+        <tr>
+          <td>FUT_EEB_261030</td>
+          <td>東・ベース(月次)</td>
+          <td>202610</td>
+          <td class="num">18.69</td>
+          <td class="num"></td>
+          <td class="num">237</td>
+        </tr>
+        <tr>
+          <td>FUT_EEB_261127</td>
+          <td>東・ベース(月次)</td>
+          <td>202611</td>
+          <td class="num">19.06</td>
+          <td class="num"></td>
+          <td class="num">266</td>
+        </tr>
+        <tr>
+          <td>FUT_EEB_261230</td>
+          <td>東・ベース(月次)</td>
+          <td>202612</td>
+          <td class="num">19.5</td>
+          <td class="num"></td>
+          <td class="num">300</td>
+        </tr>
+        <tr>
+          <td>FUT_EEB_270129</td>
+          <td>東・ベース(月次)</td>
+          <td>202701</td>
+          <td class="num">19.42</td>
+          <td class="num"></td>
+          <td class="num">328</td>
+        </tr>
+        <tr>
+          <td>FUT_EEB_270226</td>
+          <td>東・ベース(月次)</td>
+          <td>202702</td>
+          <td class="num">18.87</td>
+          <td class="num"></td>
+          <td class="num">356</td>
+        </tr>
+        <tr>
+          <td>FUT_EEB_270330</td>
+          <td>東・ベース(月次)</td>
+          <td>202703</td>
+          <td class="num">17.43</td>
+          <td class="num"></td>
+          <td class="num">387</td>
+        </tr>
+        <tr>
+          <td>FUT_EEB_270428</td>
+          <td>東・ベース(月次)</td>
+          <td>202704</td>
+          <td class="num">16.9</td>
+          <td class="num"></td>
+          <td class="num">422</td>
+        </tr>
+        <tr>
+          <td>FUT_EEB_270528</td>
+          <td>東・ベース(月次)</td>
+          <td>202705</td>
+          <td class="num">16.11</td>
+          <td class="num"></td>
+          <td class="num">448</td>
+        </tr>
+        <tr>
+          <td>FUT_EEB_270629</td>
+          <td>東・ベース(月次)</td>
+          <td>202706</td>
+          <td class="num">16.81</td>
+          <td class="num"></td>
+          <td class="num">478</td>
+        </tr>
+        <tr>
+          <td>FUT_EEB_270730</td>
+          <td>東・ベース(月次)</td>
+          <td>202707</td>
+          <td class="num">16.36</td>
+          <td class="num"></td>
+          <td class="num">510</td>
+        </tr>
+        <tr>
+          <td>FUT_EEB_270830</td>
+          <td>東・ベース(月次)</td>
+          <td>202708</td>
+          <td class="num">17.29</td>
+          <td class="num"></td>
+          <td class="num">540</td>
+        </tr>
+        <tr>
+          <td>FUT_EEB_270929</td>
+          <td>東・ベース(月次)</td>
+          <td>202709</td>
+          <td class="num">15.92</td>
+          <td class="num"></td>
+          <td class="num">570</td>
+        </tr>
+        <tr>
+          <td>FUT_EEB_271029</td>
+          <td>東・ベース(月次)</td>
+          <td>202710</td>
+          <td class="num">14.44</td>
+          <td class="num"></td>
+          <td class="num">601</td>
+        </tr>
+        <tr>
+          <td>FUT_EEB_271129</td>
+          <td>東・ベース(月次)</td>
+          <td>202711</td>
+          <td class="num">14.49</td>
+          <td class="num"></td>
+          <td class="num">631</td>
+        </tr>
+        <tr>
+          <td>FUT_EEB_271230</td>
+          <td>東・ベース(月次)</td>
+          <td>202712</td>
+          <td class="num">15.45</td>
+          <td class="num"></td>
+          <td class="num">665</td>
+        </tr>
+        <tr>
+          <td>FUT_EEB_280128</td>
+          <td>東・ベース(月次)</td>
+          <td>202801</td>
+          <td class="num">15.54</td>
+          <td class="num"></td>
+          <td class="num">693</td>
+        </tr>
+        <tr>
+          <td>FUT_EEB_280228</td>
+          <td>東・ベース(月次)</td>
+          <td>202802</td>
+          <td class="num">14.88</td>
+          <td class="num"></td>
+          <td class="num">722</td>
+        </tr>
+        <tr>
+          <td>FUT_EEBY_260326</td>
+          <td>東・ベース(年度)</td>
+          <td>202604</td>
+          <td class="num">20.01</td>
+          <td class="num"></td>
+          <td class="num">17</td>
+        </tr>
+        <tr>
+          <td>FUT_EEBY_270326</td>
+          <td>東・ベース(年度)</td>
+          <td>202704</td>
+          <td class="num">15.64</td>
+          <td class="num"></td>
+          <td class="num">384</td>
+        </tr>
+        <tr>
+          <td>FUT_EEPY_260326</td>
+          <td>東・日中(年度)</td>
+          <td>202604</td>
+          <td class="num">23.59</td>
+          <td class="num"></td>
+          <td class="num">17</td>
+        </tr>
+        <tr>
+          <td>FUT_EEPY_270326</td>
+          <td>東・日中(年度)</td>
+          <td>202704</td>
+          <td class="num">17.5</td>
+          <td class="num"></td>
+          <td class="num">384</td>
+        </tr>
+        <tr>
+          <td>FUT_EEP_260330</td>
+          <td>東・日中(月次)</td>
+          <td>202603</td>
+          <td class="num">19.5</td>
+          <td class="num"></td>
+          <td class="num">22</td>
+        </tr>
+        <tr>
+          <td>FUT_EEP_260428</td>
+          <td>東・日中(月次)</td>
+          <td>202604</td>
+          <td class="num">24.39</td>
+          <td class="num"></td>
+          <td class="num">52</td>
+        </tr>
+        <tr>
+          <td>FUT_EEP_260528</td>
+          <td>東・日中(月次)</td>
+          <td>202605</td>
+          <td class="num">23.56</td>
+          <td class="num"></td>
+          <td class="num">83</td>
+        </tr>
+        <tr>
+          <td>FUT_EEP_260629</td>
+          <td>東・日中(月次)</td>
+          <td>202606</td>
+          <td class="num">24.84</td>
+          <td class="num"></td>
+          <td class="num">113</td>
+        </tr>
+        <tr>
+          <td>FUT_EEP_260730</td>
+          <td>東・日中(月次)</td>
+          <td>202607</td>
+          <td class="num">25.08</td>
+          <td class="num"></td>
+          <td class="num">146</td>
+        </tr>
+        <tr>
+          <td>FUT_EEP_260828</td>
+          <td>東・日中(月次)</td>
+          <td>202608</td>
+          <td class="num">25.15</td>
+          <td class="num"></td>
+          <td class="num">175</td>
+        </tr>
+        <tr>
+          <td>FUT_EEP_260929</td>
+          <td>東・日中(月次)</td>
+          <td>202609</td>
+          <td class="num">25.47</td>
+          <td class="num"></td>
+          <td class="num">205</td>
+        </tr>
+        <tr>
+          <td>FUT_EEP_261029</td>
+          <td>東・日中(月次)</td>
+          <td>202610</td>
+          <td class="num">23.15</td>
+          <td class="num"></td>
+          <td class="num">237</td>
+        </tr>
+        <tr>
+          <td>FUT_EEP_261127</td>
+          <td>東・日中(月次)</td>
+          <td>202611</td>
+          <td class="num">22.24</td>
+          <td class="num"></td>
+          <td class="num">266</td>
+        </tr>
+        <tr>
+          <td>FUT_EEP_261228</td>
+          <td>東・日中(月次)</td>
+          <td>202612</td>
+          <td class="num">22.79</td>
+          <td class="num"></td>
+          <td class="num">300</td>
+        </tr>
+        <tr>
+          <td>FUT_EEP_270128</td>
+          <td>東・日中(月次)</td>
+          <td>202701</td>
+          <td class="num">22.99</td>
+          <td class="num"></td>
+          <td class="num">328</td>
+        </tr>
+        <tr>
+          <td>FUT_EEP_270225</td>
+          <td>東・日中(月次)</td>
+          <td>202702</td>
+          <td class="num">22.59</td>
+          <td class="num"></td>
+          <td class="num">356</td>
+        </tr>
+        <tr>
+          <td>FUT_EEP_270330</td>
+          <td>東・日中(月次)</td>
+          <td>202703</td>
+          <td class="num">20.74</td>
+          <td class="num"></td>
+          <td class="num">387</td>
+        </tr>
+        <tr>
+          <td>FUT_EEP_270428</td>
+          <td>東・日中(月次)</td>
+          <td>202704</td>
+          <td class="num">17.81</td>
+          <td class="num"></td>
+          <td class="num">422</td>
+        </tr>
+        <tr>
+          <td>FUT_EEP_270528</td>
+          <td>東・日中(月次)</td>
+          <td>202705</td>
+          <td class="num">17.2</td>
+          <td class="num"></td>
+          <td class="num">448</td>
+        </tr>
+        <tr>
+          <td>FUT_EEP_270629</td>
+          <td>東・日中(月次)</td>
+          <td>202706</td>
+          <td class="num">18.49</td>
+          <td class="num"></td>
+          <td class="num">478</td>
+        </tr>
+        <tr>
+          <td>FUT_EEP_270729</td>
+          <td>東・日中(月次)</td>
+          <td>202707</td>
+          <td class="num">18.31</td>
+          <td class="num"></td>
+          <td class="num">510</td>
+        </tr>
+        <tr>
+          <td>FUT_EEP_270830</td>
+          <td>東・日中(月次)</td>
+          <td>202708</td>
+          <td class="num">19.43</td>
+          <td class="num"></td>
+          <td class="num">540</td>
+        </tr>
+        <tr>
+          <td>FUT_EEP_270929</td>
+          <td>東・日中(月次)</td>
+          <td>202709</td>
+          <td class="num">18.52</td>
+          <td class="num"></td>
+          <td class="num">570</td>
+        </tr>
+        <tr>
+          <td>FUT_EEP_271028</td>
+          <td>東・日中(月次)</td>
+          <td>202710</td>
+          <td class="num">16.15</td>
+          <td class="num"></td>
+          <td class="num">601</td>
+        </tr>
+        <tr>
+          <td>FUT_EEP_271129</td>
+          <td>東・日中(月次)</td>
+          <td>202711</td>
+          <td class="num">16.88</td>
+          <td class="num"></td>
+          <td class="num">631</td>
+        </tr>
+        <tr>
+          <td>FUT_EEP_271228</td>
+          <td>東・日中(月次)</td>
+          <td>202712</td>
+          <td class="num">18.0</td>
+          <td class="num"></td>
+          <td class="num">665</td>
+        </tr>
+        <tr>
+          <td>FUT_EEP_280128</td>
+          <td>東・日中(月次)</td>
+          <td>202801</td>
+          <td class="num">17.55</td>
+          <td class="num"></td>
+          <td class="num">693</td>
+        </tr>
+        <tr>
+          <td>FUT_EEP_280228</td>
+          <td>東・日中(月次)</td>
+          <td>202802</td>
+          <td class="num">16.86</td>
+          <td class="num"></td>
+          <td class="num">722</td>
+        </tr>
+        <tr>
+          <td>FUT_EEBW_260312</td>
+          <td>東・ベース(週間)</td>
+          <td>20260313</td>
+          <td class="num">13.32</td>
+          <td class="num"></td>
+          <td class="num">3</td>
+        </tr>
+        <tr>
+          <td>FUT_EEBW_260319</td>
+          <td>東・ベース(週間)</td>
+          <td>20260320</td>
+          <td class="num">19.87</td>
+          <td class="num"></td>
+          <td class="num">13</td>
+        </tr>
+        <tr>
+          <td>FUT_EEBW_260326</td>
+          <td>東・ベース(週間)</td>
+          <td>20260327</td>
+          <td class="num">20.83</td>
+          <td class="num"></td>
+          <td class="num">17</td>
+        </tr>
+        <tr>
+          <td>FUT_EEBW_260402</td>
+          <td>東・ベース(週間)</td>
+          <td>20260403</td>
+          <td class="num">20.74</td>
+          <td class="num"></td>
+          <td class="num">24</td>
+        </tr>
+        <tr>
+          <td>FUT_EEBW_260409</td>
+          <td>東・ベース(週間)</td>
+          <td>20260410</td>
+          <td class="num">21.27</td>
+          <td class="num"></td>
+          <td class="num">31</td>
+        </tr>
+        <tr>
+          <td>FUT_EEPW_260312</td>
+          <td>東・日中(週間)</td>
+          <td>20260313</td>
+          <td class="num">15.96</td>
+          <td class="num"></td>
+          <td class="num">3</td>
+        </tr>
+        <tr>
+          <td>FUT_EEPW_260318</td>
+          <td>東・日中(週間)</td>
+          <td>20260320</td>
+          <td class="num">21.29</td>
+          <td class="num"></td>
+          <td class="num">9</td>
+        </tr>
+        <tr>
+          <td>FUT_EEPW_260326</td>
+          <td>東・日中(週間)</td>
+          <td>20260327</td>
+          <td class="num">21.31</td>
+          <td class="num"></td>
+          <td class="num">17</td>
+        </tr>
+        <tr>
+          <td>FUT_EEPW_260402</td>
+          <td>東・日中(週間)</td>
+          <td>20260403</td>
+          <td class="num">21.89</td>
+          <td class="num"></td>
+          <td class="num">24</td>
+        </tr>
+        <tr>
+          <td>FUT_EEPW_260409</td>
+          <td>東・日中(週間)</td>
+          <td>20260410</td>
+          <td class="num">22.82</td>
+          <td class="num"></td>
+          <td class="num">31</td>
+        </tr>
+        <tr>
+          <td>FUT_EWB_260330</td>
+          <td>西・ベース(月次)</td>
+          <td>202603</td>
+          <td class="num">15.29</td>
+          <td class="num"></td>
+          <td class="num">22</td>
+        </tr>
+        <tr>
+          <td>FUT_EWB_260428</td>
+          <td>西・ベース(月次)</td>
+          <td>202604</td>
+          <td class="num">18.25</td>
+          <td class="num"></td>
+          <td class="num">52</td>
+        </tr>
+        <tr>
+          <td>FUT_EWB_260529</td>
+          <td>西・ベース(月次)</td>
+          <td>202605</td>
+          <td class="num">17.83</td>
+          <td class="num"></td>
+          <td class="num">83</td>
+        </tr>
+        <tr>
+          <td>FUT_EWB_260629</td>
+          <td>西・ベース(月次)</td>
+          <td>202606</td>
+          <td class="num">17.7</td>
+          <td class="num"></td>
+          <td class="num">113</td>
+        </tr>
+        <tr>
+          <td>FUT_EWB_260730</td>
+          <td>西・ベース(月次)</td>
+          <td>202607</td>
+          <td class="num">18.39</td>
+          <td class="num"></td>
+          <td class="num">146</td>
+        </tr>
+        <tr>
+          <td>FUT_EWB_260828</td>
+          <td>西・ベース(月次)</td>
+          <td>202608</td>
+          <td class="num">18.1</td>
+          <td class="num"></td>
+          <td class="num">175</td>
+        </tr>
+        <tr>
+          <td>FUT_EWB_260929</td>
+          <td>西・ベース(月次)</td>
+          <td>202609</td>
+          <td class="num">17.76</td>
+          <td class="num"></td>
+          <td class="num">205</td>
+        </tr>
+        <tr>
+          <td>FUT_EWB_261030</td>
+          <td>西・ベース(月次)</td>
+          <td>202610</td>
+          <td class="num">15.89</td>
+          <td class="num"></td>
+          <td class="num">237</td>
+        </tr>
+        <tr>
+          <td>FUT_EWB_261127</td>
+          <td>西・ベース(月次)</td>
+          <td>202611</td>
+          <td class="num">15.89</td>
+          <td class="num"></td>
+          <td class="num">266</td>
+        </tr>
+        <tr>
+          <td>FUT_EWB_261230</td>
+          <td>西・ベース(月次)</td>
+          <td>202612</td>
+          <td class="num">17.03</td>
+          <td class="num"></td>
+          <td class="num">300</td>
+        </tr>
+        <tr>
+          <td>FUT_EWB_270129</td>
+          <td>西・ベース(月次)</td>
+          <td>202701</td>
+          <td class="num">17.43</td>
+          <td class="num"></td>
+          <td class="num">328</td>
+        </tr>
+        <tr>
+          <td>FUT_EWB_270226</td>
+          <td>西・ベース(月次)</td>
+          <td>202702</td>
+          <td class="num">16.93</td>
+          <td class="num"></td>
+          <td class="num">356</td>
+        </tr>
+        <tr>
+          <td>FUT_EWB_270330</td>
+          <td>西・ベース(月次)</td>
+          <td>202703</td>
+          <td class="num">16.07</td>
+          <td class="num"></td>
+          <td class="num">387</td>
+        </tr>
+        <tr>
+          <td>FUT_EWB_270428</td>
+          <td>西・ベース(月次)</td>
+          <td>202704</td>
+          <td class="num">14.78</td>
+          <td class="num"></td>
+          <td class="num">422</td>
+        </tr>
+        <tr>
+          <td>FUT_EWB_270528</td>
+          <td>西・ベース(月次)</td>
+          <td>202705</td>
+          <td class="num">14.3</td>
+          <td class="num"></td>
+          <td class="num">448</td>
+        </tr>
+        <tr>
+          <td>FUT_EWB_270629</td>
+          <td>西・ベース(月次)</td>
+          <td>202706</td>
+          <td class="num">14.38</td>
+          <td class="num"></td>
+          <td class="num">478</td>
+        </tr>
+        <tr>
+          <td>FUT_EWB_270730</td>
+          <td>西・ベース(月次)</td>
+          <td>202707</td>
+          <td class="num">14.77</td>
+          <td class="num"></td>
+          <td class="num">510</td>
+        </tr>
+        <tr>
+          <td>FUT_EWB_270830</td>
+          <td>西・ベース(月次)</td>
+          <td>202708</td>
+          <td class="num">15.01</td>
+          <td class="num"></td>
+          <td class="num">540</td>
+        </tr>
+        <tr>
+          <td>FUT_EWB_270929</td>
+          <td>西・ベース(月次)</td>
+          <td>202709</td>
+          <td class="num">14.08</td>
+          <td class="num"></td>
+          <td class="num">570</td>
+        </tr>
+        <tr>
+          <td>FUT_EWB_271029</td>
+          <td>西・ベース(月次)</td>
+          <td>202710</td>
+          <td class="num">12.68</td>
+          <td class="num"></td>
+          <td class="num">601</td>
+        </tr>
+        <tr>
+          <td>FUT_EWB_271129</td>
+          <td>西・ベース(月次)</td>
+          <td>202711</td>
+          <td class="num">12.75</td>
+          <td class="num"></td>
+          <td class="num">631</td>
+        </tr>
+        <tr>
+          <td>FUT_EWB_271230</td>
+          <td>西・ベース(月次)</td>
+          <td>202712</td>
+          <td class="num">14.22</td>
+          <td class="num"></td>
+          <td class="num">665</td>
+        </tr>
+        <tr>
+          <td>FUT_EWB_280128</td>
+          <td>西・ベース(月次)</td>
+          <td>202801</td>
+          <td class="num">14.37</td>
+          <td class="num"></td>
+          <td class="num">693</td>
+        </tr>
+        <tr>
+          <td>FUT_EWB_280228</td>
+          <td>西・ベース(月次)</td>
+          <td>202802</td>
+          <td class="num">13.76</td>
+          <td class="num"></td>
+          <td class="num">722</td>
+        </tr>
+        <tr>
+          <td>FUT_EWBY_260326</td>
+          <td>西・ベース(年度)</td>
+          <td>202604</td>
+          <td class="num">17.27</td>
+          <td class="num"></td>
+          <td class="num">17</td>
+        </tr>
+        <tr>
+          <td>FUT_EWBY_270326</td>
+          <td>西・ベース(年度)</td>
+          <td>202704</td>
+          <td class="num">13.96</td>
+          <td class="num"></td>
+          <td class="num">384</td>
+        </tr>
+        <tr>
+          <td>FUT_EWPY_260326</td>
+          <td>西・日中(年度)</td>
+          <td>202604</td>
+          <td class="num">19.76</td>
+          <td class="num"></td>
+          <td class="num">17</td>
+        </tr>
+        <tr>
+          <td>FUT_EWPY_270326</td>
+          <td>西・日中(年度)</td>
+          <td>202704</td>
+          <td class="num">15.79</td>
+          <td class="num"></td>
+          <td class="num">384</td>
+        </tr>
+        <tr>
+          <td>FUT_EWP_260330</td>
+          <td>西・日中(月次)</td>
+          <td>202603</td>
+          <td class="num">15.65</td>
+          <td class="num"></td>
+          <td class="num">22</td>
+        </tr>
+        <tr>
+          <td>FUT_EWP_260428</td>
+          <td>西・日中(月次)</td>
+          <td>202604</td>
+          <td class="num">18.38</td>
+          <td class="num"></td>
+          <td class="num">52</td>
+        </tr>
+        <tr>
+          <td>FUT_EWP_260528</td>
+          <td>西・日中(月次)</td>
+          <td>202605</td>
+          <td class="num">18.39</td>
+          <td class="num"></td>
+          <td class="num">83</td>
+        </tr>
+        <tr>
+          <td>FUT_EWP_260629</td>
+          <td>西・日中(月次)</td>
+          <td>202606</td>
+          <td class="num">21.02</td>
+          <td class="num"></td>
+          <td class="num">113</td>
+        </tr>
+        <tr>
+          <td>FUT_EWP_260730</td>
+          <td>西・日中(月次)</td>
+          <td>202607</td>
+          <td class="num">22.64</td>
+          <td class="num"></td>
+          <td class="num">146</td>
+        </tr>
+        <tr>
+          <td>FUT_EWP_260828</td>
+          <td>西・日中(月次)</td>
+          <td>202608</td>
+          <td class="num">22.46</td>
+          <td class="num"></td>
+          <td class="num">175</td>
+        </tr>
+        <tr>
+          <td>FUT_EWP_260929</td>
+          <td>西・日中(月次)</td>
+          <td>202609</td>
+          <td class="num">22.57</td>
+          <td class="num"></td>
+          <td class="num">205</td>
+        </tr>
+        <tr>
+          <td>FUT_EWP_261029</td>
+          <td>西・日中(月次)</td>
+          <td>202610</td>
+          <td class="num">18.12</td>
+          <td class="num"></td>
+          <td class="num">237</td>
+        </tr>
+        <tr>
+          <td>FUT_EWP_261127</td>
+          <td>西・日中(月次)</td>
+          <td>202611</td>
+          <td class="num">18.23</td>
+          <td class="num"></td>
+          <td class="num">266</td>
+        </tr>
+        <tr>
+          <td>FUT_EWP_261228</td>
+          <td>西・日中(月次)</td>
+          <td>202612</td>
+          <td class="num">19.4</td>
+          <td class="num"></td>
+          <td class="num">300</td>
+        </tr>
+        <tr>
+          <td>FUT_EWP_270128</td>
+          <td>西・日中(月次)</td>
+          <td>202701</td>
+          <td class="num">19.43</td>
+          <td class="num"></td>
+          <td class="num">328</td>
+        </tr>
+        <tr>
+          <td>FUT_EWP_270225</td>
+          <td>西・日中(月次)</td>
+          <td>202702</td>
+          <td class="num">18.78</td>
+          <td class="num"></td>
+          <td class="num">356</td>
+        </tr>
+        <tr>
+          <td>FUT_EWP_270330</td>
+          <td>西・日中(月次)</td>
+          <td>202703</td>
+          <td class="num">17.43</td>
+          <td class="num"></td>
+          <td class="num">387</td>
+        </tr>
+        <tr>
+          <td>FUT_EWP_270428</td>
+          <td>西・日中(月次)</td>
+          <td>202704</td>
+          <td class="num">14.81</td>
+          <td class="num"></td>
+          <td class="num">422</td>
+        </tr>
+        <tr>
+          <td>FUT_EWP_270528</td>
+          <td>西・日中(月次)</td>
+          <td>202705</td>
+          <td class="num">14.48</td>
+          <td class="num"></td>
+          <td class="num">448</td>
+        </tr>
+        <tr>
+          <td>FUT_EWP_270629</td>
+          <td>西・日中(月次)</td>
+          <td>202706</td>
+          <td class="num">16.71</td>
+          <td class="num"></td>
+          <td class="num">478</td>
+        </tr>
+        <tr>
+          <td>FUT_EWP_270729</td>
+          <td>西・日中(月次)</td>
+          <td>202707</td>
+          <td class="num">17.43</td>
+          <td class="num"></td>
+          <td class="num">510</td>
+        </tr>
+        <tr>
+          <td>FUT_EWP_270830</td>
+          <td>西・日中(月次)</td>
+          <td>202708</td>
+          <td class="num">18.68</td>
+          <td class="num"></td>
+          <td class="num">540</td>
+        </tr>
+        <tr>
+          <td>FUT_EWP_270929</td>
+          <td>西・日中(月次)</td>
+          <td>202709</td>
+          <td class="num">16.98</td>
+          <td class="num"></td>
+          <td class="num">570</td>
+        </tr>
+        <tr>
+          <td>FUT_EWP_271028</td>
+          <td>西・日中(月次)</td>
+          <td>202710</td>
+          <td class="num">14.35</td>
+          <td class="num"></td>
+          <td class="num">601</td>
+        </tr>
+        <tr>
+          <td>FUT_EWP_271129</td>
+          <td>西・日中(月次)</td>
+          <td>202711</td>
+          <td class="num">14.57</td>
+          <td class="num"></td>
+          <td class="num">631</td>
+        </tr>
+        <tr>
+          <td>FUT_EWP_271228</td>
+          <td>西・日中(月次)</td>
+          <td>202712</td>
+          <td class="num">16.26</td>
+          <td class="num"></td>
+          <td class="num">665</td>
+        </tr>
+        <tr>
+          <td>FUT_EWP_280128</td>
+          <td>西・日中(月次)</td>
+          <td>202801</td>
+          <td class="num">15.98</td>
+          <td class="num"></td>
+          <td class="num">693</td>
+        </tr>
+        <tr>
+          <td>FUT_EWP_280228</td>
+          <td>西・日中(月次)</td>
+          <td>202802</td>
+          <td class="num">15.46</td>
+          <td class="num"></td>
+          <td class="num">722</td>
+        </tr>
+        <tr>
+          <td>FUT_EWBW_260312</td>
+          <td>西・ベース(週間)</td>
+          <td>20260313</td>
+          <td class="num">11.67</td>
+          <td class="num"></td>
+          <td class="num">3</td>
+        </tr>
+        <tr>
+          <td>FUT_EWBW_260319</td>
+          <td>西・ベース(週間)</td>
+          <td>20260320</td>
+          <td class="num">15.32</td>
+          <td class="num"></td>
+          <td class="num">13</td>
+        </tr>
+        <tr>
+          <td>FUT_EWBW_260326</td>
+          <td>西・ベース(週間)</td>
+          <td>20260327</td>
+          <td class="num">15.42</td>
+          <td class="num"></td>
+          <td class="num">17</td>
+        </tr>
+        <tr>
+          <td>FUT_EWBW_260402</td>
+          <td>西・ベース(週間)</td>
+          <td>20260403</td>
+          <td class="num">16.99</td>
+          <td class="num"></td>
+          <td class="num">24</td>
+        </tr>
+        <tr>
+          <td>FUT_EWBW_260409</td>
+          <td>西・ベース(週間)</td>
+          <td>20260410</td>
+          <td class="num">17.07</td>
+          <td class="num"></td>
+          <td class="num">31</td>
+        </tr>
+        <tr>
+          <td>FUT_EWPW_260312</td>
+          <td>西・日中(週間)</td>
+          <td>20260313</td>
+          <td class="num">12.48</td>
+          <td class="num"></td>
+          <td class="num">3</td>
+        </tr>
+        <tr>
+          <td>FUT_EWPW_260318</td>
+          <td>西・日中(週間)</td>
+          <td>20260320</td>
+          <td class="num">16.4</td>
+          <td class="num"></td>
+          <td class="num">9</td>
+        </tr>
+        <tr>
+          <td>FUT_EWPW_260326</td>
+          <td>西・日中(週間)</td>
+          <td>20260327</td>
+          <td class="num">16.55</td>
+          <td class="num"></td>
+          <td class="num">17</td>
+        </tr>
+        <tr>
+          <td>FUT_EWPW_260402</td>
+          <td>西・日中(週間)</td>
+          <td>20260403</td>
+          <td class="num">17.25</td>
+          <td class="num"></td>
+          <td class="num">24</td>
+        </tr>
+        <tr>
+          <td>FUT_EWPW_260409</td>
+          <td>西・日中(週間)</td>
+          <td>20260410</td>
+          <td class="num">16.63</td>
+          <td class="num"></td>
+          <td class="num">31</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- All Underlying Summary -->
+  <div class="card">
+    <div class="card-header">原資産別データ件数（2026-03-10）</div>
+    <div class="card-body">
+      <table>
+        <thead>
+          <tr>
+            <th>原資産名称</th>
+            <th class="num">合計</th>
+            <th class="num">先物</th>
+            <th class="num">コール</th>
+            <th class="num">プット</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>CMEPI</td>
+          <td class="num">6</td>
+          <td class="num">6</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>FTSE JPXネットゼロ・ジャパン500指数</td>
+          <td class="num">3</td>
+          <td class="num">3</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>FTSE中国50</td>
+          <td class="num">4</td>
+          <td class="num">4</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>JPXプライム150指数</td>
+          <td class="num">5</td>
+          <td class="num">5</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>JPX日経400</td>
+          <td class="num">1647</td>
+          <td class="num">5</td>
+          <td class="num">821</td>
+          <td class="num">821</td>
+        </tr>
+        <tr>
+          <td>LNG(プラッツJKM)</td>
+          <td class="num">15</td>
+          <td class="num">15</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>NYダウ</td>
+          <td class="num">4</td>
+          <td class="num">4</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>RNP</td>
+          <td class="num">5</td>
+          <td class="num">5</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>S&P/JPX 500ESGスコア・ティルト指数</td>
+          <td class="num">3</td>
+          <td class="num">3</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>TOPIX</td>
+          <td class="num">1870</td>
+          <td class="num">16</td>
+          <td class="num">927</td>
+          <td class="num">927</td>
+        </tr>
+        <tr>
+          <td>TOPIX Core30</td>
+          <td class="num">3</td>
+          <td class="num">3</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>unknown</td>
+          <td class="num">25931</td>
+          <td class="num">0</td>
+          <td class="num">12966</td>
+          <td class="num">12965</td>
+        </tr>
+        <tr>
+          <td>とうもろこし</td>
+          <td class="num">6</td>
+          <td class="num">6</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>ゴム(RSS3)</td>
+          <td class="num">12</td>
+          <td class="num">12</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>ゴム(TSR20)</td>
+          <td class="num">12</td>
+          <td class="num">12</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>ドバイ原油</td>
+          <td class="num">15</td>
+          <td class="num">15</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>バージガソリン</td>
+          <td class="num">6</td>
+          <td class="num">6</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>バージ灯油</td>
+          <td class="num">6</td>
+          <td class="num">6</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>バージ軽油</td>
+          <td class="num">6</td>
+          <td class="num">6</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>パラジウム</td>
+          <td class="num">6</td>
+          <td class="num">6</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>上海天然ゴム</td>
+          <td class="num">3</td>
+          <td class="num">3</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>中京ガソリン</td>
+          <td class="num">6</td>
+          <td class="num">6</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>中京灯油</td>
+          <td class="num">6</td>
+          <td class="num">6</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>中期国債</td>
+          <td class="num">3</td>
+          <td class="num">3</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>台湾加権</td>
+          <td class="num">5</td>
+          <td class="num">5</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>大豆</td>
+          <td class="num">6</td>
+          <td class="num">6</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>小豆</td>
+          <td class="num">6</td>
+          <td class="num">6</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>日経225</td>
+          <td class="num">10833</td>
+          <td class="num">39</td>
+          <td class="num">5397</td>
+          <td class="num">5397</td>
+        </tr>
+        <tr>
+          <td>日経平均VI</td>
+          <td class="num">8</td>
+          <td class="num">8</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>日経平均気候変動指数</td>
+          <td class="num">3</td>
+          <td class="num">3</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>日経平均配当</td>
+          <td class="num">9</td>
+          <td class="num">9</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>東証REIT</td>
+          <td class="num">3</td>
+          <td class="num">3</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>東証グロース市場250指数</td>
+          <td class="num">5</td>
+          <td class="num">5</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>東証銀行</td>
+          <td class="num">3</td>
+          <td class="num">3</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>無担保コールO/N物レート</td>
+          <td class="num">20</td>
+          <td class="num">20</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>白金</td>
+          <td class="num">13</td>
+          <td class="num">13</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>超長期国債</td>
+          <td class="num">3</td>
+          <td class="num">3</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>金</td>
+          <td class="num">13</td>
+          <td class="num">13</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>金先物</td>
+          <td class="num">2584</td>
+          <td class="num">0</td>
+          <td class="num">1292</td>
+          <td class="num">1292</td>
+        </tr>
+        <tr>
+          <td>銀</td>
+          <td class="num">6</td>
+          <td class="num">6</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>長期国債</td>
+          <td class="num">6</td>
+          <td class="num">6</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>長期国債先物</td>
+          <td class="num">404</td>
+          <td class="num">0</td>
+          <td class="num">202</td>
+          <td class="num">202</td>
+        </tr>
+        <tr>
+          <td>電力(東・ベース)</td>
+          <td class="num">24</td>
+          <td class="num">24</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>電力(東・年度ベース)</td>
+          <td class="num">2</td>
+          <td class="num">2</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>電力(東・年度日中)</td>
+          <td class="num">2</td>
+          <td class="num">2</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>電力(東・日中)</td>
+          <td class="num">24</td>
+          <td class="num">24</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>電力(東・週間ベース)</td>
+          <td class="num">5</td>
+          <td class="num">5</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>電力(東・週間日中)</td>
+          <td class="num">5</td>
+          <td class="num">5</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>電力(西・ベース)</td>
+          <td class="num">24</td>
+          <td class="num">24</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>電力(西・年度ベース)</td>
+          <td class="num">2</td>
+          <td class="num">2</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>電力(西・年度日中)</td>
+          <td class="num">2</td>
+          <td class="num">2</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>電力(西・日中)</td>
+          <td class="num">24</td>
+          <td class="num">24</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>電力(西・週間ベース)</td>
+          <td class="num">5</td>
+          <td class="num">5</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        <tr>
+          <td>電力(西・週間日中)</td>
+          <td class="num">5</td>
+          <td class="num">5</td>
+          <td class="num">0</td>
+          <td class="num">0</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  DataServer In-House — Generated automatically from JPX derivative data
+</div>
+
+<script>
+let curveChartInstance = null;
+
+const data = {"overview_chart": {"東・ベース(月次)": [{"month": "202603", "price": 19.11}, {"month": "202604", "price": 22.35}, {"month": "202605", "price": 22.0}, {"month": "202606", "price": 21.33}, {"month": "202607", "price": 20.38}, {"month": "202608", "price": 20.44}, {"month": "202609", "price": 20.59}, {"month": "202610", "price": 18.69}, {"month": "202611", "price": 19.06}, {"month": "202612", "price": 19.5}, {"month": "202701", "price": 19.42}, {"month": "202702", "price": 18.87}, {"month": "202703", "price": 17.43}, {"month": "202704", "price": 16.9}, {"month": "202705", "price": 16.11}, {"month": "202706", "price": 16.81}, {"month": "202707", "price": 16.36}, {"month": "202708", "price": 17.29}, {"month": "202709", "price": 15.92}, {"month": "202710", "price": 14.44}, {"month": "202711", "price": 14.49}, {"month": "202712", "price": 15.45}, {"month": "202801", "price": 15.54}, {"month": "202802", "price": 14.88}], "東・日中(月次)": [{"month": "202603", "price": 19.5}, {"month": "202604", "price": 24.39}, {"month": "202605", "price": 23.56}, {"month": "202606", "price": 24.84}, {"month": "202607", "price": 25.08}, {"month": "202608", "price": 25.15}, {"month": "202609", "price": 25.47}, {"month": "202610", "price": 23.15}, {"month": "202611", "price": 22.24}, {"month": "202612", "price": 22.79}, {"month": "202701", "price": 22.99}, {"month": "202702", "price": 22.59}, {"month": "202703", "price": 20.74}, {"month": "202704", "price": 17.81}, {"month": "202705", "price": 17.2}, {"month": "202706", "price": 18.49}, {"month": "202707", "price": 18.31}, {"month": "202708", "price": 19.43}, {"month": "202709", "price": 18.52}, {"month": "202710", "price": 16.15}, {"month": "202711", "price": 16.88}, {"month": "202712", "price": 18.0}, {"month": "202801", "price": 17.55}, {"month": "202802", "price": 16.86}], "西・ベース(月次)": [{"month": "202603", "price": 15.29}, {"month": "202604", "price": 18.25}, {"month": "202605", "price": 17.83}, {"month": "202606", "price": 17.7}, {"month": "202607", "price": 18.39}, {"month": "202608", "price": 18.1}, {"month": "202609", "price": 17.76}, {"month": "202610", "price": 15.89}, {"month": "202611", "price": 15.89}, {"month": "202612", "price": 17.03}, {"month": "202701", "price": 17.43}, {"month": "202702", "price": 16.93}, {"month": "202703", "price": 16.07}, {"month": "202704", "price": 14.78}, {"month": "202705", "price": 14.3}, {"month": "202706", "price": 14.38}, {"month": "202707", "price": 14.77}, {"month": "202708", "price": 15.01}, {"month": "202709", "price": 14.08}, {"month": "202710", "price": 12.68}, {"month": "202711", "price": 12.75}, {"month": "202712", "price": 14.22}, {"month": "202801", "price": 14.37}, {"month": "202802", "price": 13.76}], "西・日中(月次)": [{"month": "202603", "price": 15.65}, {"month": "202604", "price": 18.38}, {"month": "202605", "price": 18.39}, {"month": "202606", "price": 21.02}, {"month": "202607", "price": 22.64}, {"month": "202608", "price": 22.46}, {"month": "202609", "price": 22.57}, {"month": "202610", "price": 18.12}, {"month": "202611", "price": 18.23}, {"month": "202612", "price": 19.4}, {"month": "202701", "price": 19.43}, {"month": "202702", "price": 18.78}, {"month": "202703", "price": 17.43}, {"month": "202704", "price": 14.81}, {"month": "202705", "price": 14.48}, {"month": "202706", "price": 16.71}, {"month": "202707", "price": 17.43}, {"month": "202708", "price": 18.68}, {"month": "202709", "price": 16.98}, {"month": "202710", "price": 14.35}, {"month": "202711", "price": 14.57}, {"month": "202712", "price": 16.26}, {"month": "202801", "price": 15.98}, {"month": "202802", "price": 15.46}]}, "forward_curves": {"東・ベース(月次)": [{"month": "202603", "settlement": 19.11, "theoretical": null, "days": 22, "name": "FUT_EEB_260330"}, {"month": "202604", "settlement": 22.35, "theoretical": null, "days": 52, "name": "FUT_EEB_260428"}, {"month": "202605", "settlement": 22.0, "theoretical": null, "days": 83, "name": "FUT_EEB_260529"}, {"month": "202606", "settlement": 21.33, "theoretical": null, "days": 113, "name": "FUT_EEB_260629"}, {"month": "202607", "settlement": 20.38, "theoretical": null, "days": 146, "name": "FUT_EEB_260730"}, {"month": "202608", "settlement": 20.44, "theoretical": null, "days": 175, "name": "FUT_EEB_260828"}, {"month": "202609", "settlement": 20.59, "theoretical": null, "days": 205, "name": "FUT_EEB_260929"}, {"month": "202610", "settlement": 18.69, "theoretical": null, "days": 237, "name": "FUT_EEB_261030"}, {"month": "202611", "settlement": 19.06, "theoretical": null, "days": 266, "name": "FUT_EEB_261127"}, {"month": "202612", "settlement": 19.5, "theoretical": null, "days": 300, "name": "FUT_EEB_261230"}, {"month": "202701", "settlement": 19.42, "theoretical": null, "days": 328, "name": "FUT_EEB_270129"}, {"month": "202702", "settlement": 18.87, "theoretical": null, "days": 356, "name": "FUT_EEB_270226"}, {"month": "202703", "settlement": 17.43, "theoretical": null, "days": 387, "name": "FUT_EEB_270330"}, {"month": "202704", "settlement": 16.9, "theoretical": null, "days": 422, "name": "FUT_EEB_270428"}, {"month": "202705", "settlement": 16.11, "theoretical": null, "days": 448, "name": "FUT_EEB_270528"}, {"month": "202706", "settlement": 16.81, "theoretical": null, "days": 478, "name": "FUT_EEB_270629"}, {"month": "202707", "settlement": 16.36, "theoretical": null, "days": 510, "name": "FUT_EEB_270730"}, {"month": "202708", "settlement": 17.29, "theoretical": null, "days": 540, "name": "FUT_EEB_270830"}, {"month": "202709", "settlement": 15.92, "theoretical": null, "days": 570, "name": "FUT_EEB_270929"}, {"month": "202710", "settlement": 14.44, "theoretical": null, "days": 601, "name": "FUT_EEB_271029"}, {"month": "202711", "settlement": 14.49, "theoretical": null, "days": 631, "name": "FUT_EEB_271129"}, {"month": "202712", "settlement": 15.45, "theoretical": null, "days": 665, "name": "FUT_EEB_271230"}, {"month": "202801", "settlement": 15.54, "theoretical": null, "days": 693, "name": "FUT_EEB_280128"}, {"month": "202802", "settlement": 14.88, "theoretical": null, "days": 722, "name": "FUT_EEB_280228"}], "東・ベース(年度)": [{"month": "202604", "settlement": 20.01, "theoretical": null, "days": 17, "name": "FUT_EEBY_260326"}, {"month": "202704", "settlement": 15.64, "theoretical": null, "days": 384, "name": "FUT_EEBY_270326"}], "東・日中(年度)": [{"month": "202604", "settlement": 23.59, "theoretical": null, "days": 17, "name": "FUT_EEPY_260326"}, {"month": "202704", "settlement": 17.5, "theoretical": null, "days": 384, "name": "FUT_EEPY_270326"}], "東・日中(月次)": [{"month": "202603", "settlement": 19.5, "theoretical": null, "days": 22, "name": "FUT_EEP_260330"}, {"month": "202604", "settlement": 24.39, "theoretical": null, "days": 52, "name": "FUT_EEP_260428"}, {"month": "202605", "settlement": 23.56, "theoretical": null, "days": 83, "name": "FUT_EEP_260528"}, {"month": "202606", "settlement": 24.84, "theoretical": null, "days": 113, "name": "FUT_EEP_260629"}, {"month": "202607", "settlement": 25.08, "theoretical": null, "days": 146, "name": "FUT_EEP_260730"}, {"month": "202608", "settlement": 25.15, "theoretical": null, "days": 175, "name": "FUT_EEP_260828"}, {"month": "202609", "settlement": 25.47, "theoretical": null, "days": 205, "name": "FUT_EEP_260929"}, {"month": "202610", "settlement": 23.15, "theoretical": null, "days": 237, "name": "FUT_EEP_261029"}, {"month": "202611", "settlement": 22.24, "theoretical": null, "days": 266, "name": "FUT_EEP_261127"}, {"month": "202612", "settlement": 22.79, "theoretical": null, "days": 300, "name": "FUT_EEP_261228"}, {"month": "202701", "settlement": 22.99, "theoretical": null, "days": 328, "name": "FUT_EEP_270128"}, {"month": "202702", "settlement": 22.59, "theoretical": null, "days": 356, "name": "FUT_EEP_270225"}, {"month": "202703", "settlement": 20.74, "theoretical": null, "days": 387, "name": "FUT_EEP_270330"}, {"month": "202704", "settlement": 17.81, "theoretical": null, "days": 422, "name": "FUT_EEP_270428"}, {"month": "202705", "settlement": 17.2, "theoretical": null, "days": 448, "name": "FUT_EEP_270528"}, {"month": "202706", "settlement": 18.49, "theoretical": null, "days": 478, "name": "FUT_EEP_270629"}, {"month": "202707", "settlement": 18.31, "theoretical": null, "days": 510, "name": "FUT_EEP_270729"}, {"month": "202708", "settlement": 19.43, "theoretical": null, "days": 540, "name": "FUT_EEP_270830"}, {"month": "202709", "settlement": 18.52, "theoretical": null, "days": 570, "name": "FUT_EEP_270929"}, {"month": "202710", "settlement": 16.15, "theoretical": null, "days": 601, "name": "FUT_EEP_271028"}, {"month": "202711", "settlement": 16.88, "theoretical": null, "days": 631, "name": "FUT_EEP_271129"}, {"month": "202712", "settlement": 18.0, "theoretical": null, "days": 665, "name": "FUT_EEP_271228"}, {"month": "202801", "settlement": 17.55, "theoretical": null, "days": 693, "name": "FUT_EEP_280128"}, {"month": "202802", "settlement": 16.86, "theoretical": null, "days": 722, "name": "FUT_EEP_280228"}], "東・ベース(週間)": [{"month": "20260313", "settlement": 13.32, "theoretical": null, "days": 3, "name": "FUT_EEBW_260312"}, {"month": "20260320", "settlement": 19.87, "theoretical": null, "days": 13, "name": "FUT_EEBW_260319"}, {"month": "20260327", "settlement": 20.83, "theoretical": null, "days": 17, "name": "FUT_EEBW_260326"}, {"month": "20260403", "settlement": 20.74, "theoretical": null, "days": 24, "name": "FUT_EEBW_260402"}, {"month": "20260410", "settlement": 21.27, "theoretical": null, "days": 31, "name": "FUT_EEBW_260409"}], "東・日中(週間)": [{"month": "20260313", "settlement": 15.96, "theoretical": null, "days": 3, "name": "FUT_EEPW_260312"}, {"month": "20260320", "settlement": 21.29, "theoretical": null, "days": 9, "name": "FUT_EEPW_260318"}, {"month": "20260327", "settlement": 21.31, "theoretical": null, "days": 17, "name": "FUT_EEPW_260326"}, {"month": "20260403", "settlement": 21.89, "theoretical": null, "days": 24, "name": "FUT_EEPW_260402"}, {"month": "20260410", "settlement": 22.82, "theoretical": null, "days": 31, "name": "FUT_EEPW_260409"}], "西・ベース(月次)": [{"month": "202603", "settlement": 15.29, "theoretical": null, "days": 22, "name": "FUT_EWB_260330"}, {"month": "202604", "settlement": 18.25, "theoretical": null, "days": 52, "name": "FUT_EWB_260428"}, {"month": "202605", "settlement": 17.83, "theoretical": null, "days": 83, "name": "FUT_EWB_260529"}, {"month": "202606", "settlement": 17.7, "theoretical": null, "days": 113, "name": "FUT_EWB_260629"}, {"month": "202607", "settlement": 18.39, "theoretical": null, "days": 146, "name": "FUT_EWB_260730"}, {"month": "202608", "settlement": 18.1, "theoretical": null, "days": 175, "name": "FUT_EWB_260828"}, {"month": "202609", "settlement": 17.76, "theoretical": null, "days": 205, "name": "FUT_EWB_260929"}, {"month": "202610", "settlement": 15.89, "theoretical": null, "days": 237, "name": "FUT_EWB_261030"}, {"month": "202611", "settlement": 15.89, "theoretical": null, "days": 266, "name": "FUT_EWB_261127"}, {"month": "202612", "settlement": 17.03, "theoretical": null, "days": 300, "name": "FUT_EWB_261230"}, {"month": "202701", "settlement": 17.43, "theoretical": null, "days": 328, "name": "FUT_EWB_270129"}, {"month": "202702", "settlement": 16.93, "theoretical": null, "days": 356, "name": "FUT_EWB_270226"}, {"month": "202703", "settlement": 16.07, "theoretical": null, "days": 387, "name": "FUT_EWB_270330"}, {"month": "202704", "settlement": 14.78, "theoretical": null, "days": 422, "name": "FUT_EWB_270428"}, {"month": "202705", "settlement": 14.3, "theoretical": null, "days": 448, "name": "FUT_EWB_270528"}, {"month": "202706", "settlement": 14.38, "theoretical": null, "days": 478, "name": "FUT_EWB_270629"}, {"month": "202707", "settlement": 14.77, "theoretical": null, "days": 510, "name": "FUT_EWB_270730"}, {"month": "202708", "settlement": 15.01, "theoretical": null, "days": 540, "name": "FUT_EWB_270830"}, {"month": "202709", "settlement": 14.08, "theoretical": null, "days": 570, "name": "FUT_EWB_270929"}, {"month": "202710", "settlement": 12.68, "theoretical": null, "days": 601, "name": "FUT_EWB_271029"}, {"month": "202711", "settlement": 12.75, "theoretical": null, "days": 631, "name": "FUT_EWB_271129"}, {"month": "202712", "settlement": 14.22, "theoretical": null, "days": 665, "name": "FUT_EWB_271230"}, {"month": "202801", "settlement": 14.37, "theoretical": null, "days": 693, "name": "FUT_EWB_280128"}, {"month": "202802", "settlement": 13.76, "theoretical": null, "days": 722, "name": "FUT_EWB_280228"}], "西・ベース(年度)": [{"month": "202604", "settlement": 17.27, "theoretical": null, "days": 17, "name": "FUT_EWBY_260326"}, {"month": "202704", "settlement": 13.96, "theoretical": null, "days": 384, "name": "FUT_EWBY_270326"}], "西・日中(年度)": [{"month": "202604", "settlement": 19.76, "theoretical": null, "days": 17, "name": "FUT_EWPY_260326"}, {"month": "202704", "settlement": 15.79, "theoretical": null, "days": 384, "name": "FUT_EWPY_270326"}], "西・日中(月次)": [{"month": "202603", "settlement": 15.65, "theoretical": null, "days": 22, "name": "FUT_EWP_260330"}, {"month": "202604", "settlement": 18.38, "theoretical": null, "days": 52, "name": "FUT_EWP_260428"}, {"month": "202605", "settlement": 18.39, "theoretical": null, "days": 83, "name": "FUT_EWP_260528"}, {"month": "202606", "settlement": 21.02, "theoretical": null, "days": 113, "name": "FUT_EWP_260629"}, {"month": "202607", "settlement": 22.64, "theoretical": null, "days": 146, "name": "FUT_EWP_260730"}, {"month": "202608", "settlement": 22.46, "theoretical": null, "days": 175, "name": "FUT_EWP_260828"}, {"month": "202609", "settlement": 22.57, "theoretical": null, "days": 205, "name": "FUT_EWP_260929"}, {"month": "202610", "settlement": 18.12, "theoretical": null, "days": 237, "name": "FUT_EWP_261029"}, {"month": "202611", "settlement": 18.23, "theoretical": null, "days": 266, "name": "FUT_EWP_261127"}, {"month": "202612", "settlement": 19.4, "theoretical": null, "days": 300, "name": "FUT_EWP_261228"}, {"month": "202701", "settlement": 19.43, "theoretical": null, "days": 328, "name": "FUT_EWP_270128"}, {"month": "202702", "settlement": 18.78, "theoretical": null, "days": 356, "name": "FUT_EWP_270225"}, {"month": "202703", "settlement": 17.43, "theoretical": null, "days": 387, "name": "FUT_EWP_270330"}, {"month": "202704", "settlement": 14.81, "theoretical": null, "days": 422, "name": "FUT_EWP_270428"}, {"month": "202705", "settlement": 14.48, "theoretical": null, "days": 448, "name": "FUT_EWP_270528"}, {"month": "202706", "settlement": 16.71, "theoretical": null, "days": 478, "name": "FUT_EWP_270629"}, {"month": "202707", "settlement": 17.43, "theoretical": null, "days": 510, "name": "FUT_EWP_270729"}, {"month": "202708", "settlement": 18.68, "theoretical": null, "days": 540, "name": "FUT_EWP_270830"}, {"month": "202709", "settlement": 16.98, "theoretical": null, "days": 570, "name": "FUT_EWP_270929"}, {"month": "202710", "settlement": 14.35, "theoretical": null, "days": 601, "name": "FUT_EWP_271028"}, {"month": "202711", "settlement": 14.57, "theoretical": null, "days": 631, "name": "FUT_EWP_271129"}, {"month": "202712", "settlement": 16.26, "theoretical": null, "days": 665, "name": "FUT_EWP_271228"}, {"month": "202801", "settlement": 15.98, "theoretical": null, "days": 693, "name": "FUT_EWP_280128"}, {"month": "202802", "settlement": 15.46, "theoretical": null, "days": 722, "name": "FUT_EWP_280228"}], "西・ベース(週間)": [{"month": "20260313", "settlement": 11.67, "theoretical": null, "days": 3, "name": "FUT_EWBW_260312"}, {"month": "20260320", "settlement": 15.32, "theoretical": null, "days": 13, "name": "FUT_EWBW_260319"}, {"month": "20260327", "settlement": 15.42, "theoretical": null, "days": 17, "name": "FUT_EWBW_260326"}, {"month": "20260403", "settlement": 16.99, "theoretical": null, "days": 24, "name": "FUT_EWBW_260402"}, {"month": "20260410", "settlement": 17.07, "theoretical": null, "days": 31, "name": "FUT_EWBW_260409"}], "西・日中(週間)": [{"month": "20260313", "settlement": 12.48, "theoretical": null, "days": 3, "name": "FUT_EWPW_260312"}, {"month": "20260320", "settlement": 16.4, "theoretical": null, "days": 9, "name": "FUT_EWPW_260318"}, {"month": "20260327", "settlement": 16.55, "theoretical": null, "days": 17, "name": "FUT_EWPW_260326"}, {"month": "20260403", "settlement": 17.25, "theoretical": null, "days": 24, "name": "FUT_EWPW_260402"}, {"month": "20260410", "settlement": 16.63, "theoretical": null, "days": 31, "name": "FUT_EWPW_260409"}]}};
+
+(function() {
+    // ============================================
+    // 1. Overview: 4 main monthly curves (line chart)
+    // ============================================
+    const overview = data.overview_chart;
+    const lineColors = {
+      '東・ベース(月次)': { border: '#2E75B6', bg: 'rgba(46,117,182,0.1)' },
+      '東・日中(月次)': { border: '#5DADE2', bg: 'rgba(93,173,226,0.1)' },
+      '西・ベース(月次)': { border: '#E67E22', bg: 'rgba(230,126,34,0.1)' },
+      '西・日中(月次)': { border: '#F5B041', bg: 'rgba(245,176,65,0.1)' }
+    };
+
+    const allMonths = new Set();
+    Object.values(overview).forEach(items => {
+      items.forEach(item => allMonths.add(item.month));
+    });
+    const months = Array.from(allMonths).sort();
+
+    const overviewDatasets = Object.entries(overview).map(([cat, items]) => {
+      const priceMap = {};
+      items.forEach(item => { priceMap[item.month] = item.price; });
+      const c = lineColors[cat] || { border: '#999', bg: 'rgba(153,153,153,0.1)' };
+      return {
+        label: cat,
+        data: months.map(m => priceMap[m] || null),
+        borderColor: c.border,
+        backgroundColor: c.bg,
+        borderWidth: 2.5,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        tension: 0.3,
+        fill: false,
+        spanGaps: true
+      };
+    });
+
+    new Chart(document.getElementById('overviewChart'), {
+      type: 'line',
+      data: {
+        labels: months.map(m => m.substring(0, 4) + '/' + m.substring(4)),
+        datasets: overviewDatasets
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { position: 'top' },
+          tooltip: {
+            callbacks: {
+              label: ctx => ctx.dataset.label + ': ' + (ctx.parsed.y !== null ? ctx.parsed.y.toFixed(2) + ' 円/kWh' : 'N/A')
+            }
+          }
+        },
+        scales: {
+          y: {
+            title: { display: true, text: '円/kWh' },
+            grid: { color: 'rgba(0,0,0,0.06)' }
+          },
+          x: {
+            title: { display: true, text: '限月' },
+            grid: { display: false }
+          }
+        }
+      }
+    });
+
+    // ============================================
+    // 2. Interactive curve selector
+    // ============================================
+    const curves = data.forward_curves;
+    const select = document.getElementById('curveSelect');
+
+    function renderCurve(catName) {
+      const items = curves[catName] || [];
+      const info = document.getElementById('curveInfo');
+      info.textContent = items.length + ' 限月';
+
+      // Destroy previous chart
+      if (curveChartInstance) curveChartInstance.destroy();
+
+      const labels = items.map(i => {
+        const m = i.month;
+        if (m.length === 6) return m.substring(0, 4) + '/' + m.substring(4);
+        if (m.length === 8) return m.substring(0, 4) + '/' + m.substring(4, 6) + '/' + m.substring(6);
+        return m;
+      });
+
+      const datasets = [
+        {
+          label: '清算価格',
+          data: items.map(i => i.settlement),
+          borderColor: '#2E75B6',
+          backgroundColor: 'rgba(46,117,182,0.15)',
+          borderWidth: 2.5,
+          pointRadius: 5,
+          pointHoverRadius: 8,
+          pointBackgroundColor: '#2E75B6',
+          tension: 0.3,
+          fill: true
+        }
+      ];
+
+      // Add theoretical price if available
+      const hasTheo = items.some(i => i.theoretical !== null);
+      if (hasTheo) {
+        datasets.push({
+          label: '理論価格',
+          data: items.map(i => i.theoretical),
+          borderColor: '#E74C3C',
+          backgroundColor: 'rgba(231,76,60,0.05)',
+          borderWidth: 1.5,
+          borderDash: [5, 3],
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          tension: 0.3,
+          fill: false
+        });
+      }
+
+      curveChartInstance = new Chart(document.getElementById('curveChart'), {
+        type: 'line',
+        data: { labels, datasets },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            title: { display: true, text: catName + ' フォワードカーブ', font: { size: 16, weight: 'bold' }, color: '#0C2140' },
+            tooltip: {
+              callbacks: {
+                afterLabel: ctx => {
+                  const item = items[ctx.dataIndex];
+                  return '残日数: ' + (item.days || 'N/A');
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              title: { display: true, text: '円/kWh' },
+              grid: { color: 'rgba(0,0,0,0.06)' }
+            },
+            x: {
+              title: { display: true, text: '限月' },
+              grid: { display: false }
+            }
+          }
+        }
+      });
+
+      // Render detail table
+      let tableHtml = '<table><thead><tr><th>銘柄</th><th>限月</th><th class="num">清算価格</th><th class="num">理論価格</th><th class="num">残日数</th></tr></thead><tbody>';
+      items.forEach(i => {
+        const s = i.settlement !== null ? i.settlement : '';
+        const t = i.theoretical !== null ? i.theoretical : '';
+        const d = i.days !== null ? i.days : '';
+        tableHtml += '<tr><td>' + i.name + '</td><td>' + i.month + '</td><td class="num">' + s + '</td><td class="num">' + t + '</td><td class="num">' + d + '</td></tr>';
+      });
+      tableHtml += '</tbody></table>';
+      document.getElementById('curveTable').innerHTML = tableHtml;
+    }
+
+    select.addEventListener('change', () => renderCurve(select.value));
+    if (select.options.length > 0) renderCurve(select.value);
+
+    // ============================================
+    // 3. East vs West spread chart
+    // ============================================
+    const eastBase = curves['東・ベース(月次)'] || [];
+    const westBase = curves['西・ベース(月次)'] || [];
+
+    if (eastBase.length && westBase.length) {
+      const westMap = {};
+      westBase.forEach(w => { westMap[w.month] = w.settlement; });
+
+      const spreadMonths = [];
+      const spreadValues = [];
+      const spreadColors = [];
+
+      eastBase.forEach(e => {
+        if (e.settlement !== null && westMap[e.month] !== undefined && westMap[e.month] !== null) {
+          const spread = e.settlement - westMap[e.month];
+          const m = e.month;
+          spreadMonths.push(m.substring(0, 4) + '/' + m.substring(4));
+          spreadValues.push(Math.round(spread * 100) / 100);
+          spreadColors.push(spread >= 0 ? 'rgba(46,117,182,0.7)' : 'rgba(231,76,60,0.7)');
+        }
+      });
+
+      new Chart(document.getElementById('spreadChart'), {
+        type: 'bar',
+        data: {
+          labels: spreadMonths,
+          datasets: [{
+            label: '東西スプレッド（東−西）',
+            data: spreadValues,
+            backgroundColor: spreadColors,
+            borderColor: spreadColors.map(c => c.replace('0.7', '1')),
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: ctx => '東−西: ' + ctx.parsed.y.toFixed(2) + ' 円/kWh'
+              }
+            }
+          },
+          scales: {
+            y: {
+              title: { display: true, text: '円/kWh' },
+              grid: { color: 'rgba(0,0,0,0.06)' }
+            },
+            x: {
+              title: { display: true, text: '限月' },
+              grid: { display: false }
+            }
+          }
+        }
+      });
+    }
+})();
+</script>
+
+</body>
+</html>
