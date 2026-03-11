@@ -343,6 +343,15 @@ def generate_html(data: dict) -> str:
         <span>&#9881;</span>
         <span class="nav-tooltip">Summary</span>
       </a>
+      <div style="width:32px;height:1px;background:var(--border-subtle);margin:8px 0"></div>
+      <a href="#spot" class="nav-item">
+        <span>&#9733;</span>
+        <span class="nav-tooltip">Spot Analysis</span>
+      </a>
+      <a href="#spotVsFutures" class="nav-item">
+        <span>&#8646;</span>
+        <span class="nav-tooltip">Spot vs Futures</span>
+      </a>
     </div>
   </nav>
 
@@ -521,6 +530,104 @@ def generate_html(data: dict) -> str:
         </div>
 
       </div><!-- /bento-grid -->
+
+      <!-- ==================== Spot Analysis Section ==================== -->
+      <div class="section-title" id="spot" style="margin-top:2.5rem">SPOT PRICE ANALYSIS</div>
+
+      <!-- Upload Zone -->
+      <div class="upload-zone" id="uploadZone">
+        <div class="upload-icon">&#128200;</div>
+        <div class="upload-title">JEPX Spot Price CSV</div>
+        <div class="upload-desc">Drop <code>spot_summary_2025.csv</code> here or click to select</div>
+        <input type="file" id="spotFileInput" accept=".csv" style="display:none">
+        <button class="upload-btn" id="uploadBtn">Select CSV File</button>
+      </div>
+
+      <!-- Spot Results (hidden until CSV uploaded) -->
+      <div id="spotResults" style="display:none">
+
+        <!-- Spot KPI Cards -->
+        <div class="kpi-row" style="margin-top:1.5rem">
+          <div class="kpi-card">
+            <div class="kpi-icon" style="background:rgba(59,130,246,0.1);color:var(--accent-blue)">&#9889;</div>
+            <div class="kpi-value" id="spotKpiTokyoBase">-</div>
+            <div class="kpi-label">Tokyo Base Avg (JPY/kWh)</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon" style="background:rgba(6,182,212,0.1);color:var(--accent-cyan)">&#9889;</div>
+            <div class="kpi-value" id="spotKpiTokyoPeak">-</div>
+            <div class="kpi-label">Tokyo Peak Avg (JPY/kWh)</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon" style="background:rgba(245,158,11,0.1);color:var(--warning)">&#9889;</div>
+            <div class="kpi-value" id="spotKpiKansaiBase">-</div>
+            <div class="kpi-label">Kansai Base Avg (JPY/kWh)</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon" style="background:rgba(139,92,246,0.1);color:var(--accent-purple)">&#128197;</div>
+            <div class="kpi-value" id="spotKpiPeriod" style="font-size:1rem">-</div>
+            <div class="kpi-label">Data Period</div>
+          </div>
+        </div>
+
+        <div class="bento-grid">
+
+          <!-- Monthly Spot Trend -->
+          <div class="card card-full">
+            <div class="card-header">
+              <div class="card-title"><span class="icon">&#9733;</span> Monthly Spot Price Trend</div>
+              <div class="card-badge">Base & Peak</div>
+            </div>
+            <div class="card-body">
+              <div class="chart-container" id="spotMonthlyChart" style="min-height:380px"></div>
+            </div>
+          </div>
+
+          <!-- Intraday Profile -->
+          <div class="card card-full">
+            <div class="card-header">
+              <div class="card-title"><span class="icon">&#128336;</span> Intraday Price Profile (Duck Curve)</div>
+              <div class="card-badge">48 Slots</div>
+            </div>
+            <div class="card-body">
+              <div class="chart-container" id="spotIntradayChart" style="min-height:350px"></div>
+            </div>
+          </div>
+
+          <!-- Futures vs Spot Overlay -->
+          <div class="card card-full" id="spotVsFutures">
+            <div class="card-header">
+              <div class="card-title"><span class="icon">&#8646;</span> Futures vs Spot Comparison</div>
+              <div class="card-badge">Monthly Match</div>
+            </div>
+            <div class="card-body">
+              <div class="spot-category-selector" style="margin-bottom:1rem">
+                <label style="font-weight:500;color:var(--text-secondary);font-size:0.82rem">Category:</label>
+                <select id="spotCategorySelect" style="padding:0.5rem 2.2rem 0.5rem 1rem;font-size:0.82rem;font-family:Inter,sans-serif;border:1px solid var(--glass-border);border-radius:var(--radius-sm);background:var(--bg-surface);color:var(--text-primary);cursor:pointer;min-width:240px;appearance:none;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394A3B8' d='M6 8L1 3h10z'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 12px center">
+                  <option value="east_base">East Base (Monthly)</option>
+                  <option value="east_peak">East Peak (Monthly)</option>
+                  <option value="west_base">West Base (Monthly)</option>
+                  <option value="west_peak">West Peak (Monthly)</option>
+                </select>
+              </div>
+              <div class="chart-container" id="spotVsFuturesChart" style="min-height:380px"></div>
+            </div>
+          </div>
+
+          <!-- Premium/Discount Bar -->
+          <div class="card card-full">
+            <div class="card-header">
+              <div class="card-title"><span class="icon">&#128200;</span> Futures Premium / Discount</div>
+              <div class="card-badge" id="premiumBadge">vs Spot</div>
+            </div>
+            <div class="card-body">
+              <div class="chart-container" id="spotPremiumChart" style="min-height:320px"></div>
+            </div>
+          </div>
+
+        </div><!-- /bento-grid spot -->
+
+      </div><!-- /spotResults -->
 
     </div><!-- /container -->
 
@@ -871,6 +978,347 @@ const chartData = {chart_data_json};
         observer.observe(sec);
       }}
     }});
+
+    // ============================================
+    // 6. Spot Analysis — CSV Upload & Processing
+    // ============================================
+    const uploadZone = document.getElementById('uploadZone');
+    const spotFileInput = document.getElementById('spotFileInput');
+    const uploadBtn = document.getElementById('uploadBtn');
+
+    uploadBtn.addEventListener('click', () => spotFileInput.click());
+    spotFileInput.addEventListener('change', e => {{
+      if (e.target.files.length > 0) handleSpotFile(e.target.files[0]);
+    }});
+
+    uploadZone.addEventListener('dragover', e => {{
+      e.preventDefault();
+      uploadZone.classList.add('drag-over');
+    }});
+    uploadZone.addEventListener('dragleave', () => {{
+      uploadZone.classList.remove('drag-over');
+    }});
+    uploadZone.addEventListener('drop', e => {{
+      e.preventDefault();
+      uploadZone.classList.remove('drag-over');
+      if (e.dataTransfer.files.length > 0) handleSpotFile(e.dataTransfer.files[0]);
+    }});
+
+    function handleSpotFile(file) {{
+      const reader = new FileReader();
+      reader.onload = function(e) {{
+        // Decode CP932 (Shift-JIS)
+        const decoder = new TextDecoder('shift-jis');
+        const text = decoder.decode(new Uint8Array(e.target.result));
+        const rows = parseSpotCSV(text);
+        if (rows.length === 0) {{
+          alert('CSV parsing failed. Please check the file format.');
+          return;
+        }}
+        processSpotData(rows);
+      }};
+      reader.readAsArrayBuffer(file);
+    }}
+
+    function parseSpotCSV(text) {{
+      const lines = text.split('\\n').filter(l => l.trim());
+      if (lines.length < 2) return [];
+      // Skip header
+      const rows = [];
+      for (let i = 1; i < lines.length; i++) {{
+        const cols = lines[i].split(',');
+        if (cols.length < 15) continue;
+        const dateStr = cols[0].trim();  // 2025/04/01
+        const date = dateStr.replace(/\\//g, '-');  // 2025-04-01
+        const timeCode = parseInt(cols[1], 10);
+        const systemPrice = parseFloat(cols[5]) || null;
+        const tokyo = parseFloat(cols[8]) || null;
+        const kansai = parseFloat(cols[11]) || null;
+        if (!date || isNaN(timeCode)) continue;
+        rows.push({{ date, timeCode, systemPrice, tokyo, kansai }});
+      }}
+      return rows;
+    }}
+
+    function processSpotData(rows) {{
+      // Monthly averages
+      const monthly = calcMonthlyAverages(rows);
+      // Intraday profile
+      const intraday = calcIntradayProfile(rows);
+      // Futures comparison
+      const comparison = calcFuturesComparison(monthly);
+
+      // Show results section
+      document.getElementById('spotResults').style.display = 'block';
+      uploadZone.style.borderColor = 'var(--positive)';
+      uploadZone.querySelector('.upload-title').textContent = 'CSV Loaded (' + rows.length.toLocaleString() + ' rows)';
+
+      // KPI cards
+      const allTokyo = rows.filter(r => r.tokyo !== null).map(r => r.tokyo);
+      const allKansai = rows.filter(r => r.kansai !== null).map(r => r.kansai);
+      const peakTokyo = rows.filter(r => r.tokyo !== null && r.timeCode >= 17 && r.timeCode <= 40).map(r => r.tokyo);
+      const avg = arr => arr.length ? (arr.reduce((a, b) => a + b, 0) / arr.length) : 0;
+
+      document.getElementById('spotKpiTokyoBase').textContent = avg(allTokyo).toFixed(2);
+      document.getElementById('spotKpiTokyoPeak').textContent = avg(peakTokyo).toFixed(2);
+      document.getElementById('spotKpiKansaiBase').textContent = avg(allKansai).toFixed(2);
+
+      const dates = [...new Set(rows.map(r => r.date))].sort();
+      document.getElementById('spotKpiPeriod').textContent = dates[0] + ' ~ ' + dates[dates.length - 1];
+
+      // Render charts
+      renderSpotMonthlyChart(monthly);
+      renderIntradayChart(intraday);
+      renderFuturesVsSpotChart(comparison, 'east_base');
+      renderPremiumChart(comparison, 'east_base');
+
+      // Category selector
+      document.getElementById('spotCategorySelect').addEventListener('change', function() {{
+        renderFuturesVsSpotChart(comparison, this.value);
+        renderPremiumChart(comparison, this.value);
+      }});
+
+      // Scroll to spot section
+      document.getElementById('spot').scrollIntoView({{ behavior: 'smooth' }});
+    }}
+
+    function calcMonthlyAverages(rows) {{
+      const months = {{}};
+      rows.forEach(r => {{
+        const ym = r.date.substring(0, 7);  // YYYY-MM
+        if (!months[ym]) months[ym] = {{ tokyoBase: [], tokyoPeak: [], kansaiBase: [], kansaiPeak: [] }};
+        if (r.tokyo !== null) {{
+          months[ym].tokyoBase.push(r.tokyo);
+          if (r.timeCode >= 17 && r.timeCode <= 40) months[ym].tokyoPeak.push(r.tokyo);
+        }}
+        if (r.kansai !== null) {{
+          months[ym].kansaiBase.push(r.kansai);
+          if (r.timeCode >= 17 && r.timeCode <= 40) months[ym].kansaiPeak.push(r.kansai);
+        }}
+      }});
+      const avg = arr => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null;
+      const result = {{}};
+      Object.keys(months).sort().forEach(ym => {{
+        result[ym] = {{
+          tokyoBase: avg(months[ym].tokyoBase),
+          tokyoPeak: avg(months[ym].tokyoPeak),
+          kansaiBase: avg(months[ym].kansaiBase),
+          kansaiPeak: avg(months[ym].kansaiPeak)
+        }};
+      }});
+      return result;
+    }}
+
+    function calcIntradayProfile(rows) {{
+      const slots = {{}};
+      for (let i = 1; i <= 48; i++) slots[i] = {{ tokyo: [], kansai: [] }};
+      rows.forEach(r => {{
+        if (r.tokyo !== null) slots[r.timeCode].tokyo.push(r.tokyo);
+        if (r.kansai !== null) slots[r.timeCode].kansai.push(r.kansai);
+      }});
+      const avg = arr => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
+      const result = [];
+      for (let i = 1; i <= 48; i++) {{
+        const h = Math.floor((i - 1) / 2);
+        const m = (i - 1) % 2 === 0 ? '00' : '30';
+        result.push({{
+          code: i,
+          label: String(h).padStart(2, '0') + ':' + m,
+          tokyo: avg(slots[i].tokyo),
+          kansai: avg(slots[i].kansai)
+        }});
+      }}
+      return result;
+    }}
+
+    function calcFuturesComparison(spotMonthly) {{
+      // Map futures data from CHART_DATA to spot monthly
+      const futuresCats = {{
+        east_base: {{ chartKey: '\u6771\u30fb\u30d9\u30fc\u30b9(\u6708\u6b21)', spotKey: 'tokyoBase', label: 'East Base' }},
+        east_peak: {{ chartKey: '\u6771\u30fb\u65e5\u4e2d(\u6708\u6b21)', spotKey: 'tokyoPeak', label: 'East Peak' }},
+        west_base: {{ chartKey: '\u897f\u30fb\u30d9\u30fc\u30b9(\u6708\u6b21)', spotKey: 'kansaiBase', label: 'West Base' }},
+        west_peak: {{ chartKey: '\u897f\u30fb\u65e5\u4e2d(\u6708\u6b21)', spotKey: 'kansaiPeak', label: 'West Peak' }}
+      }};
+
+      const result = {{}};
+      Object.entries(futuresCats).forEach(([key, cfg]) => {{
+        const futuresItems = (chartData.forward_curves[cfg.chartKey] || []);
+        const matches = [];
+        futuresItems.forEach(f => {{
+          // f.month is YYYYMM, spot key is YYYY-MM
+          const ym = f.month.substring(0, 4) + '-' + f.month.substring(4, 6);
+          const spotVal = spotMonthly[ym] ? spotMonthly[ym][cfg.spotKey] : null;
+          if (f.settlement !== null && spotVal !== null) {{
+            const premium = f.settlement - spotVal;
+            const premiumPct = (premium / spotVal) * 100;
+            matches.push({{
+              month: f.month,
+              monthLabel: f.month.substring(0, 4) + '/' + f.month.substring(4),
+              futures: f.settlement,
+              spot: Math.round(spotVal * 100) / 100,
+              premium: Math.round(premium * 100) / 100,
+              premiumPct: Math.round(premiumPct * 100) / 100
+            }});
+          }}
+        }});
+        result[key] = {{ label: cfg.label, matches }};
+      }});
+      return result;
+    }}
+
+    // ============================================
+    // Spot Chart Renderers
+    // ============================================
+    let spotMonthlyInstance = null;
+    let spotIntradayInstance = null;
+    let spotVsFuturesInstance = null;
+    let spotPremiumInstance = null;
+
+    function renderSpotMonthlyChart(monthly) {{
+      if (spotMonthlyInstance) spotMonthlyInstance.destroy();
+      const months = Object.keys(monthly);
+      const labels = months.map(m => m);
+      spotMonthlyInstance = new ApexCharts(document.getElementById('spotMonthlyChart'), {{
+        ...baseChartOpts,
+        chart: {{ ...baseChartOpts.chart, type: 'area', height: 380, animations: {{ enabled: true, easing: 'easeinout', speed: 800 }} }},
+        series: [
+          {{ name: 'Tokyo Base', data: months.map(m => monthly[m].tokyoBase ? +monthly[m].tokyoBase.toFixed(2) : null) }},
+          {{ name: 'Tokyo Peak', data: months.map(m => monthly[m].tokyoPeak ? +monthly[m].tokyoPeak.toFixed(2) : null) }},
+          {{ name: 'Kansai Base', data: months.map(m => monthly[m].kansaiBase ? +monthly[m].kansaiBase.toFixed(2) : null) }},
+          {{ name: 'Kansai Peak', data: months.map(m => monthly[m].kansaiPeak ? +monthly[m].kansaiPeak.toFixed(2) : null) }}
+        ],
+        colors: [colors.blue, colors.cyan, colors.amber, colors.pink],
+        stroke: {{ curve: 'smooth', width: 2.5 }},
+        fill: {{ type: 'gradient', gradient: {{ shadeIntensity: 1, opacityFrom: 0.15, opacityTo: 0.01, stops: [0, 95, 100] }} }},
+        xaxis: {{ ...baseChartOpts.xaxis, categories: labels, title: {{ text: 'Month', style: {{ color: colors.textLight, fontSize: '11px' }} }} }},
+        yaxis: {{ ...baseChartOpts.yaxis, title: {{ text: 'JPY/kWh', style: {{ color: colors.textLight, fontSize: '11px' }} }} }},
+        markers: {{ size: 4, strokeWidth: 0, hover: {{ size: 7 }} }},
+        legend: {{ ...baseChartOpts.legend, position: 'top', horizontalAlign: 'right' }},
+        dataLabels: {{ enabled: false }}
+      }});
+      spotMonthlyInstance.render();
+    }}
+
+    function renderIntradayChart(intraday) {{
+      if (spotIntradayInstance) spotIntradayInstance.destroy();
+      spotIntradayInstance = new ApexCharts(document.getElementById('spotIntradayChart'), {{
+        ...baseChartOpts,
+        chart: {{ ...baseChartOpts.chart, type: 'area', height: 350, animations: {{ enabled: true, easing: 'easeinout', speed: 800 }} }},
+        series: [
+          {{ name: 'Tokyo', data: intraday.map(s => +s.tokyo.toFixed(2)) }},
+          {{ name: 'Kansai', data: intraday.map(s => +s.kansai.toFixed(2)) }}
+        ],
+        colors: [colors.blue, colors.amber],
+        stroke: {{ curve: 'smooth', width: 2.5 }},
+        fill: {{ type: 'gradient', gradient: {{ shadeIntensity: 1, opacityFrom: 0.2, opacityTo: 0.01, stops: [0, 95, 100] }} }},
+        xaxis: {{
+          ...baseChartOpts.xaxis,
+          categories: intraday.map(s => s.label),
+          title: {{ text: 'Time of Day', style: {{ color: colors.textLight, fontSize: '11px' }} }},
+          tickAmount: 12,
+          labels: {{ ...baseChartOpts.xaxis.labels, rotate: -45, rotateAlways: false }}
+        }},
+        yaxis: {{ ...baseChartOpts.yaxis, title: {{ text: 'JPY/kWh', style: {{ color: colors.textLight, fontSize: '11px' }} }} }},
+        annotations: {{
+          xaxis: [{{
+            x: '08:00', x2: '20:00',
+            fillColor: 'rgba(59,130,246,0.06)',
+            borderColor: 'transparent',
+            label: {{ text: 'Peak Hours', style: {{ color: colors.textLight, fontSize: '10px', background: 'transparent' }} }}
+          }}]
+        }},
+        markers: {{ size: 0 }},
+        legend: {{ ...baseChartOpts.legend, position: 'top', horizontalAlign: 'right' }},
+        dataLabels: {{ enabled: false }}
+      }});
+      spotIntradayInstance.render();
+    }}
+
+    function renderFuturesVsSpotChart(comparison, category) {{
+      if (spotVsFuturesInstance) spotVsFuturesInstance.destroy();
+      const data = comparison[category];
+      if (!data || data.matches.length === 0) {{
+        document.getElementById('spotVsFuturesChart').innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:3rem">No matching months found for ' + data.label + '</div>';
+        return;
+      }}
+      const labels = data.matches.map(m => m.monthLabel);
+      spotVsFuturesInstance = new ApexCharts(document.getElementById('spotVsFuturesChart'), {{
+        ...baseChartOpts,
+        chart: {{ ...baseChartOpts.chart, type: 'bar', height: 380, animations: {{ enabled: true, easing: 'easeinout', speed: 600 }} }},
+        series: [
+          {{ name: 'Futures', data: data.matches.map(m => m.futures) }},
+          {{ name: 'Spot', data: data.matches.map(m => m.spot) }}
+        ],
+        colors: [colors.blue, colors.amber],
+        plotOptions: {{ bar: {{ borderRadius: 4, columnWidth: '55%', dataLabels: {{ position: 'top' }} }} }},
+        xaxis: {{ ...baseChartOpts.xaxis, categories: labels, title: {{ text: 'Contract Month', style: {{ color: colors.textLight, fontSize: '11px' }} }} }},
+        yaxis: {{ ...baseChartOpts.yaxis, title: {{ text: 'JPY/kWh', style: {{ color: colors.textLight, fontSize: '11px' }} }} }},
+        legend: {{ ...baseChartOpts.legend, position: 'top', horizontalAlign: 'right' }},
+        dataLabels: {{ enabled: true, formatter: v => v.toFixed(1), style: {{ fontSize: '10px', fontFamily: 'JetBrains Mono', colors: ['#F1F5F9'] }}, offsetY: -18 }},
+        title: {{ text: data.label + ' — Futures vs Spot', align: 'left', style: {{ fontSize: '14px', fontWeight: 600, color: '#F1F5F9' }} }},
+        tooltip: {{
+          ...baseChartOpts.tooltip,
+          shared: true,
+          intersect: false,
+          y: {{ formatter: v => v.toFixed(2) + ' JPY/kWh' }}
+        }}
+      }});
+      spotVsFuturesInstance.render();
+    }}
+
+    function renderPremiumChart(comparison, category) {{
+      if (spotPremiumInstance) spotPremiumInstance.destroy();
+      const data = comparison[category];
+      if (!data || data.matches.length === 0) {{
+        document.getElementById('spotPremiumChart').innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:3rem">No data</div>';
+        return;
+      }}
+      const labels = data.matches.map(m => m.monthLabel);
+      const premiums = data.matches.map(m => m.premium);
+      document.getElementById('premiumBadge').textContent = data.label + ' vs Spot';
+
+      spotPremiumInstance = new ApexCharts(document.getElementById('spotPremiumChart'), {{
+        ...baseChartOpts,
+        chart: {{ ...baseChartOpts.chart, type: 'bar', height: 320, animations: {{ enabled: true, easing: 'easeinout', speed: 600 }} }},
+        series: [{{ name: 'Premium', data: premiums }}],
+        plotOptions: {{
+          bar: {{
+            borderRadius: 4,
+            columnWidth: '60%',
+            colors: {{
+              ranges: [
+                {{ from: -9999, to: -0.001, color: colors.red }},
+                {{ from: 0, to: 9999, color: colors.green }}
+              ]
+            }}
+          }}
+        }},
+        colors: [colors.green],
+        xaxis: {{ ...baseChartOpts.xaxis, categories: labels }},
+        yaxis: {{ ...baseChartOpts.yaxis, title: {{ text: 'Premium (JPY/kWh)', style: {{ color: colors.textLight, fontSize: '11px' }} }} }},
+        dataLabels: {{
+          enabled: true,
+          formatter: function(v) {{ return (v >= 0 ? '+' : '') + v.toFixed(1); }},
+          style: {{ fontSize: '10px', fontFamily: 'JetBrains Mono', colors: ['#F1F5F9'] }},
+          offsetY: -6
+        }},
+        tooltip: {{
+          ...baseChartOpts.tooltip,
+          custom: function({{ series: s, seriesIndex, dataPointIndex }}) {{
+            const m = data.matches[dataPointIndex];
+            const pColor = m.premium >= 0 ? colors.green : colors.red;
+            const sign = m.premium >= 0 ? '+' : '';
+            return '<div style="padding:8px 12px;font-family:JetBrains Mono,monospace;font-size:12px">'
+              + '<div style="color:#F1F5F9;font-weight:600;margin-bottom:4px">' + m.monthLabel + '</div>'
+              + '<div style="color:#94A3B8">Futures: <span style="color:' + colors.blue + '">' + m.futures.toFixed(2) + '</span></div>'
+              + '<div style="color:#94A3B8">Spot: <span style="color:' + colors.amber + '">' + m.spot.toFixed(2) + '</span></div>'
+              + '<div style="color:' + pColor + ';font-weight:600">' + sign + m.premium.toFixed(2) + ' (' + sign + m.premiumPct.toFixed(1) + '%)</div>'
+              + '</div>';
+          }}
+        }}
+      }});
+      spotPremiumInstance.render();
+    }}
 
 }})();
 </script>
