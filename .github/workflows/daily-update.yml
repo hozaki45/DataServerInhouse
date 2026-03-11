@@ -1,0 +1,52 @@
+name: Daily JPX Data Update
+
+on:
+  schedule:
+    # Run at 08:00 UTC = 17:00 JST (after JPX publishes at ~16:45 JST)
+    - cron: '0 8 * * 1-5'  # Monday to Friday only
+  workflow_dispatch:  # Allow manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: 'latest'
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Fetch JPX data and update dashboard
+        run: uv run python scripts/fetch_jpx.py
+
+      - name: Check for changes
+        id: changes
+        run: |
+          git diff --quiet && git diff --staged --quiet && echo "changed=false" >> $GITHUB_OUTPUT || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          TRADE_DATE=$(ls -t Data/rb*.csv | head -1 | grep -oP '\d{8}' | sed 's/\(.\{4\}\)\(.\{2\}\)/\1-\2-/')
+
+          git add Data/ db/ docs/
+          git commit -m "Daily update: ${TRADE_DATE} JPX settlement prices"
+          git push

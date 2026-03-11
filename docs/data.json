@@ -1,9 +1,10 @@
 {
-  "latest_date": "2026-03-10",
-  "generated_at": "2026-03-11T14:37:09.165372",
-  "total_records": 43637,
+  "latest_date": "2026-03-11",
+  "generated_at": "2026-03-11T19:54:50.938091",
+  "total_records": 43552,
   "underlying_count": 54,
   "import_dates": [
+    "2026-03-11",
     "2026-03-10"
   ],
   "power_futures_count": 124,
@@ -11,393 +12,393 @@
     "東・ベース(月次)": [
       {
         "month": "202603",
-        "price": 19.11
+        "price": 18.25
       },
       {
         "month": "202604",
-        "price": 22.35
+        "price": 21.46
       },
       {
         "month": "202605",
-        "price": 22.0
+        "price": 20.66
       },
       {
         "month": "202606",
-        "price": 21.33
+        "price": 20.26
       },
       {
         "month": "202607",
-        "price": 20.38
+        "price": 19.26
       },
       {
         "month": "202608",
-        "price": 20.44
+        "price": 19.23
       },
       {
         "month": "202609",
-        "price": 20.59
+        "price": 19.37
       },
       {
         "month": "202610",
-        "price": 18.69
+        "price": 17.7
       },
       {
         "month": "202611",
-        "price": 19.06
+        "price": 17.89
       },
       {
         "month": "202612",
-        "price": 19.5
+        "price": 18.38
       },
       {
         "month": "202701",
-        "price": 19.42
+        "price": 18.43
       },
       {
         "month": "202702",
-        "price": 18.87
+        "price": 18.5
       },
       {
         "month": "202703",
-        "price": 17.43
+        "price": 16.53
       },
       {
         "month": "202704",
-        "price": 16.9
+        "price": 16.48
       },
       {
         "month": "202705",
-        "price": 16.11
+        "price": 15.53
       },
       {
         "month": "202706",
-        "price": 16.81
+        "price": 16.11
       },
       {
         "month": "202707",
-        "price": 16.36
+        "price": 15.86
       },
       {
         "month": "202708",
-        "price": 17.29
+        "price": 16.64
       },
       {
         "month": "202709",
-        "price": 15.92
+        "price": 15.37
       },
       {
         "month": "202710",
-        "price": 14.44
+        "price": 13.83
       },
       {
         "month": "202711",
-        "price": 14.49
+        "price": 13.9
       },
       {
         "month": "202712",
-        "price": 15.45
+        "price": 14.87
       },
       {
         "month": "202801",
-        "price": 15.54
+        "price": 14.91
       },
       {
         "month": "202802",
-        "price": 14.88
+        "price": 14.36
       }
     ],
     "東・日中(月次)": [
       {
         "month": "202603",
-        "price": 19.5
+        "price": 18.98
       },
       {
         "month": "202604",
-        "price": 24.39
+        "price": 23.12
       },
       {
         "month": "202605",
-        "price": 23.56
+        "price": 22.11
       },
       {
         "month": "202606",
-        "price": 24.84
+        "price": 23.41
       },
       {
         "month": "202607",
-        "price": 25.08
+        "price": 23.46
       },
       {
         "month": "202608",
-        "price": 25.15
+        "price": 23.4
       },
       {
         "month": "202609",
-        "price": 25.47
+        "price": 23.69
       },
       {
         "month": "202610",
-        "price": 23.15
+        "price": 21.66
       },
       {
         "month": "202611",
-        "price": 22.24
+        "price": 21.12
       },
       {
         "month": "202612",
-        "price": 22.79
+        "price": 21.63
       },
       {
         "month": "202701",
-        "price": 22.99
+        "price": 21.64
       },
       {
         "month": "202702",
-        "price": 22.59
+        "price": 21.78
       },
       {
         "month": "202703",
-        "price": 20.74
+        "price": 19.57
       },
       {
         "month": "202704",
-        "price": 17.81
+        "price": 17.06
       },
       {
         "month": "202705",
-        "price": 17.2
+        "price": 16.65
       },
       {
         "month": "202706",
-        "price": 18.49
+        "price": 17.53
       },
       {
         "month": "202707",
-        "price": 18.31
+        "price": 18.03
       },
       {
         "month": "202708",
-        "price": 19.43
+        "price": 18.96
       },
       {
         "month": "202709",
-        "price": 18.52
+        "price": 17.91
       },
       {
         "month": "202710",
-        "price": 16.15
+        "price": 15.56
       },
       {
         "month": "202711",
-        "price": 16.88
+        "price": 16.32
       },
       {
         "month": "202712",
-        "price": 18.0
+        "price": 17.35
       },
       {
         "month": "202801",
-        "price": 17.55
+        "price": 17.04
       },
       {
         "month": "202802",
-        "price": 16.86
+        "price": 16.35
       }
     ],
     "西・ベース(月次)": [
       {
         "month": "202603",
-        "price": 15.29
+        "price": 14.75
       },
       {
         "month": "202604",
-        "price": 18.25
+        "price": 16.26
       },
       {
         "month": "202605",
-        "price": 17.83
+        "price": 15.94
       },
       {
         "month": "202606",
-        "price": 17.7
+        "price": 15.9
       },
       {
         "month": "202607",
-        "price": 18.39
+        "price": 16.03
       },
       {
         "month": "202608",
-        "price": 18.1
+        "price": 15.98
       },
       {
         "month": "202609",
-        "price": 17.76
+        "price": 15.76
       },
       {
         "month": "202610",
-        "price": 15.89
+        "price": 14.24
       },
       {
         "month": "202611",
-        "price": 15.89
+        "price": 14.4
       },
       {
         "month": "202612",
-        "price": 17.03
+        "price": 15.51
       },
       {
         "month": "202701",
-        "price": 17.43
+        "price": 16.01
       },
       {
         "month": "202702",
-        "price": 16.93
+        "price": 15.55
       },
       {
         "month": "202703",
-        "price": 16.07
-      },
-      {
-        "month": "202704",
-        "price": 14.78
-      },
-      {
-        "month": "202705",
-        "price": 14.3
-      },
-      {
-        "month": "202706",
-        "price": 14.38
-      },
-      {
-        "month": "202707",
-        "price": 14.77
-      },
-      {
-        "month": "202708",
-        "price": 15.01
-      },
-      {
-        "month": "202709",
-        "price": 14.08
-      },
-      {
-        "month": "202710",
-        "price": 12.68
-      },
-      {
-        "month": "202711",
-        "price": 12.75
-      },
-      {
-        "month": "202712",
-        "price": 14.22
-      },
-      {
-        "month": "202801",
         "price": 14.37
       },
       {
+        "month": "202704",
+        "price": 14.39
+      },
+      {
+        "month": "202705",
+        "price": 13.84
+      },
+      {
+        "month": "202706",
+        "price": 13.74
+      },
+      {
+        "month": "202707",
+        "price": 14.05
+      },
+      {
+        "month": "202708",
+        "price": 14.45
+      },
+      {
+        "month": "202709",
+        "price": 13.55
+      },
+      {
+        "month": "202710",
+        "price": 12.15
+      },
+      {
+        "month": "202711",
+        "price": 12.32
+      },
+      {
+        "month": "202712",
+        "price": 13.69
+      },
+      {
+        "month": "202801",
+        "price": 13.88
+      },
+      {
         "month": "202802",
-        "price": 13.76
+        "price": 13.19
       }
     ],
     "西・日中(月次)": [
       {
         "month": "202603",
-        "price": 15.65
+        "price": 15.4
       },
       {
         "month": "202604",
-        "price": 18.38
+        "price": 18.06
       },
       {
         "month": "202605",
-        "price": 18.39
+        "price": 17.97
       },
       {
         "month": "202606",
-        "price": 21.02
+        "price": 20.63
       },
       {
         "month": "202607",
-        "price": 22.64
+        "price": 22.4
       },
       {
         "month": "202608",
-        "price": 22.46
+        "price": 22.32
       },
       {
         "month": "202609",
-        "price": 22.57
+        "price": 22.37
       },
       {
         "month": "202610",
-        "price": 18.12
+        "price": 18.39
       },
       {
         "month": "202611",
-        "price": 18.23
+        "price": 18.31
       },
       {
         "month": "202612",
-        "price": 19.4
+        "price": 19.3
       },
       {
         "month": "202701",
-        "price": 19.43
+        "price": 19.72
       },
       {
         "month": "202702",
-        "price": 18.78
+        "price": 19.21
       },
       {
         "month": "202703",
-        "price": 17.43
+        "price": 17.53
       },
       {
         "month": "202704",
-        "price": 14.81
+        "price": 14.39
       },
       {
         "month": "202705",
-        "price": 14.48
+        "price": 13.95
       },
       {
         "month": "202706",
-        "price": 16.71
+        "price": 15.87
       },
       {
         "month": "202707",
-        "price": 17.43
+        "price": 16.72
       },
       {
         "month": "202708",
-        "price": 18.68
+        "price": 18.08
       },
       {
         "month": "202709",
-        "price": 16.98
+        "price": 16.44
       },
       {
         "month": "202710",
-        "price": 14.35
+        "price": 13.78
       },
       {
         "month": "202711",
-        "price": 14.57
+        "price": 14.07
       },
       {
         "month": "202712",
-        "price": 16.26
+        "price": 15.65
       },
       {
         "month": "202801",
-        "price": 15.98
+        "price": 15.75
       },
       {
         "month": "202802",
-        "price": 15.46
+        "price": 14.83
       }
     ]
   },
@@ -405,892 +406,892 @@
     "東・ベース(月次)": [
       {
         "month": "202603",
-        "settlement": 19.11,
+        "settlement": 18.25,
         "theoretical": null,
-        "days": 22,
+        "days": 21,
         "name": "FUT_EEB_260330"
       },
       {
         "month": "202604",
-        "settlement": 22.35,
+        "settlement": 21.46,
         "theoretical": null,
-        "days": 52,
+        "days": 51,
         "name": "FUT_EEB_260428"
       },
       {
         "month": "202605",
-        "settlement": 22.0,
+        "settlement": 20.66,
         "theoretical": null,
-        "days": 83,
+        "days": 82,
         "name": "FUT_EEB_260529"
       },
       {
         "month": "202606",
-        "settlement": 21.33,
+        "settlement": 20.26,
         "theoretical": null,
-        "days": 113,
+        "days": 112,
         "name": "FUT_EEB_260629"
       },
       {
         "month": "202607",
-        "settlement": 20.38,
+        "settlement": 19.26,
         "theoretical": null,
-        "days": 146,
+        "days": 145,
         "name": "FUT_EEB_260730"
       },
       {
         "month": "202608",
-        "settlement": 20.44,
+        "settlement": 19.23,
         "theoretical": null,
-        "days": 175,
+        "days": 174,
         "name": "FUT_EEB_260828"
       },
       {
         "month": "202609",
-        "settlement": 20.59,
+        "settlement": 19.37,
         "theoretical": null,
-        "days": 205,
+        "days": 204,
         "name": "FUT_EEB_260929"
       },
       {
         "month": "202610",
-        "settlement": 18.69,
+        "settlement": 17.7,
         "theoretical": null,
-        "days": 237,
+        "days": 236,
         "name": "FUT_EEB_261030"
       },
       {
         "month": "202611",
-        "settlement": 19.06,
+        "settlement": 17.89,
         "theoretical": null,
-        "days": 266,
+        "days": 265,
         "name": "FUT_EEB_261127"
       },
       {
         "month": "202612",
-        "settlement": 19.5,
+        "settlement": 18.38,
         "theoretical": null,
-        "days": 300,
+        "days": 299,
         "name": "FUT_EEB_261230"
       },
       {
         "month": "202701",
-        "settlement": 19.42,
+        "settlement": 18.43,
         "theoretical": null,
-        "days": 328,
+        "days": 327,
         "name": "FUT_EEB_270129"
       },
       {
         "month": "202702",
-        "settlement": 18.87,
+        "settlement": 18.5,
         "theoretical": null,
-        "days": 356,
+        "days": 355,
         "name": "FUT_EEB_270226"
       },
       {
         "month": "202703",
-        "settlement": 17.43,
+        "settlement": 16.53,
         "theoretical": null,
-        "days": 387,
+        "days": 386,
         "name": "FUT_EEB_270330"
       },
       {
         "month": "202704",
-        "settlement": 16.9,
+        "settlement": 16.48,
         "theoretical": null,
-        "days": 422,
+        "days": 421,
         "name": "FUT_EEB_270428"
       },
       {
         "month": "202705",
-        "settlement": 16.11,
+        "settlement": 15.53,
         "theoretical": null,
-        "days": 448,
+        "days": 447,
         "name": "FUT_EEB_270528"
       },
       {
         "month": "202706",
-        "settlement": 16.81,
+        "settlement": 16.11,
         "theoretical": null,
-        "days": 478,
+        "days": 477,
         "name": "FUT_EEB_270629"
       },
       {
         "month": "202707",
-        "settlement": 16.36,
+        "settlement": 15.86,
         "theoretical": null,
-        "days": 510,
+        "days": 509,
         "name": "FUT_EEB_270730"
       },
       {
         "month": "202708",
-        "settlement": 17.29,
+        "settlement": 16.64,
         "theoretical": null,
-        "days": 540,
+        "days": 539,
         "name": "FUT_EEB_270830"
       },
       {
         "month": "202709",
-        "settlement": 15.92,
+        "settlement": 15.37,
         "theoretical": null,
-        "days": 570,
+        "days": 569,
         "name": "FUT_EEB_270929"
       },
       {
         "month": "202710",
-        "settlement": 14.44,
+        "settlement": 13.83,
         "theoretical": null,
-        "days": 601,
+        "days": 600,
         "name": "FUT_EEB_271029"
       },
       {
         "month": "202711",
-        "settlement": 14.49,
+        "settlement": 13.9,
         "theoretical": null,
-        "days": 631,
+        "days": 630,
         "name": "FUT_EEB_271129"
       },
       {
         "month": "202712",
-        "settlement": 15.45,
+        "settlement": 14.87,
         "theoretical": null,
-        "days": 665,
+        "days": 664,
         "name": "FUT_EEB_271230"
       },
       {
         "month": "202801",
-        "settlement": 15.54,
+        "settlement": 14.91,
         "theoretical": null,
-        "days": 693,
+        "days": 692,
         "name": "FUT_EEB_280128"
       },
       {
         "month": "202802",
-        "settlement": 14.88,
+        "settlement": 14.36,
         "theoretical": null,
-        "days": 722,
+        "days": 721,
         "name": "FUT_EEB_280228"
       }
     ],
     "東・ベース(年度)": [
       {
         "month": "202604",
-        "settlement": 20.01,
+        "settlement": 18.97,
         "theoretical": null,
-        "days": 17,
+        "days": 16,
         "name": "FUT_EEBY_260326"
       },
       {
         "month": "202704",
-        "settlement": 15.64,
+        "settlement": 15.03,
         "theoretical": null,
-        "days": 384,
+        "days": 383,
         "name": "FUT_EEBY_270326"
       }
     ],
     "東・日中(年度)": [
       {
         "month": "202604",
-        "settlement": 23.59,
+        "settlement": 22.22,
         "theoretical": null,
-        "days": 17,
+        "days": 16,
         "name": "FUT_EEPY_260326"
       },
       {
         "month": "202704",
-        "settlement": 17.5,
+        "settlement": 16.9,
         "theoretical": null,
-        "days": 384,
+        "days": 383,
         "name": "FUT_EEPY_270326"
       }
     ],
     "東・日中(月次)": [
       {
         "month": "202603",
-        "settlement": 19.5,
+        "settlement": 18.98,
         "theoretical": null,
-        "days": 22,
+        "days": 21,
         "name": "FUT_EEP_260330"
       },
       {
         "month": "202604",
-        "settlement": 24.39,
+        "settlement": 23.12,
         "theoretical": null,
-        "days": 52,
+        "days": 51,
         "name": "FUT_EEP_260428"
       },
       {
         "month": "202605",
-        "settlement": 23.56,
+        "settlement": 22.11,
         "theoretical": null,
-        "days": 83,
+        "days": 82,
         "name": "FUT_EEP_260528"
       },
       {
         "month": "202606",
-        "settlement": 24.84,
+        "settlement": 23.41,
         "theoretical": null,
-        "days": 113,
+        "days": 112,
         "name": "FUT_EEP_260629"
       },
       {
         "month": "202607",
-        "settlement": 25.08,
+        "settlement": 23.46,
         "theoretical": null,
-        "days": 146,
+        "days": 145,
         "name": "FUT_EEP_260730"
       },
       {
         "month": "202608",
-        "settlement": 25.15,
+        "settlement": 23.4,
         "theoretical": null,
-        "days": 175,
+        "days": 174,
         "name": "FUT_EEP_260828"
       },
       {
         "month": "202609",
-        "settlement": 25.47,
+        "settlement": 23.69,
         "theoretical": null,
-        "days": 205,
+        "days": 204,
         "name": "FUT_EEP_260929"
       },
       {
         "month": "202610",
-        "settlement": 23.15,
+        "settlement": 21.66,
         "theoretical": null,
-        "days": 237,
+        "days": 236,
         "name": "FUT_EEP_261029"
       },
       {
         "month": "202611",
-        "settlement": 22.24,
+        "settlement": 21.12,
         "theoretical": null,
-        "days": 266,
+        "days": 265,
         "name": "FUT_EEP_261127"
       },
       {
         "month": "202612",
-        "settlement": 22.79,
+        "settlement": 21.63,
         "theoretical": null,
-        "days": 300,
+        "days": 299,
         "name": "FUT_EEP_261228"
       },
       {
         "month": "202701",
-        "settlement": 22.99,
+        "settlement": 21.64,
         "theoretical": null,
-        "days": 328,
+        "days": 327,
         "name": "FUT_EEP_270128"
       },
       {
         "month": "202702",
-        "settlement": 22.59,
+        "settlement": 21.78,
         "theoretical": null,
-        "days": 356,
+        "days": 355,
         "name": "FUT_EEP_270225"
       },
       {
         "month": "202703",
-        "settlement": 20.74,
+        "settlement": 19.57,
         "theoretical": null,
-        "days": 387,
+        "days": 386,
         "name": "FUT_EEP_270330"
       },
       {
         "month": "202704",
-        "settlement": 17.81,
+        "settlement": 17.06,
         "theoretical": null,
-        "days": 422,
+        "days": 421,
         "name": "FUT_EEP_270428"
       },
       {
         "month": "202705",
-        "settlement": 17.2,
+        "settlement": 16.65,
         "theoretical": null,
-        "days": 448,
+        "days": 447,
         "name": "FUT_EEP_270528"
       },
       {
         "month": "202706",
-        "settlement": 18.49,
+        "settlement": 17.53,
         "theoretical": null,
-        "days": 478,
+        "days": 477,
         "name": "FUT_EEP_270629"
       },
       {
         "month": "202707",
-        "settlement": 18.31,
+        "settlement": 18.03,
         "theoretical": null,
-        "days": 510,
+        "days": 509,
         "name": "FUT_EEP_270729"
       },
       {
         "month": "202708",
-        "settlement": 19.43,
+        "settlement": 18.96,
         "theoretical": null,
-        "days": 540,
+        "days": 539,
         "name": "FUT_EEP_270830"
       },
       {
         "month": "202709",
-        "settlement": 18.52,
+        "settlement": 17.91,
         "theoretical": null,
-        "days": 570,
+        "days": 569,
         "name": "FUT_EEP_270929"
       },
       {
         "month": "202710",
-        "settlement": 16.15,
+        "settlement": 15.56,
         "theoretical": null,
-        "days": 601,
+        "days": 600,
         "name": "FUT_EEP_271028"
       },
       {
         "month": "202711",
-        "settlement": 16.88,
+        "settlement": 16.32,
         "theoretical": null,
-        "days": 631,
+        "days": 630,
         "name": "FUT_EEP_271129"
       },
       {
         "month": "202712",
-        "settlement": 18.0,
+        "settlement": 17.35,
         "theoretical": null,
-        "days": 665,
+        "days": 664,
         "name": "FUT_EEP_271228"
       },
       {
         "month": "202801",
-        "settlement": 17.55,
+        "settlement": 17.04,
         "theoretical": null,
-        "days": 693,
+        "days": 692,
         "name": "FUT_EEP_280128"
       },
       {
         "month": "202802",
-        "settlement": 16.86,
+        "settlement": 16.35,
         "theoretical": null,
-        "days": 722,
+        "days": 721,
         "name": "FUT_EEP_280228"
       }
     ],
     "東・ベース(週間)": [
       {
         "month": "20260313",
-        "settlement": 13.32,
+        "settlement": 12.15,
         "theoretical": null,
-        "days": 3,
+        "days": 2,
         "name": "FUT_EEBW_260312"
       },
       {
         "month": "20260320",
-        "settlement": 19.87,
+        "settlement": 19.39,
         "theoretical": null,
-        "days": 13,
+        "days": 12,
         "name": "FUT_EEBW_260319"
       },
       {
         "month": "20260327",
-        "settlement": 20.83,
+        "settlement": 20.48,
         "theoretical": null,
-        "days": 17,
+        "days": 16,
         "name": "FUT_EEBW_260326"
       },
       {
         "month": "20260403",
-        "settlement": 20.74,
+        "settlement": 20.21,
         "theoretical": null,
-        "days": 24,
+        "days": 23,
         "name": "FUT_EEBW_260402"
       },
       {
         "month": "20260410",
-        "settlement": 21.27,
+        "settlement": 20.93,
         "theoretical": null,
-        "days": 31,
+        "days": 30,
         "name": "FUT_EEBW_260409"
       }
     ],
     "東・日中(週間)": [
       {
         "month": "20260313",
-        "settlement": 15.96,
+        "settlement": 13.96,
         "theoretical": null,
-        "days": 3,
+        "days": 2,
         "name": "FUT_EEPW_260312"
       },
       {
         "month": "20260320",
-        "settlement": 21.29,
+        "settlement": 21.67,
         "theoretical": null,
-        "days": 9,
+        "days": 8,
         "name": "FUT_EEPW_260318"
       },
       {
         "month": "20260327",
-        "settlement": 21.31,
+        "settlement": 21.27,
         "theoretical": null,
-        "days": 17,
+        "days": 16,
         "name": "FUT_EEPW_260326"
       },
       {
         "month": "20260403",
-        "settlement": 21.89,
+        "settlement": 21.11,
         "theoretical": null,
-        "days": 24,
+        "days": 23,
         "name": "FUT_EEPW_260402"
       },
       {
         "month": "20260410",
-        "settlement": 22.82,
+        "settlement": 22.23,
         "theoretical": null,
-        "days": 31,
+        "days": 30,
         "name": "FUT_EEPW_260409"
       }
     ],
     "西・ベース(月次)": [
       {
         "month": "202603",
-        "settlement": 15.29,
+        "settlement": 14.75,
         "theoretical": null,
-        "days": 22,
+        "days": 21,
         "name": "FUT_EWB_260330"
       },
       {
         "month": "202604",
-        "settlement": 18.25,
+        "settlement": 16.26,
         "theoretical": null,
-        "days": 52,
+        "days": 51,
         "name": "FUT_EWB_260428"
       },
       {
         "month": "202605",
-        "settlement": 17.83,
+        "settlement": 15.94,
         "theoretical": null,
-        "days": 83,
+        "days": 82,
         "name": "FUT_EWB_260529"
       },
       {
         "month": "202606",
-        "settlement": 17.7,
+        "settlement": 15.9,
         "theoretical": null,
-        "days": 113,
+        "days": 112,
         "name": "FUT_EWB_260629"
       },
       {
         "month": "202607",
-        "settlement": 18.39,
+        "settlement": 16.03,
         "theoretical": null,
-        "days": 146,
+        "days": 145,
         "name": "FUT_EWB_260730"
       },
       {
         "month": "202608",
-        "settlement": 18.1,
+        "settlement": 15.98,
         "theoretical": null,
-        "days": 175,
+        "days": 174,
         "name": "FUT_EWB_260828"
       },
       {
         "month": "202609",
-        "settlement": 17.76,
+        "settlement": 15.76,
         "theoretical": null,
-        "days": 205,
+        "days": 204,
         "name": "FUT_EWB_260929"
       },
       {
         "month": "202610",
-        "settlement": 15.89,
+        "settlement": 14.24,
         "theoretical": null,
-        "days": 237,
+        "days": 236,
         "name": "FUT_EWB_261030"
       },
       {
         "month": "202611",
-        "settlement": 15.89,
+        "settlement": 14.4,
         "theoretical": null,
-        "days": 266,
+        "days": 265,
         "name": "FUT_EWB_261127"
       },
       {
         "month": "202612",
-        "settlement": 17.03,
+        "settlement": 15.51,
         "theoretical": null,
-        "days": 300,
+        "days": 299,
         "name": "FUT_EWB_261230"
       },
       {
         "month": "202701",
-        "settlement": 17.43,
+        "settlement": 16.01,
         "theoretical": null,
-        "days": 328,
+        "days": 327,
         "name": "FUT_EWB_270129"
       },
       {
         "month": "202702",
-        "settlement": 16.93,
+        "settlement": 15.55,
         "theoretical": null,
-        "days": 356,
+        "days": 355,
         "name": "FUT_EWB_270226"
       },
       {
         "month": "202703",
-        "settlement": 16.07,
+        "settlement": 14.37,
         "theoretical": null,
-        "days": 387,
+        "days": 386,
         "name": "FUT_EWB_270330"
       },
       {
         "month": "202704",
-        "settlement": 14.78,
+        "settlement": 14.39,
         "theoretical": null,
-        "days": 422,
+        "days": 421,
         "name": "FUT_EWB_270428"
       },
       {
         "month": "202705",
-        "settlement": 14.3,
+        "settlement": 13.84,
         "theoretical": null,
-        "days": 448,
+        "days": 447,
         "name": "FUT_EWB_270528"
       },
       {
         "month": "202706",
-        "settlement": 14.38,
+        "settlement": 13.74,
         "theoretical": null,
-        "days": 478,
+        "days": 477,
         "name": "FUT_EWB_270629"
       },
       {
         "month": "202707",
-        "settlement": 14.77,
+        "settlement": 14.05,
         "theoretical": null,
-        "days": 510,
+        "days": 509,
         "name": "FUT_EWB_270730"
       },
       {
         "month": "202708",
-        "settlement": 15.01,
+        "settlement": 14.45,
         "theoretical": null,
-        "days": 540,
+        "days": 539,
         "name": "FUT_EWB_270830"
       },
       {
         "month": "202709",
-        "settlement": 14.08,
+        "settlement": 13.55,
         "theoretical": null,
-        "days": 570,
+        "days": 569,
         "name": "FUT_EWB_270929"
       },
       {
         "month": "202710",
-        "settlement": 12.68,
+        "settlement": 12.15,
         "theoretical": null,
-        "days": 601,
+        "days": 600,
         "name": "FUT_EWB_271029"
       },
       {
         "month": "202711",
-        "settlement": 12.75,
+        "settlement": 12.32,
         "theoretical": null,
-        "days": 631,
+        "days": 630,
         "name": "FUT_EWB_271129"
       },
       {
         "month": "202712",
-        "settlement": 14.22,
+        "settlement": 13.69,
         "theoretical": null,
-        "days": 665,
+        "days": 664,
         "name": "FUT_EWB_271230"
       },
       {
         "month": "202801",
-        "settlement": 14.37,
+        "settlement": 13.88,
         "theoretical": null,
-        "days": 693,
+        "days": 692,
         "name": "FUT_EWB_280128"
       },
       {
         "month": "202802",
-        "settlement": 13.76,
+        "settlement": 13.19,
         "theoretical": null,
-        "days": 722,
+        "days": 721,
         "name": "FUT_EWB_280228"
       }
     ],
     "西・ベース(年度)": [
       {
         "month": "202604",
-        "settlement": 17.27,
+        "settlement": 15.49,
         "theoretical": null,
-        "days": 17,
+        "days": 16,
         "name": "FUT_EWBY_260326"
       },
       {
         "month": "202704",
-        "settlement": 13.96,
+        "settlement": 13.41,
         "theoretical": null,
-        "days": 384,
+        "days": 383,
         "name": "FUT_EWBY_270326"
       }
     ],
     "西・日中(年度)": [
       {
         "month": "202604",
-        "settlement": 19.76,
+        "settlement": 19.7,
         "theoretical": null,
-        "days": 17,
+        "days": 16,
         "name": "FUT_EWPY_260326"
       },
       {
         "month": "202704",
-        "settlement": 15.79,
+        "settlement": 15.22,
         "theoretical": null,
-        "days": 384,
+        "days": 383,
         "name": "FUT_EWPY_270326"
       }
     ],
     "西・日中(月次)": [
       {
         "month": "202603",
-        "settlement": 15.65,
+        "settlement": 15.4,
         "theoretical": null,
-        "days": 22,
+        "days": 21,
         "name": "FUT_EWP_260330"
       },
       {
         "month": "202604",
-        "settlement": 18.38,
+        "settlement": 18.06,
         "theoretical": null,
-        "days": 52,
+        "days": 51,
         "name": "FUT_EWP_260428"
       },
       {
         "month": "202605",
-        "settlement": 18.39,
+        "settlement": 17.97,
         "theoretical": null,
-        "days": 83,
+        "days": 82,
         "name": "FUT_EWP_260528"
       },
       {
         "month": "202606",
-        "settlement": 21.02,
+        "settlement": 20.63,
         "theoretical": null,
-        "days": 113,
+        "days": 112,
         "name": "FUT_EWP_260629"
       },
       {
         "month": "202607",
-        "settlement": 22.64,
+        "settlement": 22.4,
         "theoretical": null,
-        "days": 146,
+        "days": 145,
         "name": "FUT_EWP_260730"
       },
       {
         "month": "202608",
-        "settlement": 22.46,
+        "settlement": 22.32,
         "theoretical": null,
-        "days": 175,
+        "days": 174,
         "name": "FUT_EWP_260828"
       },
       {
         "month": "202609",
-        "settlement": 22.57,
+        "settlement": 22.37,
         "theoretical": null,
-        "days": 205,
+        "days": 204,
         "name": "FUT_EWP_260929"
       },
       {
         "month": "202610",
-        "settlement": 18.12,
+        "settlement": 18.39,
         "theoretical": null,
-        "days": 237,
+        "days": 236,
         "name": "FUT_EWP_261029"
       },
       {
         "month": "202611",
-        "settlement": 18.23,
+        "settlement": 18.31,
         "theoretical": null,
-        "days": 266,
+        "days": 265,
         "name": "FUT_EWP_261127"
       },
       {
         "month": "202612",
-        "settlement": 19.4,
+        "settlement": 19.3,
         "theoretical": null,
-        "days": 300,
+        "days": 299,
         "name": "FUT_EWP_261228"
       },
       {
         "month": "202701",
-        "settlement": 19.43,
+        "settlement": 19.72,
         "theoretical": null,
-        "days": 328,
+        "days": 327,
         "name": "FUT_EWP_270128"
       },
       {
         "month": "202702",
-        "settlement": 18.78,
+        "settlement": 19.21,
         "theoretical": null,
-        "days": 356,
+        "days": 355,
         "name": "FUT_EWP_270225"
       },
       {
         "month": "202703",
-        "settlement": 17.43,
+        "settlement": 17.53,
         "theoretical": null,
-        "days": 387,
+        "days": 386,
         "name": "FUT_EWP_270330"
       },
       {
         "month": "202704",
-        "settlement": 14.81,
+        "settlement": 14.39,
         "theoretical": null,
-        "days": 422,
+        "days": 421,
         "name": "FUT_EWP_270428"
       },
       {
         "month": "202705",
-        "settlement": 14.48,
+        "settlement": 13.95,
         "theoretical": null,
-        "days": 448,
+        "days": 447,
         "name": "FUT_EWP_270528"
       },
       {
         "month": "202706",
-        "settlement": 16.71,
+        "settlement": 15.87,
         "theoretical": null,
-        "days": 478,
+        "days": 477,
         "name": "FUT_EWP_270629"
       },
       {
         "month": "202707",
-        "settlement": 17.43,
+        "settlement": 16.72,
         "theoretical": null,
-        "days": 510,
+        "days": 509,
         "name": "FUT_EWP_270729"
       },
       {
         "month": "202708",
-        "settlement": 18.68,
+        "settlement": 18.08,
         "theoretical": null,
-        "days": 540,
+        "days": 539,
         "name": "FUT_EWP_270830"
       },
       {
         "month": "202709",
-        "settlement": 16.98,
+        "settlement": 16.44,
         "theoretical": null,
-        "days": 570,
+        "days": 569,
         "name": "FUT_EWP_270929"
       },
       {
         "month": "202710",
-        "settlement": 14.35,
+        "settlement": 13.78,
         "theoretical": null,
-        "days": 601,
+        "days": 600,
         "name": "FUT_EWP_271028"
       },
       {
         "month": "202711",
-        "settlement": 14.57,
+        "settlement": 14.07,
         "theoretical": null,
-        "days": 631,
+        "days": 630,
         "name": "FUT_EWP_271129"
       },
       {
         "month": "202712",
-        "settlement": 16.26,
+        "settlement": 15.65,
         "theoretical": null,
-        "days": 665,
+        "days": 664,
         "name": "FUT_EWP_271228"
       },
       {
         "month": "202801",
-        "settlement": 15.98,
+        "settlement": 15.75,
         "theoretical": null,
-        "days": 693,
+        "days": 692,
         "name": "FUT_EWP_280128"
       },
       {
         "month": "202802",
-        "settlement": 15.46,
+        "settlement": 14.83,
         "theoretical": null,
-        "days": 722,
+        "days": 721,
         "name": "FUT_EWP_280228"
       }
     ],
     "西・ベース(週間)": [
       {
         "month": "20260313",
-        "settlement": 11.67,
+        "settlement": 10.95,
         "theoretical": null,
-        "days": 3,
+        "days": 2,
         "name": "FUT_EWBW_260312"
       },
       {
         "month": "20260320",
-        "settlement": 15.32,
+        "settlement": 15.16,
         "theoretical": null,
-        "days": 13,
+        "days": 12,
         "name": "FUT_EWBW_260319"
       },
       {
         "month": "20260327",
-        "settlement": 15.42,
+        "settlement": 15.2,
         "theoretical": null,
-        "days": 17,
+        "days": 16,
         "name": "FUT_EWBW_260326"
       },
       {
         "month": "20260403",
-        "settlement": 16.99,
+        "settlement": 16.34,
         "theoretical": null,
-        "days": 24,
+        "days": 23,
         "name": "FUT_EWBW_260402"
       },
       {
         "month": "20260410",
-        "settlement": 17.07,
+        "settlement": 16.73,
         "theoretical": null,
-        "days": 31,
+        "days": 30,
         "name": "FUT_EWBW_260409"
       }
     ],
     "西・日中(週間)": [
       {
         "month": "20260313",
-        "settlement": 12.48,
+        "settlement": 11.01,
         "theoretical": null,
-        "days": 3,
+        "days": 2,
         "name": "FUT_EWPW_260312"
       },
       {
         "month": "20260320",
-        "settlement": 16.4,
+        "settlement": 16.36,
         "theoretical": null,
-        "days": 9,
+        "days": 8,
         "name": "FUT_EWPW_260318"
       },
       {
         "month": "20260327",
-        "settlement": 16.55,
+        "settlement": 16.44,
         "theoretical": null,
-        "days": 17,
+        "days": 16,
         "name": "FUT_EWPW_260326"
       },
       {
         "month": "20260403",
-        "settlement": 17.25,
+        "settlement": 16.91,
         "theoretical": null,
-        "days": 24,
+        "days": 23,
         "name": "FUT_EWPW_260402"
       },
       {
         "month": "20260410",
-        "settlement": 16.63,
+        "settlement": 16.27,
         "theoretical": null,
-        "days": 31,
+        "days": 30,
         "name": "FUT_EWPW_260409"
       }
     ]
@@ -1300,1116 +1301,1116 @@
       "name": "FUT_EEB_260330",
       "underlying": "電力(東・ベース)",
       "month": "202603",
-      "settlement": 19.11,
+      "settlement": 18.25,
       "theoretical": null,
-      "days": 22,
+      "days": 21,
       "category": "東・ベース(月次)"
     },
     {
       "name": "FUT_EEB_260428",
       "underlying": "電力(東・ベース)",
       "month": "202604",
-      "settlement": 22.35,
+      "settlement": 21.46,
       "theoretical": null,
-      "days": 52,
+      "days": 51,
       "category": "東・ベース(月次)"
     },
     {
       "name": "FUT_EEB_260529",
       "underlying": "電力(東・ベース)",
       "month": "202605",
-      "settlement": 22.0,
+      "settlement": 20.66,
       "theoretical": null,
-      "days": 83,
+      "days": 82,
       "category": "東・ベース(月次)"
     },
     {
       "name": "FUT_EEB_260629",
       "underlying": "電力(東・ベース)",
       "month": "202606",
-      "settlement": 21.33,
+      "settlement": 20.26,
       "theoretical": null,
-      "days": 113,
+      "days": 112,
       "category": "東・ベース(月次)"
     },
     {
       "name": "FUT_EEB_260730",
       "underlying": "電力(東・ベース)",
       "month": "202607",
-      "settlement": 20.38,
+      "settlement": 19.26,
       "theoretical": null,
-      "days": 146,
+      "days": 145,
       "category": "東・ベース(月次)"
     },
     {
       "name": "FUT_EEB_260828",
       "underlying": "電力(東・ベース)",
       "month": "202608",
-      "settlement": 20.44,
+      "settlement": 19.23,
       "theoretical": null,
-      "days": 175,
+      "days": 174,
       "category": "東・ベース(月次)"
     },
     {
       "name": "FUT_EEB_260929",
       "underlying": "電力(東・ベース)",
       "month": "202609",
-      "settlement": 20.59,
+      "settlement": 19.37,
       "theoretical": null,
-      "days": 205,
+      "days": 204,
       "category": "東・ベース(月次)"
     },
     {
       "name": "FUT_EEB_261030",
       "underlying": "電力(東・ベース)",
       "month": "202610",
-      "settlement": 18.69,
+      "settlement": 17.7,
       "theoretical": null,
-      "days": 237,
+      "days": 236,
       "category": "東・ベース(月次)"
     },
     {
       "name": "FUT_EEB_261127",
       "underlying": "電力(東・ベース)",
       "month": "202611",
-      "settlement": 19.06,
+      "settlement": 17.89,
       "theoretical": null,
-      "days": 266,
+      "days": 265,
       "category": "東・ベース(月次)"
     },
     {
       "name": "FUT_EEB_261230",
       "underlying": "電力(東・ベース)",
       "month": "202612",
-      "settlement": 19.5,
+      "settlement": 18.38,
       "theoretical": null,
-      "days": 300,
+      "days": 299,
       "category": "東・ベース(月次)"
     },
     {
       "name": "FUT_EEB_270129",
       "underlying": "電力(東・ベース)",
       "month": "202701",
-      "settlement": 19.42,
+      "settlement": 18.43,
       "theoretical": null,
-      "days": 328,
+      "days": 327,
       "category": "東・ベース(月次)"
     },
     {
       "name": "FUT_EEB_270226",
       "underlying": "電力(東・ベース)",
       "month": "202702",
-      "settlement": 18.87,
+      "settlement": 18.5,
       "theoretical": null,
-      "days": 356,
+      "days": 355,
       "category": "東・ベース(月次)"
     },
     {
       "name": "FUT_EEB_270330",
       "underlying": "電力(東・ベース)",
       "month": "202703",
-      "settlement": 17.43,
+      "settlement": 16.53,
       "theoretical": null,
-      "days": 387,
+      "days": 386,
       "category": "東・ベース(月次)"
     },
     {
       "name": "FUT_EEB_270428",
       "underlying": "電力(東・ベース)",
       "month": "202704",
-      "settlement": 16.9,
+      "settlement": 16.48,
       "theoretical": null,
-      "days": 422,
+      "days": 421,
       "category": "東・ベース(月次)"
     },
     {
       "name": "FUT_EEB_270528",
       "underlying": "電力(東・ベース)",
       "month": "202705",
-      "settlement": 16.11,
+      "settlement": 15.53,
       "theoretical": null,
-      "days": 448,
+      "days": 447,
       "category": "東・ベース(月次)"
     },
     {
       "name": "FUT_EEB_270629",
       "underlying": "電力(東・ベース)",
       "month": "202706",
-      "settlement": 16.81,
+      "settlement": 16.11,
       "theoretical": null,
-      "days": 478,
+      "days": 477,
       "category": "東・ベース(月次)"
     },
     {
       "name": "FUT_EEB_270730",
       "underlying": "電力(東・ベース)",
       "month": "202707",
-      "settlement": 16.36,
+      "settlement": 15.86,
       "theoretical": null,
-      "days": 510,
+      "days": 509,
       "category": "東・ベース(月次)"
     },
     {
       "name": "FUT_EEB_270830",
       "underlying": "電力(東・ベース)",
       "month": "202708",
-      "settlement": 17.29,
+      "settlement": 16.64,
       "theoretical": null,
-      "days": 540,
+      "days": 539,
       "category": "東・ベース(月次)"
     },
     {
       "name": "FUT_EEB_270929",
       "underlying": "電力(東・ベース)",
       "month": "202709",
-      "settlement": 15.92,
+      "settlement": 15.37,
       "theoretical": null,
-      "days": 570,
+      "days": 569,
       "category": "東・ベース(月次)"
     },
     {
       "name": "FUT_EEB_271029",
       "underlying": "電力(東・ベース)",
       "month": "202710",
-      "settlement": 14.44,
+      "settlement": 13.83,
       "theoretical": null,
-      "days": 601,
+      "days": 600,
       "category": "東・ベース(月次)"
     },
     {
       "name": "FUT_EEB_271129",
       "underlying": "電力(東・ベース)",
       "month": "202711",
-      "settlement": 14.49,
+      "settlement": 13.9,
       "theoretical": null,
-      "days": 631,
+      "days": 630,
       "category": "東・ベース(月次)"
     },
     {
       "name": "FUT_EEB_271230",
       "underlying": "電力(東・ベース)",
       "month": "202712",
-      "settlement": 15.45,
+      "settlement": 14.87,
       "theoretical": null,
-      "days": 665,
+      "days": 664,
       "category": "東・ベース(月次)"
     },
     {
       "name": "FUT_EEB_280128",
       "underlying": "電力(東・ベース)",
       "month": "202801",
-      "settlement": 15.54,
+      "settlement": 14.91,
       "theoretical": null,
-      "days": 693,
+      "days": 692,
       "category": "東・ベース(月次)"
     },
     {
       "name": "FUT_EEB_280228",
       "underlying": "電力(東・ベース)",
       "month": "202802",
-      "settlement": 14.88,
+      "settlement": 14.36,
       "theoretical": null,
-      "days": 722,
+      "days": 721,
       "category": "東・ベース(月次)"
     },
     {
       "name": "FUT_EEBY_260326",
       "underlying": "電力(東・年度ベース)",
       "month": "202604",
-      "settlement": 20.01,
+      "settlement": 18.97,
       "theoretical": null,
-      "days": 17,
+      "days": 16,
       "category": "東・ベース(年度)"
     },
     {
       "name": "FUT_EEBY_270326",
       "underlying": "電力(東・年度ベース)",
       "month": "202704",
-      "settlement": 15.64,
+      "settlement": 15.03,
       "theoretical": null,
-      "days": 384,
+      "days": 383,
       "category": "東・ベース(年度)"
     },
     {
       "name": "FUT_EEPY_260326",
       "underlying": "電力(東・年度日中)",
       "month": "202604",
-      "settlement": 23.59,
+      "settlement": 22.22,
       "theoretical": null,
-      "days": 17,
+      "days": 16,
       "category": "東・日中(年度)"
     },
     {
       "name": "FUT_EEPY_270326",
       "underlying": "電力(東・年度日中)",
       "month": "202704",
-      "settlement": 17.5,
+      "settlement": 16.9,
       "theoretical": null,
-      "days": 384,
+      "days": 383,
       "category": "東・日中(年度)"
     },
     {
       "name": "FUT_EEP_260330",
       "underlying": "電力(東・日中)",
       "month": "202603",
-      "settlement": 19.5,
+      "settlement": 18.98,
       "theoretical": null,
-      "days": 22,
+      "days": 21,
       "category": "東・日中(月次)"
     },
     {
       "name": "FUT_EEP_260428",
       "underlying": "電力(東・日中)",
       "month": "202604",
-      "settlement": 24.39,
+      "settlement": 23.12,
       "theoretical": null,
-      "days": 52,
+      "days": 51,
       "category": "東・日中(月次)"
     },
     {
       "name": "FUT_EEP_260528",
       "underlying": "電力(東・日中)",
       "month": "202605",
-      "settlement": 23.56,
+      "settlement": 22.11,
       "theoretical": null,
-      "days": 83,
+      "days": 82,
       "category": "東・日中(月次)"
     },
     {
       "name": "FUT_EEP_260629",
       "underlying": "電力(東・日中)",
       "month": "202606",
-      "settlement": 24.84,
+      "settlement": 23.41,
       "theoretical": null,
-      "days": 113,
+      "days": 112,
       "category": "東・日中(月次)"
     },
     {
       "name": "FUT_EEP_260730",
       "underlying": "電力(東・日中)",
       "month": "202607",
-      "settlement": 25.08,
+      "settlement": 23.46,
       "theoretical": null,
-      "days": 146,
+      "days": 145,
       "category": "東・日中(月次)"
     },
     {
       "name": "FUT_EEP_260828",
       "underlying": "電力(東・日中)",
       "month": "202608",
-      "settlement": 25.15,
+      "settlement": 23.4,
       "theoretical": null,
-      "days": 175,
+      "days": 174,
       "category": "東・日中(月次)"
     },
     {
       "name": "FUT_EEP_260929",
       "underlying": "電力(東・日中)",
       "month": "202609",
-      "settlement": 25.47,
+      "settlement": 23.69,
       "theoretical": null,
-      "days": 205,
+      "days": 204,
       "category": "東・日中(月次)"
     },
     {
       "name": "FUT_EEP_261029",
       "underlying": "電力(東・日中)",
       "month": "202610",
-      "settlement": 23.15,
+      "settlement": 21.66,
       "theoretical": null,
-      "days": 237,
+      "days": 236,
       "category": "東・日中(月次)"
     },
     {
       "name": "FUT_EEP_261127",
       "underlying": "電力(東・日中)",
       "month": "202611",
-      "settlement": 22.24,
+      "settlement": 21.12,
       "theoretical": null,
-      "days": 266,
+      "days": 265,
       "category": "東・日中(月次)"
     },
     {
       "name": "FUT_EEP_261228",
       "underlying": "電力(東・日中)",
       "month": "202612",
-      "settlement": 22.79,
+      "settlement": 21.63,
       "theoretical": null,
-      "days": 300,
+      "days": 299,
       "category": "東・日中(月次)"
     },
     {
       "name": "FUT_EEP_270128",
       "underlying": "電力(東・日中)",
       "month": "202701",
-      "settlement": 22.99,
+      "settlement": 21.64,
       "theoretical": null,
-      "days": 328,
+      "days": 327,
       "category": "東・日中(月次)"
     },
     {
       "name": "FUT_EEP_270225",
       "underlying": "電力(東・日中)",
       "month": "202702",
-      "settlement": 22.59,
+      "settlement": 21.78,
       "theoretical": null,
-      "days": 356,
+      "days": 355,
       "category": "東・日中(月次)"
     },
     {
       "name": "FUT_EEP_270330",
       "underlying": "電力(東・日中)",
       "month": "202703",
-      "settlement": 20.74,
+      "settlement": 19.57,
       "theoretical": null,
-      "days": 387,
+      "days": 386,
       "category": "東・日中(月次)"
     },
     {
       "name": "FUT_EEP_270428",
       "underlying": "電力(東・日中)",
       "month": "202704",
-      "settlement": 17.81,
+      "settlement": 17.06,
       "theoretical": null,
-      "days": 422,
+      "days": 421,
       "category": "東・日中(月次)"
     },
     {
       "name": "FUT_EEP_270528",
       "underlying": "電力(東・日中)",
       "month": "202705",
-      "settlement": 17.2,
+      "settlement": 16.65,
       "theoretical": null,
-      "days": 448,
+      "days": 447,
       "category": "東・日中(月次)"
     },
     {
       "name": "FUT_EEP_270629",
       "underlying": "電力(東・日中)",
       "month": "202706",
-      "settlement": 18.49,
+      "settlement": 17.53,
       "theoretical": null,
-      "days": 478,
+      "days": 477,
       "category": "東・日中(月次)"
     },
     {
       "name": "FUT_EEP_270729",
       "underlying": "電力(東・日中)",
       "month": "202707",
-      "settlement": 18.31,
+      "settlement": 18.03,
       "theoretical": null,
-      "days": 510,
+      "days": 509,
       "category": "東・日中(月次)"
     },
     {
       "name": "FUT_EEP_270830",
       "underlying": "電力(東・日中)",
       "month": "202708",
-      "settlement": 19.43,
+      "settlement": 18.96,
       "theoretical": null,
-      "days": 540,
+      "days": 539,
       "category": "東・日中(月次)"
     },
     {
       "name": "FUT_EEP_270929",
       "underlying": "電力(東・日中)",
       "month": "202709",
-      "settlement": 18.52,
+      "settlement": 17.91,
       "theoretical": null,
-      "days": 570,
+      "days": 569,
       "category": "東・日中(月次)"
     },
     {
       "name": "FUT_EEP_271028",
       "underlying": "電力(東・日中)",
       "month": "202710",
-      "settlement": 16.15,
+      "settlement": 15.56,
       "theoretical": null,
-      "days": 601,
+      "days": 600,
       "category": "東・日中(月次)"
     },
     {
       "name": "FUT_EEP_271129",
       "underlying": "電力(東・日中)",
       "month": "202711",
-      "settlement": 16.88,
+      "settlement": 16.32,
       "theoretical": null,
-      "days": 631,
+      "days": 630,
       "category": "東・日中(月次)"
     },
     {
       "name": "FUT_EEP_271228",
       "underlying": "電力(東・日中)",
       "month": "202712",
-      "settlement": 18.0,
+      "settlement": 17.35,
       "theoretical": null,
-      "days": 665,
+      "days": 664,
       "category": "東・日中(月次)"
     },
     {
       "name": "FUT_EEP_280128",
       "underlying": "電力(東・日中)",
       "month": "202801",
-      "settlement": 17.55,
+      "settlement": 17.04,
       "theoretical": null,
-      "days": 693,
+      "days": 692,
       "category": "東・日中(月次)"
     },
     {
       "name": "FUT_EEP_280228",
       "underlying": "電力(東・日中)",
       "month": "202802",
-      "settlement": 16.86,
+      "settlement": 16.35,
       "theoretical": null,
-      "days": 722,
+      "days": 721,
       "category": "東・日中(月次)"
     },
     {
       "name": "FUT_EEBW_260312",
       "underlying": "電力(東・週間ベース)",
       "month": "20260313",
-      "settlement": 13.32,
+      "settlement": 12.15,
       "theoretical": null,
-      "days": 3,
+      "days": 2,
       "category": "東・ベース(週間)"
     },
     {
       "name": "FUT_EEBW_260319",
       "underlying": "電力(東・週間ベース)",
       "month": "20260320",
-      "settlement": 19.87,
+      "settlement": 19.39,
       "theoretical": null,
-      "days": 13,
+      "days": 12,
       "category": "東・ベース(週間)"
     },
     {
       "name": "FUT_EEBW_260326",
       "underlying": "電力(東・週間ベース)",
       "month": "20260327",
-      "settlement": 20.83,
+      "settlement": 20.48,
       "theoretical": null,
-      "days": 17,
+      "days": 16,
       "category": "東・ベース(週間)"
     },
     {
       "name": "FUT_EEBW_260402",
       "underlying": "電力(東・週間ベース)",
       "month": "20260403",
-      "settlement": 20.74,
+      "settlement": 20.21,
       "theoretical": null,
-      "days": 24,
+      "days": 23,
       "category": "東・ベース(週間)"
     },
     {
       "name": "FUT_EEBW_260409",
       "underlying": "電力(東・週間ベース)",
       "month": "20260410",
-      "settlement": 21.27,
+      "settlement": 20.93,
       "theoretical": null,
-      "days": 31,
+      "days": 30,
       "category": "東・ベース(週間)"
     },
     {
       "name": "FUT_EEPW_260312",
       "underlying": "電力(東・週間日中)",
       "month": "20260313",
-      "settlement": 15.96,
+      "settlement": 13.96,
       "theoretical": null,
-      "days": 3,
+      "days": 2,
       "category": "東・日中(週間)"
     },
     {
       "name": "FUT_EEPW_260318",
       "underlying": "電力(東・週間日中)",
       "month": "20260320",
-      "settlement": 21.29,
+      "settlement": 21.67,
       "theoretical": null,
-      "days": 9,
+      "days": 8,
       "category": "東・日中(週間)"
     },
     {
       "name": "FUT_EEPW_260326",
       "underlying": "電力(東・週間日中)",
       "month": "20260327",
-      "settlement": 21.31,
+      "settlement": 21.27,
       "theoretical": null,
-      "days": 17,
+      "days": 16,
       "category": "東・日中(週間)"
     },
     {
       "name": "FUT_EEPW_260402",
       "underlying": "電力(東・週間日中)",
       "month": "20260403",
-      "settlement": 21.89,
+      "settlement": 21.11,
       "theoretical": null,
-      "days": 24,
+      "days": 23,
       "category": "東・日中(週間)"
     },
     {
       "name": "FUT_EEPW_260409",
       "underlying": "電力(東・週間日中)",
       "month": "20260410",
-      "settlement": 22.82,
+      "settlement": 22.23,
       "theoretical": null,
-      "days": 31,
+      "days": 30,
       "category": "東・日中(週間)"
     },
     {
       "name": "FUT_EWB_260330",
       "underlying": "電力(西・ベース)",
       "month": "202603",
-      "settlement": 15.29,
+      "settlement": 14.75,
       "theoretical": null,
-      "days": 22,
+      "days": 21,
       "category": "西・ベース(月次)"
     },
     {
       "name": "FUT_EWB_260428",
       "underlying": "電力(西・ベース)",
       "month": "202604",
-      "settlement": 18.25,
+      "settlement": 16.26,
       "theoretical": null,
-      "days": 52,
+      "days": 51,
       "category": "西・ベース(月次)"
     },
     {
       "name": "FUT_EWB_260529",
       "underlying": "電力(西・ベース)",
       "month": "202605",
-      "settlement": 17.83,
+      "settlement": 15.94,
       "theoretical": null,
-      "days": 83,
+      "days": 82,
       "category": "西・ベース(月次)"
     },
     {
       "name": "FUT_EWB_260629",
       "underlying": "電力(西・ベース)",
       "month": "202606",
-      "settlement": 17.7,
+      "settlement": 15.9,
       "theoretical": null,
-      "days": 113,
+      "days": 112,
       "category": "西・ベース(月次)"
     },
     {
       "name": "FUT_EWB_260730",
       "underlying": "電力(西・ベース)",
       "month": "202607",
-      "settlement": 18.39,
+      "settlement": 16.03,
       "theoretical": null,
-      "days": 146,
+      "days": 145,
       "category": "西・ベース(月次)"
     },
     {
       "name": "FUT_EWB_260828",
       "underlying": "電力(西・ベース)",
       "month": "202608",
-      "settlement": 18.1,
+      "settlement": 15.98,
       "theoretical": null,
-      "days": 175,
+      "days": 174,
       "category": "西・ベース(月次)"
     },
     {
       "name": "FUT_EWB_260929",
       "underlying": "電力(西・ベース)",
       "month": "202609",
-      "settlement": 17.76,
+      "settlement": 15.76,
       "theoretical": null,
-      "days": 205,
+      "days": 204,
       "category": "西・ベース(月次)"
     },
     {
       "name": "FUT_EWB_261030",
       "underlying": "電力(西・ベース)",
       "month": "202610",
-      "settlement": 15.89,
+      "settlement": 14.24,
       "theoretical": null,
-      "days": 237,
+      "days": 236,
       "category": "西・ベース(月次)"
     },
     {
       "name": "FUT_EWB_261127",
       "underlying": "電力(西・ベース)",
       "month": "202611",
-      "settlement": 15.89,
+      "settlement": 14.4,
       "theoretical": null,
-      "days": 266,
+      "days": 265,
       "category": "西・ベース(月次)"
     },
     {
       "name": "FUT_EWB_261230",
       "underlying": "電力(西・ベース)",
       "month": "202612",
-      "settlement": 17.03,
+      "settlement": 15.51,
       "theoretical": null,
-      "days": 300,
+      "days": 299,
       "category": "西・ベース(月次)"
     },
     {
       "name": "FUT_EWB_270129",
       "underlying": "電力(西・ベース)",
       "month": "202701",
-      "settlement": 17.43,
+      "settlement": 16.01,
       "theoretical": null,
-      "days": 328,
+      "days": 327,
       "category": "西・ベース(月次)"
     },
     {
       "name": "FUT_EWB_270226",
       "underlying": "電力(西・ベース)",
       "month": "202702",
-      "settlement": 16.93,
+      "settlement": 15.55,
       "theoretical": null,
-      "days": 356,
+      "days": 355,
       "category": "西・ベース(月次)"
     },
     {
       "name": "FUT_EWB_270330",
       "underlying": "電力(西・ベース)",
       "month": "202703",
-      "settlement": 16.07,
+      "settlement": 14.37,
       "theoretical": null,
-      "days": 387,
+      "days": 386,
       "category": "西・ベース(月次)"
     },
     {
       "name": "FUT_EWB_270428",
       "underlying": "電力(西・ベース)",
       "month": "202704",
-      "settlement": 14.78,
+      "settlement": 14.39,
       "theoretical": null,
-      "days": 422,
+      "days": 421,
       "category": "西・ベース(月次)"
     },
     {
       "name": "FUT_EWB_270528",
       "underlying": "電力(西・ベース)",
       "month": "202705",
-      "settlement": 14.3,
+      "settlement": 13.84,
       "theoretical": null,
-      "days": 448,
+      "days": 447,
       "category": "西・ベース(月次)"
     },
     {
       "name": "FUT_EWB_270629",
       "underlying": "電力(西・ベース)",
       "month": "202706",
-      "settlement": 14.38,
+      "settlement": 13.74,
       "theoretical": null,
-      "days": 478,
+      "days": 477,
       "category": "西・ベース(月次)"
     },
     {
       "name": "FUT_EWB_270730",
       "underlying": "電力(西・ベース)",
       "month": "202707",
-      "settlement": 14.77,
+      "settlement": 14.05,
       "theoretical": null,
-      "days": 510,
+      "days": 509,
       "category": "西・ベース(月次)"
     },
     {
       "name": "FUT_EWB_270830",
       "underlying": "電力(西・ベース)",
       "month": "202708",
-      "settlement": 15.01,
+      "settlement": 14.45,
       "theoretical": null,
-      "days": 540,
+      "days": 539,
       "category": "西・ベース(月次)"
     },
     {
       "name": "FUT_EWB_270929",
       "underlying": "電力(西・ベース)",
       "month": "202709",
-      "settlement": 14.08,
+      "settlement": 13.55,
       "theoretical": null,
-      "days": 570,
+      "days": 569,
       "category": "西・ベース(月次)"
     },
     {
       "name": "FUT_EWB_271029",
       "underlying": "電力(西・ベース)",
       "month": "202710",
-      "settlement": 12.68,
+      "settlement": 12.15,
       "theoretical": null,
-      "days": 601,
+      "days": 600,
       "category": "西・ベース(月次)"
     },
     {
       "name": "FUT_EWB_271129",
       "underlying": "電力(西・ベース)",
       "month": "202711",
-      "settlement": 12.75,
+      "settlement": 12.32,
       "theoretical": null,
-      "days": 631,
+      "days": 630,
       "category": "西・ベース(月次)"
     },
     {
       "name": "FUT_EWB_271230",
       "underlying": "電力(西・ベース)",
       "month": "202712",
-      "settlement": 14.22,
+      "settlement": 13.69,
       "theoretical": null,
-      "days": 665,
+      "days": 664,
       "category": "西・ベース(月次)"
     },
     {
       "name": "FUT_EWB_280128",
       "underlying": "電力(西・ベース)",
       "month": "202801",
-      "settlement": 14.37,
+      "settlement": 13.88,
       "theoretical": null,
-      "days": 693,
+      "days": 692,
       "category": "西・ベース(月次)"
     },
     {
       "name": "FUT_EWB_280228",
       "underlying": "電力(西・ベース)",
       "month": "202802",
-      "settlement": 13.76,
+      "settlement": 13.19,
       "theoretical": null,
-      "days": 722,
+      "days": 721,
       "category": "西・ベース(月次)"
     },
     {
       "name": "FUT_EWBY_260326",
       "underlying": "電力(西・年度ベース)",
       "month": "202604",
-      "settlement": 17.27,
+      "settlement": 15.49,
       "theoretical": null,
-      "days": 17,
+      "days": 16,
       "category": "西・ベース(年度)"
     },
     {
       "name": "FUT_EWBY_270326",
       "underlying": "電力(西・年度ベース)",
       "month": "202704",
-      "settlement": 13.96,
+      "settlement": 13.41,
       "theoretical": null,
-      "days": 384,
+      "days": 383,
       "category": "西・ベース(年度)"
     },
     {
       "name": "FUT_EWPY_260326",
       "underlying": "電力(西・年度日中)",
       "month": "202604",
-      "settlement": 19.76,
+      "settlement": 19.7,
       "theoretical": null,
-      "days": 17,
+      "days": 16,
       "category": "西・日中(年度)"
     },
     {
       "name": "FUT_EWPY_270326",
       "underlying": "電力(西・年度日中)",
       "month": "202704",
-      "settlement": 15.79,
+      "settlement": 15.22,
       "theoretical": null,
-      "days": 384,
+      "days": 383,
       "category": "西・日中(年度)"
     },
     {
       "name": "FUT_EWP_260330",
       "underlying": "電力(西・日中)",
       "month": "202603",
-      "settlement": 15.65,
+      "settlement": 15.4,
       "theoretical": null,
-      "days": 22,
+      "days": 21,
       "category": "西・日中(月次)"
     },
     {
       "name": "FUT_EWP_260428",
       "underlying": "電力(西・日中)",
       "month": "202604",
-      "settlement": 18.38,
+      "settlement": 18.06,
       "theoretical": null,
-      "days": 52,
+      "days": 51,
       "category": "西・日中(月次)"
     },
     {
       "name": "FUT_EWP_260528",
       "underlying": "電力(西・日中)",
       "month": "202605",
-      "settlement": 18.39,
+      "settlement": 17.97,
       "theoretical": null,
-      "days": 83,
+      "days": 82,
       "category": "西・日中(月次)"
     },
     {
       "name": "FUT_EWP_260629",
       "underlying": "電力(西・日中)",
       "month": "202606",
-      "settlement": 21.02,
+      "settlement": 20.63,
       "theoretical": null,
-      "days": 113,
+      "days": 112,
       "category": "西・日中(月次)"
     },
     {
       "name": "FUT_EWP_260730",
       "underlying": "電力(西・日中)",
       "month": "202607",
-      "settlement": 22.64,
+      "settlement": 22.4,
       "theoretical": null,
-      "days": 146,
+      "days": 145,
       "category": "西・日中(月次)"
     },
     {
       "name": "FUT_EWP_260828",
       "underlying": "電力(西・日中)",
       "month": "202608",
-      "settlement": 22.46,
+      "settlement": 22.32,
       "theoretical": null,
-      "days": 175,
+      "days": 174,
       "category": "西・日中(月次)"
     },
     {
       "name": "FUT_EWP_260929",
       "underlying": "電力(西・日中)",
       "month": "202609",
-      "settlement": 22.57,
+      "settlement": 22.37,
       "theoretical": null,
-      "days": 205,
+      "days": 204,
       "category": "西・日中(月次)"
     },
     {
       "name": "FUT_EWP_261029",
       "underlying": "電力(西・日中)",
       "month": "202610",
-      "settlement": 18.12,
+      "settlement": 18.39,
       "theoretical": null,
-      "days": 237,
+      "days": 236,
       "category": "西・日中(月次)"
     },
     {
       "name": "FUT_EWP_261127",
       "underlying": "電力(西・日中)",
       "month": "202611",
-      "settlement": 18.23,
+      "settlement": 18.31,
       "theoretical": null,
-      "days": 266,
+      "days": 265,
       "category": "西・日中(月次)"
     },
     {
       "name": "FUT_EWP_261228",
       "underlying": "電力(西・日中)",
       "month": "202612",
-      "settlement": 19.4,
+      "settlement": 19.3,
       "theoretical": null,
-      "days": 300,
+      "days": 299,
       "category": "西・日中(月次)"
     },
     {
       "name": "FUT_EWP_270128",
       "underlying": "電力(西・日中)",
       "month": "202701",
-      "settlement": 19.43,
+      "settlement": 19.72,
       "theoretical": null,
-      "days": 328,
+      "days": 327,
       "category": "西・日中(月次)"
     },
     {
       "name": "FUT_EWP_270225",
       "underlying": "電力(西・日中)",
       "month": "202702",
-      "settlement": 18.78,
+      "settlement": 19.21,
       "theoretical": null,
-      "days": 356,
+      "days": 355,
       "category": "西・日中(月次)"
     },
     {
       "name": "FUT_EWP_270330",
       "underlying": "電力(西・日中)",
       "month": "202703",
-      "settlement": 17.43,
+      "settlement": 17.53,
       "theoretical": null,
-      "days": 387,
+      "days": 386,
       "category": "西・日中(月次)"
     },
     {
       "name": "FUT_EWP_270428",
       "underlying": "電力(西・日中)",
       "month": "202704",
-      "settlement": 14.81,
+      "settlement": 14.39,
       "theoretical": null,
-      "days": 422,
+      "days": 421,
       "category": "西・日中(月次)"
     },
     {
       "name": "FUT_EWP_270528",
       "underlying": "電力(西・日中)",
       "month": "202705",
-      "settlement": 14.48,
+      "settlement": 13.95,
       "theoretical": null,
-      "days": 448,
+      "days": 447,
       "category": "西・日中(月次)"
     },
     {
       "name": "FUT_EWP_270629",
       "underlying": "電力(西・日中)",
       "month": "202706",
-      "settlement": 16.71,
+      "settlement": 15.87,
       "theoretical": null,
-      "days": 478,
+      "days": 477,
       "category": "西・日中(月次)"
     },
     {
       "name": "FUT_EWP_270729",
       "underlying": "電力(西・日中)",
       "month": "202707",
-      "settlement": 17.43,
+      "settlement": 16.72,
       "theoretical": null,
-      "days": 510,
+      "days": 509,
       "category": "西・日中(月次)"
     },
     {
       "name": "FUT_EWP_270830",
       "underlying": "電力(西・日中)",
       "month": "202708",
-      "settlement": 18.68,
+      "settlement": 18.08,
       "theoretical": null,
-      "days": 540,
+      "days": 539,
       "category": "西・日中(月次)"
     },
     {
       "name": "FUT_EWP_270929",
       "underlying": "電力(西・日中)",
       "month": "202709",
-      "settlement": 16.98,
+      "settlement": 16.44,
       "theoretical": null,
-      "days": 570,
+      "days": 569,
       "category": "西・日中(月次)"
     },
     {
       "name": "FUT_EWP_271028",
       "underlying": "電力(西・日中)",
       "month": "202710",
-      "settlement": 14.35,
+      "settlement": 13.78,
       "theoretical": null,
-      "days": 601,
+      "days": 600,
       "category": "西・日中(月次)"
     },
     {
       "name": "FUT_EWP_271129",
       "underlying": "電力(西・日中)",
       "month": "202711",
-      "settlement": 14.57,
+      "settlement": 14.07,
       "theoretical": null,
-      "days": 631,
+      "days": 630,
       "category": "西・日中(月次)"
     },
     {
       "name": "FUT_EWP_271228",
       "underlying": "電力(西・日中)",
       "month": "202712",
-      "settlement": 16.26,
+      "settlement": 15.65,
       "theoretical": null,
-      "days": 665,
+      "days": 664,
       "category": "西・日中(月次)"
     },
     {
       "name": "FUT_EWP_280128",
       "underlying": "電力(西・日中)",
       "month": "202801",
-      "settlement": 15.98,
+      "settlement": 15.75,
       "theoretical": null,
-      "days": 693,
+      "days": 692,
       "category": "西・日中(月次)"
     },
     {
       "name": "FUT_EWP_280228",
       "underlying": "電力(西・日中)",
       "month": "202802",
-      "settlement": 15.46,
+      "settlement": 14.83,
       "theoretical": null,
-      "days": 722,
+      "days": 721,
       "category": "西・日中(月次)"
     },
     {
       "name": "FUT_EWBW_260312",
       "underlying": "電力(西・週間ベース)",
       "month": "20260313",
-      "settlement": 11.67,
+      "settlement": 10.95,
       "theoretical": null,
-      "days": 3,
+      "days": 2,
       "category": "西・ベース(週間)"
     },
     {
       "name": "FUT_EWBW_260319",
       "underlying": "電力(西・週間ベース)",
       "month": "20260320",
-      "settlement": 15.32,
+      "settlement": 15.16,
       "theoretical": null,
-      "days": 13,
+      "days": 12,
       "category": "西・ベース(週間)"
     },
     {
       "name": "FUT_EWBW_260326",
       "underlying": "電力(西・週間ベース)",
       "month": "20260327",
-      "settlement": 15.42,
+      "settlement": 15.2,
       "theoretical": null,
-      "days": 17,
+      "days": 16,
       "category": "西・ベース(週間)"
     },
     {
       "name": "FUT_EWBW_260402",
       "underlying": "電力(西・週間ベース)",
       "month": "20260403",
-      "settlement": 16.99,
+      "settlement": 16.34,
       "theoretical": null,
-      "days": 24,
+      "days": 23,
       "category": "西・ベース(週間)"
     },
     {
       "name": "FUT_EWBW_260409",
       "underlying": "電力(西・週間ベース)",
       "month": "20260410",
-      "settlement": 17.07,
+      "settlement": 16.73,
       "theoretical": null,
-      "days": 31,
+      "days": 30,
       "category": "西・ベース(週間)"
     },
     {
       "name": "FUT_EWPW_260312",
       "underlying": "電力(西・週間日中)",
       "month": "20260313",
-      "settlement": 12.48,
+      "settlement": 11.01,
       "theoretical": null,
-      "days": 3,
+      "days": 2,
       "category": "西・日中(週間)"
     },
     {
       "name": "FUT_EWPW_260318",
       "underlying": "電力(西・週間日中)",
       "month": "20260320",
-      "settlement": 16.4,
+      "settlement": 16.36,
       "theoretical": null,
-      "days": 9,
+      "days": 8,
       "category": "西・日中(週間)"
     },
     {
       "name": "FUT_EWPW_260326",
       "underlying": "電力(西・週間日中)",
       "month": "20260327",
-      "settlement": 16.55,
+      "settlement": 16.44,
       "theoretical": null,
-      "days": 17,
+      "days": 16,
       "category": "西・日中(週間)"
     },
     {
       "name": "FUT_EWPW_260402",
       "underlying": "電力(西・週間日中)",
       "month": "20260403",
-      "settlement": 17.25,
+      "settlement": 16.91,
       "theoretical": null,
-      "days": 24,
+      "days": 23,
       "category": "西・日中(週間)"
     },
     {
       "name": "FUT_EWPW_260409",
       "underlying": "電力(西・週間日中)",
       "month": "20260410",
-      "settlement": 16.63,
+      "settlement": 16.27,
       "theoretical": null,
-      "days": 31,
+      "days": 30,
       "category": "西・日中(週間)"
     }
   ],
@@ -2493,10 +2494,10 @@
     },
     {
       "underlying_name": "unknown",
-      "total": 25931,
+      "total": 25944,
       "fut": 0,
-      "cal": 12966,
-      "put": 12965
+      "cal": 12972,
+      "put": 12972
     },
     {
       "underlying_name": "とうもろこし",
@@ -2605,10 +2606,10 @@
     },
     {
       "underlying_name": "日経225",
-      "total": 10833,
+      "total": 10735,
       "fut": 39,
-      "cal": 5397,
-      "put": 5397
+      "cal": 5348,
+      "put": 5348
     },
     {
       "underlying_name": "日経平均VI",
