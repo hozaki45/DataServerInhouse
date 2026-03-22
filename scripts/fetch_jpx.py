@@ -19,7 +19,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from src.config import DATA_DIR
-from src.data_loader import import_csv_file
+from src.data_loader import DuplicateDataError, import_csv_file
 from src.repository import get_repository
 from src.storage import get_storage
 
@@ -83,10 +83,10 @@ def main():
     # Step 1: Find CSV URL
     csv_url, filename = find_csv_url()
 
-    # Step 2: Download
+    # Step 2: Download (always download to allow hash comparison)
     download_csv(csv_url, filename)
 
-    # Step 3: Import into database
+    # Step 3: Import into database (with hash-based duplicate detection)
     storage = get_storage()
     repo = get_repository()
 
@@ -96,8 +96,12 @@ def main():
             print(f"\n  Already imported: {filename} (skipping)")
         else:
             print(f"\n  Importing: {filename}")
-            trade_date, count = import_csv_file(filename, storage, repo)
-            print(f"  Imported {count:,} records for {trade_date}")
+            try:
+                trade_date, count = import_csv_file(filename, storage, repo)
+                print(f"  Imported {count:,} records for {trade_date}")
+            except DuplicateDataError as e:
+                print(f"\n  SKIPPED (holiday duplicate): {e}")
+                return
 
         # Step 4: Regenerate site
         print("\n  Regenerating dashboard...")

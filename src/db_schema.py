@@ -36,7 +36,8 @@ CREATE TABLE IF NOT EXISTS import_log (
     trade_date TEXT NOT NULL,
     record_count INTEGER NOT NULL,
     imported_at TEXT NOT NULL DEFAULT (datetime('now')),
-    status TEXT NOT NULL DEFAULT 'success'
+    status TEXT NOT NULL DEFAULT 'success',
+    file_hash TEXT
 );
 """
 
@@ -48,5 +49,10 @@ def init_db(db_path: Path = SQLITE_DB_PATH) -> sqlite3.Connection:
     conn.execute("PRAGMA journal_mode=WAL")
     conn.execute("PRAGMA foreign_keys=ON")
     conn.executescript(SCHEMA_SQL)
+    # Migrate: add file_hash column if missing (for existing databases)
+    cursor = conn.execute("PRAGMA table_info(import_log)")
+    columns = {row[1] for row in cursor.fetchall()}
+    if "file_hash" not in columns:
+        conn.execute("ALTER TABLE import_log ADD COLUMN file_hash TEXT")
     conn.commit()
     return conn

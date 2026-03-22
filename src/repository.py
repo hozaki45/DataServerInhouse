@@ -44,13 +44,18 @@ class Repository(ABC):
 
     @abstractmethod
     def log_import(
-        self, file_name: str, trade_date: str, record_count: int, status: str = "success"
+        self, file_name: str, trade_date: str, record_count: int,
+        status: str = "success", file_hash: str | None = None,
     ) -> None:
         """Record an import event."""
 
     @abstractmethod
     def get_imported_files(self) -> list[str]:
         """Get list of already imported file names."""
+
+    @abstractmethod
+    def hash_exists(self, file_hash: str) -> bool:
+        """Check if a file with the same hash has already been imported."""
 
     @abstractmethod
     def get_import_log(self) -> list[dict[str, Any]]:
@@ -143,12 +148,13 @@ class SQLiteRepository(Repository):
         return [row[0] for row in cursor.fetchall() if row[0]]
 
     def log_import(
-        self, file_name: str, trade_date: str, record_count: int, status: str = "success"
+        self, file_name: str, trade_date: str, record_count: int,
+        status: str = "success", file_hash: str | None = None,
     ) -> None:
         self.conn.execute(
-            """INSERT INTO import_log (file_name, trade_date, record_count, imported_at, status)
-            VALUES (?, ?, ?, ?, ?)""",
-            (file_name, trade_date, record_count, datetime.now().isoformat(), status),
+            """INSERT INTO import_log (file_name, trade_date, record_count, imported_at, status, file_hash)
+            VALUES (?, ?, ?, ?, ?, ?)""",
+            (file_name, trade_date, record_count, datetime.now().isoformat(), status, file_hash),
         )
         self.conn.commit()
 
@@ -157,6 +163,13 @@ class SQLiteRepository(Repository):
             "SELECT file_name FROM import_log WHERE status = 'success'"
         )
         return [row[0] for row in cursor.fetchall()]
+
+    def hash_exists(self, file_hash: str) -> bool:
+        cursor = self.conn.execute(
+            "SELECT 1 FROM import_log WHERE file_hash = ? AND status = 'success' LIMIT 1",
+            (file_hash,),
+        )
+        return cursor.fetchone() is not None
 
     def get_import_log(self) -> list[dict[str, Any]]:
         cursor = self.conn.execute("SELECT * FROM import_log ORDER BY imported_at DESC")

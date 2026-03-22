@@ -34,6 +34,9 @@ jobs:
       - name: Fetch JPX data and update dashboard
         run: uv run python scripts/fetch_jpx.py
 
+      - name: Generate daily chart pack
+        run: uv run python scripts/generate_chartpack.py
+
       - name: Check for changes
         id: changes
         run: |

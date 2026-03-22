@@ -1,7 +1,7 @@
 {
   "latest_date": "2026-03-19",
   "prev_date": "2026-03-18",
-  "generated_at": "2026-03-20T08:08:50.617853",
+  "generated_at": "2026-03-22T15:04:16.189030",
   "total_records": 38374,
   "underlying_count": 54,
   "import_dates": [
@@ -2728,6 +2728,1010 @@
       "pct": 3.97
     }
   ],
+  "power_heatmap": {
+    "months": [
+      "202603",
+      "202604",
+      "202605",
+      "202606",
+      "202607",
+      "202608",
+      "202609",
+      "202610",
+      "202611",
+      "202612",
+      "202701",
+      "202702",
+      "202703",
+      "202704",
+      "202705",
+      "202706",
+      "202707",
+      "202708",
+      "202709",
+      "202710",
+      "202711",
+      "202712",
+      "202801",
+      "202802"
+    ],
+    "price_changes": {
+      "東・ベース": [
+        {
+          "month": "202603",
+          "settlement": 14.78,
+          "prev": 15.27,
+          "diff": -0.49,
+          "pct": -3.21
+        },
+        {
+          "month": "202604",
+          "settlement": 18.82,
+          "prev": 18.65,
+          "diff": 0.17,
+          "pct": 0.91
+        },
+        {
+          "month": "202605",
+          "settlement": 18.65,
+          "prev": 18.53,
+          "diff": 0.12,
+          "pct": 0.65
+        },
+        {
+          "month": "202606",
+          "settlement": 19.89,
+          "prev": 19.82,
+          "diff": 0.07,
+          "pct": 0.35
+        },
+        {
+          "month": "202607",
+          "settlement": 19.52,
+          "prev": 19.74,
+          "diff": -0.22,
+          "pct": -1.11
+        },
+        {
+          "month": "202608",
+          "settlement": 19.85,
+          "prev": 19.71,
+          "diff": 0.14,
+          "pct": 0.71
+        },
+        {
+          "month": "202609",
+          "settlement": 19.88,
+          "prev": 19.6,
+          "diff": 0.28,
+          "pct": 1.43
+        },
+        {
+          "month": "202610",
+          "settlement": 18.64,
+          "prev": 18.48,
+          "diff": 0.16,
+          "pct": 0.87
+        },
+        {
+          "month": "202611",
+          "settlement": 17.75,
+          "prev": 18.19,
+          "diff": -0.44,
+          "pct": -2.42
+        },
+        {
+          "month": "202612",
+          "settlement": 18.46,
+          "prev": 18.76,
+          "diff": -0.3,
+          "pct": -1.6
+        },
+        {
+          "month": "202701",
+          "settlement": 18.74,
+          "prev": 18.95,
+          "diff": -0.21,
+          "pct": -1.11
+        },
+        {
+          "month": "202702",
+          "settlement": 19.33,
+          "prev": 19.24,
+          "diff": 0.09,
+          "pct": 0.47
+        },
+        {
+          "month": "202703",
+          "settlement": 16.98,
+          "prev": 17.03,
+          "diff": -0.05,
+          "pct": -0.29
+        },
+        {
+          "month": "202704",
+          "settlement": 16.97,
+          "prev": 16.7,
+          "diff": 0.27,
+          "pct": 1.62
+        },
+        {
+          "month": "202705",
+          "settlement": 16.18,
+          "prev": 15.81,
+          "diff": 0.37,
+          "pct": 2.34
+        },
+        {
+          "month": "202706",
+          "settlement": 16.38,
+          "prev": 16.5,
+          "diff": -0.12,
+          "pct": -0.73
+        },
+        {
+          "month": "202707",
+          "settlement": 15.98,
+          "prev": 15.52,
+          "diff": 0.46,
+          "pct": 2.96
+        },
+        {
+          "month": "202708",
+          "settlement": 16.52,
+          "prev": 16.22,
+          "diff": 0.3,
+          "pct": 1.85
+        },
+        {
+          "month": "202709",
+          "settlement": 15.18,
+          "prev": 15.13,
+          "diff": 0.05,
+          "pct": 0.33
+        },
+        {
+          "month": "202710",
+          "settlement": 14.03,
+          "prev": 13.64,
+          "diff": 0.39,
+          "pct": 2.86
+        },
+        {
+          "month": "202711",
+          "settlement": 13.85,
+          "prev": 13.82,
+          "diff": 0.03,
+          "pct": 0.22
+        },
+        {
+          "month": "202712",
+          "settlement": 14.82,
+          "prev": 14.8,
+          "diff": 0.02,
+          "pct": 0.14
+        },
+        {
+          "month": "202801",
+          "settlement": 15.25,
+          "prev": 14.89,
+          "diff": 0.36,
+          "pct": 2.42
+        },
+        {
+          "month": "202802",
+          "settlement": 14.51,
+          "prev": 14.4,
+          "diff": 0.11,
+          "pct": 0.76
+        }
+      ],
+      "東・日中": [
+        {
+          "month": "202603",
+          "settlement": 15.58,
+          "prev": 16.16,
+          "diff": -0.58,
+          "pct": -3.59
+        },
+        {
+          "month": "202604",
+          "settlement": 23.0,
+          "prev": 20.13,
+          "diff": 2.87,
+          "pct": 14.26
+        },
+        {
+          "month": "202605",
+          "settlement": 23.0,
+          "prev": 20.27,
+          "diff": 2.73,
+          "pct": 13.47
+        },
+        {
+          "month": "202606",
+          "settlement": 23.0,
+          "prev": 22.7,
+          "diff": 0.3,
+          "pct": 1.32
+        },
+        {
+          "month": "202607",
+          "settlement": 24.78,
+          "prev": 23.92,
+          "diff": 0.86,
+          "pct": 3.6
+        },
+        {
+          "month": "202608",
+          "settlement": 24.39,
+          "prev": 23.96,
+          "diff": 0.43,
+          "pct": 1.79
+        },
+        {
+          "month": "202609",
+          "settlement": 24.3,
+          "prev": 23.82,
+          "diff": 0.48,
+          "pct": 2.02
+        },
+        {
+          "month": "202610",
+          "settlement": 21.47,
+          "prev": 21.3,
+          "diff": 0.17,
+          "pct": 0.8
+        },
+        {
+          "month": "202611",
+          "settlement": 21.51,
+          "prev": 21.18,
+          "diff": 0.33,
+          "pct": 1.56
+        },
+        {
+          "month": "202612",
+          "settlement": 21.94,
+          "prev": 21.73,
+          "diff": 0.21,
+          "pct": 0.97
+        },
+        {
+          "month": "202701",
+          "settlement": 22.09,
+          "prev": 21.9,
+          "diff": 0.19,
+          "pct": 0.87
+        },
+        {
+          "month": "202702",
+          "settlement": 22.54,
+          "prev": 22.07,
+          "diff": 0.47,
+          "pct": 2.13
+        },
+        {
+          "month": "202703",
+          "settlement": 19.98,
+          "prev": 19.83,
+          "diff": 0.15,
+          "pct": 0.76
+        },
+        {
+          "month": "202704",
+          "settlement": 17.69,
+          "prev": 17.57,
+          "diff": 0.12,
+          "pct": 0.68
+        },
+        {
+          "month": "202705",
+          "settlement": 17.04,
+          "prev": 16.83,
+          "diff": 0.21,
+          "pct": 1.25
+        },
+        {
+          "month": "202706",
+          "settlement": 17.9,
+          "prev": 17.82,
+          "diff": 0.08,
+          "pct": 0.45
+        },
+        {
+          "month": "202707",
+          "settlement": 17.42,
+          "prev": 17.33,
+          "diff": 0.09,
+          "pct": 0.52
+        },
+        {
+          "month": "202708",
+          "settlement": 18.71,
+          "prev": 18.28,
+          "diff": 0.43,
+          "pct": 2.35
+        },
+        {
+          "month": "202709",
+          "settlement": 17.64,
+          "prev": 17.14,
+          "diff": 0.5,
+          "pct": 2.92
+        },
+        {
+          "month": "202710",
+          "settlement": 15.46,
+          "prev": 15.11,
+          "diff": 0.35,
+          "pct": 2.32
+        },
+        {
+          "month": "202711",
+          "settlement": 15.61,
+          "prev": 15.62,
+          "diff": -0.01,
+          "pct": -0.06
+        },
+        {
+          "month": "202712",
+          "settlement": 17.02,
+          "prev": 16.83,
+          "diff": 0.19,
+          "pct": 1.13
+        },
+        {
+          "month": "202801",
+          "settlement": 16.88,
+          "prev": 16.79,
+          "diff": 0.09,
+          "pct": 0.54
+        },
+        {
+          "month": "202802",
+          "settlement": 16.14,
+          "prev": 15.95,
+          "diff": 0.19,
+          "pct": 1.19
+        }
+      ],
+      "西・ベース": [
+        {
+          "month": "202603",
+          "settlement": 12.88,
+          "prev": 13.3,
+          "diff": -0.42,
+          "pct": -3.16
+        },
+        {
+          "month": "202604",
+          "settlement": 14.96,
+          "prev": 15.17,
+          "diff": -0.21,
+          "pct": -1.38
+        },
+        {
+          "month": "202605",
+          "settlement": 15.03,
+          "prev": 14.79,
+          "diff": 0.24,
+          "pct": 1.62
+        },
+        {
+          "month": "202606",
+          "settlement": 16.7,
+          "prev": 16.78,
+          "diff": -0.08,
+          "pct": -0.48
+        },
+        {
+          "month": "202607",
+          "settlement": 17.56,
+          "prev": 17.23,
+          "diff": 0.33,
+          "pct": 1.92
+        },
+        {
+          "month": "202608",
+          "settlement": 17.88,
+          "prev": 17.24,
+          "diff": 0.64,
+          "pct": 3.71
+        },
+        {
+          "month": "202609",
+          "settlement": 17.65,
+          "prev": 17.11,
+          "diff": 0.54,
+          "pct": 3.16
+        },
+        {
+          "month": "202610",
+          "settlement": 15.52,
+          "prev": 15.38,
+          "diff": 0.14,
+          "pct": 0.91
+        },
+        {
+          "month": "202611",
+          "settlement": 15.42,
+          "prev": 15.37,
+          "diff": 0.05,
+          "pct": 0.33
+        },
+        {
+          "month": "202612",
+          "settlement": 16.39,
+          "prev": 16.49,
+          "diff": -0.1,
+          "pct": -0.61
+        },
+        {
+          "month": "202701",
+          "settlement": 17.04,
+          "prev": 16.8,
+          "diff": 0.24,
+          "pct": 1.43
+        },
+        {
+          "month": "202702",
+          "settlement": 17.11,
+          "prev": 16.88,
+          "diff": 0.23,
+          "pct": 1.36
+        },
+        {
+          "month": "202703",
+          "settlement": 15.06,
+          "prev": 14.94,
+          "diff": 0.12,
+          "pct": 0.8
+        },
+        {
+          "month": "202704",
+          "settlement": 14.31,
+          "prev": 14.37,
+          "diff": -0.06,
+          "pct": -0.42
+        },
+        {
+          "month": "202705",
+          "settlement": 14.12,
+          "prev": 13.95,
+          "diff": 0.17,
+          "pct": 1.22
+        },
+        {
+          "month": "202706",
+          "settlement": 14.11,
+          "prev": 14.04,
+          "diff": 0.07,
+          "pct": 0.5
+        },
+        {
+          "month": "202707",
+          "settlement": 14.18,
+          "prev": 13.96,
+          "diff": 0.22,
+          "pct": 1.58
+        },
+        {
+          "month": "202708",
+          "settlement": 14.56,
+          "prev": 14.47,
+          "diff": 0.09,
+          "pct": 0.62
+        },
+        {
+          "month": "202709",
+          "settlement": 13.68,
+          "prev": 13.56,
+          "diff": 0.12,
+          "pct": 0.88
+        },
+        {
+          "month": "202710",
+          "settlement": 12.51,
+          "prev": 12.29,
+          "diff": 0.22,
+          "pct": 1.79
+        },
+        {
+          "month": "202711",
+          "settlement": 12.71,
+          "prev": 12.5,
+          "diff": 0.21,
+          "pct": 1.68
+        },
+        {
+          "month": "202712",
+          "settlement": 14.21,
+          "prev": 13.85,
+          "diff": 0.36,
+          "pct": 2.6
+        },
+        {
+          "month": "202801",
+          "settlement": 14.33,
+          "prev": 13.98,
+          "diff": 0.35,
+          "pct": 2.5
+        },
+        {
+          "month": "202802",
+          "settlement": 13.59,
+          "prev": 13.34,
+          "diff": 0.25,
+          "pct": 1.87
+        }
+      ],
+      "西・日中": [
+        {
+          "month": "202603",
+          "settlement": 12.92,
+          "prev": 13.48,
+          "diff": -0.56,
+          "pct": -4.15
+        },
+        {
+          "month": "202604",
+          "settlement": 16.08,
+          "prev": 15.51,
+          "diff": 0.57,
+          "pct": 3.68
+        },
+        {
+          "month": "202605",
+          "settlement": 15.63,
+          "prev": 15.36,
+          "diff": 0.27,
+          "pct": 1.76
+        },
+        {
+          "month": "202606",
+          "settlement": 19.86,
+          "prev": 18.84,
+          "diff": 1.02,
+          "pct": 5.41
+        },
+        {
+          "month": "202607",
+          "settlement": 23.14,
+          "prev": 21.45,
+          "diff": 1.69,
+          "pct": 7.88
+        },
+        {
+          "month": "202608",
+          "settlement": 22.95,
+          "prev": 21.54,
+          "diff": 1.41,
+          "pct": 6.55
+        },
+        {
+          "month": "202609",
+          "settlement": 22.85,
+          "prev": 21.15,
+          "diff": 1.7,
+          "pct": 8.04
+        },
+        {
+          "month": "202610",
+          "settlement": 18.0,
+          "prev": 17.06,
+          "diff": 0.94,
+          "pct": 5.51
+        },
+        {
+          "month": "202611",
+          "settlement": 17.73,
+          "prev": 17.02,
+          "diff": 0.71,
+          "pct": 4.17
+        },
+        {
+          "month": "202612",
+          "settlement": 19.03,
+          "prev": 18.06,
+          "diff": 0.97,
+          "pct": 5.37
+        },
+        {
+          "month": "202701",
+          "settlement": 19.39,
+          "prev": 18.65,
+          "diff": 0.74,
+          "pct": 3.97
+        },
+        {
+          "month": "202702",
+          "settlement": 18.97,
+          "prev": 18.4,
+          "diff": 0.57,
+          "pct": 3.1
+        },
+        {
+          "month": "202703",
+          "settlement": 16.93,
+          "prev": 16.28,
+          "diff": 0.65,
+          "pct": 3.99
+        },
+        {
+          "month": "202704",
+          "settlement": 14.52,
+          "prev": 14.45,
+          "diff": 0.07,
+          "pct": 0.48
+        },
+        {
+          "month": "202705",
+          "settlement": 14.4,
+          "prev": 14.08,
+          "diff": 0.32,
+          "pct": 2.27
+        },
+        {
+          "month": "202706",
+          "settlement": 15.86,
+          "prev": 15.72,
+          "diff": 0.14,
+          "pct": 0.89
+        },
+        {
+          "month": "202707",
+          "settlement": 16.95,
+          "prev": 16.27,
+          "diff": 0.68,
+          "pct": 4.18
+        },
+        {
+          "month": "202708",
+          "settlement": 17.69,
+          "prev": 17.16,
+          "diff": 0.53,
+          "pct": 3.09
+        },
+        {
+          "month": "202709",
+          "settlement": 16.25,
+          "prev": 15.83,
+          "diff": 0.42,
+          "pct": 2.65
+        },
+        {
+          "month": "202710",
+          "settlement": 13.57,
+          "prev": 13.42,
+          "diff": 0.15,
+          "pct": 1.12
+        },
+        {
+          "month": "202711",
+          "settlement": 14.0,
+          "prev": 13.89,
+          "diff": 0.11,
+          "pct": 0.79
+        },
+        {
+          "month": "202712",
+          "settlement": 15.82,
+          "prev": 15.34,
+          "diff": 0.48,
+          "pct": 3.13
+        },
+        {
+          "month": "202801",
+          "settlement": 15.87,
+          "prev": 15.35,
+          "diff": 0.52,
+          "pct": 3.39
+        },
+        {
+          "month": "202802",
+          "settlement": 14.5,
+          "prev": 14.42,
+          "diff": 0.08,
+          "pct": 0.55
+        }
+      ]
+    },
+    "spreads": {
+      "base": [
+        {
+          "month": "202603",
+          "spread": 1.9,
+          "prev_spread": 1.97,
+          "spread_change": -0.07
+        },
+        {
+          "month": "202604",
+          "spread": 3.86,
+          "prev_spread": 3.48,
+          "spread_change": 0.38
+        },
+        {
+          "month": "202605",
+          "spread": 3.62,
+          "prev_spread": 3.74,
+          "spread_change": -0.12
+        },
+        {
+          "month": "202606",
+          "spread": 3.19,
+          "prev_spread": 3.04,
+          "spread_change": 0.15
+        },
+        {
+          "month": "202607",
+          "spread": 1.96,
+          "prev_spread": 2.51,
+          "spread_change": -0.55
+        },
+        {
+          "month": "202608",
+          "spread": 1.97,
+          "prev_spread": 2.47,
+          "spread_change": -0.5
+        },
+        {
+          "month": "202609",
+          "spread": 2.23,
+          "prev_spread": 2.49,
+          "spread_change": -0.26
+        },
+        {
+          "month": "202610",
+          "spread": 3.12,
+          "prev_spread": 3.1,
+          "spread_change": 0.02
+        },
+        {
+          "month": "202611",
+          "spread": 2.33,
+          "prev_spread": 2.82,
+          "spread_change": -0.49
+        },
+        {
+          "month": "202612",
+          "spread": 2.07,
+          "prev_spread": 2.27,
+          "spread_change": -0.2
+        },
+        {
+          "month": "202701",
+          "spread": 1.7,
+          "prev_spread": 2.15,
+          "spread_change": -0.45
+        },
+        {
+          "month": "202702",
+          "spread": 2.22,
+          "prev_spread": 2.36,
+          "spread_change": -0.14
+        },
+        {
+          "month": "202703",
+          "spread": 1.92,
+          "prev_spread": 2.09,
+          "spread_change": -0.17
+        },
+        {
+          "month": "202704",
+          "spread": 2.66,
+          "prev_spread": 2.33,
+          "spread_change": 0.33
+        },
+        {
+          "month": "202705",
+          "spread": 2.06,
+          "prev_spread": 1.86,
+          "spread_change": 0.2
+        },
+        {
+          "month": "202706",
+          "spread": 2.27,
+          "prev_spread": 2.46,
+          "spread_change": -0.19
+        },
+        {
+          "month": "202707",
+          "spread": 1.8,
+          "prev_spread": 1.56,
+          "spread_change": 0.24
+        },
+        {
+          "month": "202708",
+          "spread": 1.96,
+          "prev_spread": 1.75,
+          "spread_change": 0.21
+        },
+        {
+          "month": "202709",
+          "spread": 1.5,
+          "prev_spread": 1.57,
+          "spread_change": -0.07
+        },
+        {
+          "month": "202710",
+          "spread": 1.52,
+          "prev_spread": 1.35,
+          "spread_change": 0.17
+        },
+        {
+          "month": "202711",
+          "spread": 1.14,
+          "prev_spread": 1.32,
+          "spread_change": -0.18
+        },
+        {
+          "month": "202712",
+          "spread": 0.61,
+          "prev_spread": 0.95,
+          "spread_change": -0.34
+        },
+        {
+          "month": "202801",
+          "spread": 0.92,
+          "prev_spread": 0.91,
+          "spread_change": 0.01
+        },
+        {
+          "month": "202802",
+          "spread": 0.92,
+          "prev_spread": 1.06,
+          "spread_change": -0.14
+        }
+      ],
+      "peak": [
+        {
+          "month": "202603",
+          "spread": 2.66,
+          "prev_spread": 2.68,
+          "spread_change": -0.02
+        },
+        {
+          "month": "202604",
+          "spread": 6.92,
+          "prev_spread": 4.62,
+          "spread_change": 2.3
+        },
+        {
+          "month": "202605",
+          "spread": 7.37,
+          "prev_spread": 4.91,
+          "spread_change": 2.46
+        },
+        {
+          "month": "202606",
+          "spread": 3.14,
+          "prev_spread": 3.86,
+          "spread_change": -0.72
+        },
+        {
+          "month": "202607",
+          "spread": 1.64,
+          "prev_spread": 2.47,
+          "spread_change": -0.83
+        },
+        {
+          "month": "202608",
+          "spread": 1.44,
+          "prev_spread": 2.42,
+          "spread_change": -0.98
+        },
+        {
+          "month": "202609",
+          "spread": 1.45,
+          "prev_spread": 2.67,
+          "spread_change": -1.22
+        },
+        {
+          "month": "202610",
+          "spread": 3.47,
+          "prev_spread": 4.24,
+          "spread_change": -0.77
+        },
+        {
+          "month": "202611",
+          "spread": 3.78,
+          "prev_spread": 4.16,
+          "spread_change": -0.38
+        },
+        {
+          "month": "202612",
+          "spread": 2.91,
+          "prev_spread": 3.67,
+          "spread_change": -0.76
+        },
+        {
+          "month": "202701",
+          "spread": 2.7,
+          "prev_spread": 3.25,
+          "spread_change": -0.55
+        },
+        {
+          "month": "202702",
+          "spread": 3.57,
+          "prev_spread": 3.67,
+          "spread_change": -0.1
+        },
+        {
+          "month": "202703",
+          "spread": 3.05,
+          "prev_spread": 3.55,
+          "spread_change": -0.5
+        },
+        {
+          "month": "202704",
+          "spread": 3.17,
+          "prev_spread": 3.12,
+          "spread_change": 0.05
+        },
+        {
+          "month": "202705",
+          "spread": 2.64,
+          "prev_spread": 2.75,
+          "spread_change": -0.11
+        },
+        {
+          "month": "202706",
+          "spread": 2.04,
+          "prev_spread": 2.1,
+          "spread_change": -0.06
+        },
+        {
+          "month": "202707",
+          "spread": 0.47,
+          "prev_spread": 1.06,
+          "spread_change": -0.59
+        },
+        {
+          "month": "202708",
+          "spread": 1.02,
+          "prev_spread": 1.12,
+          "spread_change": -0.1
+        },
+        {
+          "month": "202709",
+          "spread": 1.39,
+          "prev_spread": 1.31,
+          "spread_change": 0.08
+        },
+        {
+          "month": "202710",
+          "spread": 1.89,
+          "prev_spread": 1.69,
+          "spread_change": 0.2
+        },
+        {
+          "month": "202711",
+          "spread": 1.61,
+          "prev_spread": 1.73,
+          "spread_change": -0.12
+        },
+        {
+          "month": "202712",
+          "spread": 1.2,
+          "prev_spread": 1.49,
+          "spread_change": -0.29
+        },
+        {
+          "month": "202801",
+          "spread": 1.01,
+          "prev_spread": 1.44,
+          "spread_change": -0.43
+        },
+        {
+          "month": "202802",
+          "spread": 1.64,
+          "prev_spread": 1.53,
+          "spread_change": 0.11
+        }
+      ]
+    }
+  },
   "power_futures": [
     {
       "name": "FUT_EEB_260330",
@@ -4597,5 +5601,2706 @@
       "cal": 0,
       "put": 0
     }
-  ]
+  ],
+  "commodity_snapshot": [
+    {
+      "underlying_name": "バージ軽油",
+      "display_en": "Barge Gas Oil",
+      "display_ja": "バージ軽油",
+      "category": "energy",
+      "subcategory": "petroleum",
+      "unit": "JPY/kl",
+      "settlement": 115900.0,
+      "contract_month": "202604",
+      "instrument_name": "FUT_GAO_260325",
+      "prev_settlement": 121300.0,
+      "change_diff": -5400.0,
+      "change_pct": -4.45
+    },
+    {
+      "underlying_name": "バージガソリン",
+      "display_en": "Barge Gasoline",
+      "display_ja": "バージガソリン",
+      "category": "energy",
+      "subcategory": "petroleum",
+      "unit": "JPY/kl",
+      "settlement": 150000.0,
+      "contract_month": "202604",
+      "instrument_name": "FUT_GAS_260325",
+      "prev_settlement": 150000.0,
+      "change_diff": 0.0,
+      "change_pct": 0.0
+    },
+    {
+      "underlying_name": "バージ灯油",
+      "display_en": "Barge Kerosene",
+      "display_ja": "バージ灯油",
+      "category": "energy",
+      "subcategory": "petroleum",
+      "unit": "JPY/kl",
+      "settlement": 140000.0,
+      "contract_month": "202604",
+      "instrument_name": "FUT_KRO_260325",
+      "prev_settlement": 140000.0,
+      "change_diff": 0.0,
+      "change_pct": 0.0
+    },
+    {
+      "underlying_name": "中京ガソリン",
+      "display_en": "Chukyo Gasoline",
+      "display_ja": "中京ガソリン",
+      "category": "energy",
+      "subcategory": "petroleum",
+      "unit": "JPY/kl",
+      "settlement": 140000.0,
+      "contract_month": "202604",
+      "instrument_name": "FUT_CGAS_260325",
+      "prev_settlement": 140000.0,
+      "change_diff": 0.0,
+      "change_pct": 0.0
+    },
+    {
+      "underlying_name": "中京灯油",
+      "display_en": "Chukyo Kerosene",
+      "display_ja": "中京灯油",
+      "category": "energy",
+      "subcategory": "petroleum",
+      "unit": "JPY/kl",
+      "settlement": 130000.0,
+      "contract_month": "202604",
+      "instrument_name": "FUT_CKRO_260325",
+      "prev_settlement": 130000.0,
+      "change_diff": 0.0,
+      "change_pct": 0.0
+    },
+    {
+      "underlying_name": "ドバイ原油",
+      "display_en": "Dubai Crude Oil",
+      "display_ja": "ドバイ原油",
+      "category": "energy",
+      "subcategory": "crude",
+      "unit": "JPY/kl",
+      "settlement": 135840.0,
+      "contract_month": "202603",
+      "instrument_name": "FUT_DBAI_260331",
+      "prev_settlement": 126000.0,
+      "change_diff": 9840.0,
+      "change_pct": 7.81
+    },
+    {
+      "underlying_name": "LNG(プラッツJKM)",
+      "display_en": "LNG (Platts JKM)",
+      "display_ja": "LNG(プラッツJKM)",
+      "category": "energy",
+      "subcategory": "lng",
+      "unit": "USD/MMBtu",
+      "settlement": 3210.0,
+      "contract_month": "202605",
+      "instrument_name": "FUT_LNG_260415",
+      "prev_settlement": 3081.0,
+      "change_diff": 129.0,
+      "change_pct": 4.19
+    },
+    {
+      "underlying_name": "金",
+      "display_en": "Gold",
+      "display_ja": "金",
+      "category": "metals",
+      "subcategory": "precious",
+      "unit": "JPY/g",
+      "settlement": 24731.0,
+      "contract_month": "-",
+      "instrument_name": "FUT_GLDD",
+      "prev_settlement": 25355.0,
+      "change_diff": -624.0,
+      "change_pct": -2.46
+    },
+    {
+      "underlying_name": "パラジウム",
+      "display_en": "Palladium",
+      "display_ja": "パラジウム",
+      "category": "metals",
+      "subcategory": "precious",
+      "unit": "JPY/g",
+      "settlement": 7800.0,
+      "contract_month": "202604",
+      "instrument_name": "FUT_PALD_260424",
+      "prev_settlement": 8100.0,
+      "change_diff": -300.0,
+      "change_pct": -3.7
+    },
+    {
+      "underlying_name": "白金",
+      "display_en": "Platinum",
+      "display_ja": "白金",
+      "category": "metals",
+      "subcategory": "precious",
+      "unit": "JPY/g",
+      "settlement": 9677.0,
+      "contract_month": "-",
+      "instrument_name": "FUT_PLTD",
+      "prev_settlement": 10389.0,
+      "change_diff": -712.0,
+      "change_pct": -6.85
+    },
+    {
+      "underlying_name": "銀",
+      "display_en": "Silver",
+      "display_ja": "銀",
+      "category": "metals",
+      "subcategory": "precious",
+      "unit": "JPY/10g",
+      "settlement": 400.0,
+      "contract_month": "202604",
+      "instrument_name": "FUT_SILV_260424",
+      "prev_settlement": 400.0,
+      "change_diff": 0.0,
+      "change_pct": 0.0
+    },
+    {
+      "underlying_name": "ゴム(RSS3)",
+      "display_en": "Rubber (RSS3)",
+      "display_ja": "ゴム(RSS3)",
+      "category": "industrial",
+      "subcategory": "rubber",
+      "unit": "JPY/kg",
+      "settlement": 375.0,
+      "contract_month": "202603",
+      "instrument_name": "FUT_RSS3_260325",
+      "prev_settlement": 375.0,
+      "change_diff": 0.0,
+      "change_pct": 0.0
+    },
+    {
+      "underlying_name": "ゴム(TSR20)",
+      "display_en": "Rubber (TSR20)",
+      "display_ja": "ゴム(TSR20)",
+      "category": "industrial",
+      "subcategory": "rubber",
+      "unit": "JPY/kg",
+      "settlement": 310.0,
+      "contract_month": "202604",
+      "instrument_name": "FUT_TSR2_260331",
+      "prev_settlement": 310.0,
+      "change_diff": 0.0,
+      "change_pct": 0.0
+    },
+    {
+      "underlying_name": "上海天然ゴム",
+      "display_en": "Shanghai Natural Rubber",
+      "display_ja": "上海天然ゴム",
+      "category": "industrial",
+      "subcategory": "rubber",
+      "unit": "JPY/kg",
+      "settlement": 16035.0,
+      "contract_month": "202605",
+      "instrument_name": "FUT_SHRU_260515",
+      "prev_settlement": 16390.0,
+      "change_diff": -355.0,
+      "change_pct": -2.17
+    },
+    {
+      "underlying_name": "小豆",
+      "display_en": "Azuki Beans",
+      "display_ja": "小豆",
+      "category": "agriculture",
+      "subcategory": "grains",
+      "unit": "JPY/bag",
+      "settlement": 12300.0,
+      "contract_month": "202603",
+      "instrument_name": "FUT_REDB_260326",
+      "prev_settlement": 12300.0,
+      "change_diff": 0.0,
+      "change_pct": 0.0
+    },
+    {
+      "underlying_name": "とうもろこし",
+      "display_en": "Corn",
+      "display_ja": "とうもろこし",
+      "category": "agriculture",
+      "subcategory": "grains",
+      "unit": "JPY/t",
+      "settlement": 39000.0,
+      "contract_month": "202605",
+      "instrument_name": "FUT_CORN_260415",
+      "prev_settlement": 39000.0,
+      "change_diff": 0.0,
+      "change_pct": 0.0
+    },
+    {
+      "underlying_name": "大豆",
+      "display_en": "Soybeans",
+      "display_ja": "大豆",
+      "category": "agriculture",
+      "subcategory": "grains",
+      "unit": "JPY/t",
+      "settlement": 64000.0,
+      "contract_month": "202604",
+      "instrument_name": "FUT_SOYB_260415",
+      "prev_settlement": 64000.0,
+      "change_diff": 0.0,
+      "change_pct": 0.0
+    }
+  ],
+  "commodity_curves": {
+    "ドバイ原油": {
+      "display_en": "Dubai Crude Oil",
+      "display_ja": "ドバイ原油",
+      "category": "energy",
+      "unit": "JPY/kl",
+      "curve": [
+        {
+          "month": "202603",
+          "settlement": 135840.0,
+          "theoretical": null,
+          "days": 13,
+          "name": "FUT_DBAI_260331",
+          "instrument_code": "1610300A7"
+        },
+        {
+          "month": "202604",
+          "settlement": 110600.0,
+          "theoretical": null,
+          "days": 43,
+          "name": "FUT_DBAI_260430",
+          "instrument_code": "1610400A7"
+        },
+        {
+          "month": "202605",
+          "settlement": 100900.0,
+          "theoretical": null,
+          "days": 74,
+          "name": "FUT_DBAI_260529",
+          "instrument_code": "1610500A7"
+        },
+        {
+          "month": "202606",
+          "settlement": 96740.0,
+          "theoretical": null,
+          "days": 104,
+          "name": "FUT_DBAI_260630",
+          "instrument_code": "1610600A7"
+        },
+        {
+          "month": "202607",
+          "settlement": 93010.0,
+          "theoretical": null,
+          "days": 137,
+          "name": "FUT_DBAI_260731",
+          "instrument_code": "1610700A7"
+        },
+        {
+          "month": "202608",
+          "settlement": 90160.0,
+          "theoretical": null,
+          "days": 166,
+          "name": "FUT_DBAI_260831",
+          "instrument_code": "1610800A7"
+        },
+        {
+          "month": "202609",
+          "settlement": 86000.0,
+          "theoretical": null,
+          "days": 196,
+          "name": "FUT_DBAI_260930",
+          "instrument_code": "1610900A7"
+        },
+        {
+          "month": "202610",
+          "settlement": 86900.0,
+          "theoretical": null,
+          "days": 228,
+          "name": "FUT_DBAI_261030",
+          "instrument_code": "1611000A7"
+        },
+        {
+          "month": "202611",
+          "settlement": 85500.0,
+          "theoretical": null,
+          "days": 257,
+          "name": "FUT_DBAI_261130",
+          "instrument_code": "1611100A7"
+        },
+        {
+          "month": "202612",
+          "settlement": 84180.0,
+          "theoretical": null,
+          "days": 291,
+          "name": "FUT_DBAI_261230",
+          "instrument_code": "1611200A7"
+        },
+        {
+          "month": "202701",
+          "settlement": 83140.0,
+          "theoretical": null,
+          "days": 319,
+          "name": "FUT_DBAI_270129",
+          "instrument_code": "1620100A7"
+        },
+        {
+          "month": "202702",
+          "settlement": 82210.0,
+          "theoretical": null,
+          "days": 347,
+          "name": "FUT_DBAI_270226",
+          "instrument_code": "1620200A7"
+        },
+        {
+          "month": "202703",
+          "settlement": 81470.0,
+          "theoretical": null,
+          "days": 378,
+          "name": "FUT_DBAI_270331",
+          "instrument_code": "1620300A7"
+        },
+        {
+          "month": "202704",
+          "settlement": 80720.0,
+          "theoretical": null,
+          "days": 413,
+          "name": "FUT_DBAI_270430",
+          "instrument_code": "1620400A7"
+        },
+        {
+          "month": "202705",
+          "settlement": 79980.0,
+          "theoretical": null,
+          "days": 439,
+          "name": "FUT_DBAI_270531",
+          "instrument_code": "1620500A7"
+        }
+      ],
+      "prev_curve": [
+        {
+          "month": "202603",
+          "settlement": 126000.0,
+          "theoretical": null,
+          "days": 14,
+          "name": "FUT_DBAI_260331",
+          "instrument_code": "1610300A7"
+        },
+        {
+          "month": "202604",
+          "settlement": 100960.0,
+          "theoretical": null,
+          "days": 44,
+          "name": "FUT_DBAI_260430",
+          "instrument_code": "1610400A7"
+        },
+        {
+          "month": "202605",
+          "settlement": 96480.0,
+          "theoretical": null,
+          "days": 75,
+          "name": "FUT_DBAI_260529",
+          "instrument_code": "1610500A7"
+        },
+        {
+          "month": "202606",
+          "settlement": 88060.0,
+          "theoretical": null,
+          "days": 105,
+          "name": "FUT_DBAI_260630",
+          "instrument_code": "1610600A7"
+        },
+        {
+          "month": "202607",
+          "settlement": 85110.0,
+          "theoretical": null,
+          "days": 138,
+          "name": "FUT_DBAI_260731",
+          "instrument_code": "1610700A7"
+        },
+        {
+          "month": "202608",
+          "settlement": 83150.0,
+          "theoretical": null,
+          "days": 167,
+          "name": "FUT_DBAI_260831",
+          "instrument_code": "1610800A7"
+        },
+        {
+          "month": "202609",
+          "settlement": 81470.0,
+          "theoretical": null,
+          "days": 197,
+          "name": "FUT_DBAI_260930",
+          "instrument_code": "1610900A7"
+        },
+        {
+          "month": "202610",
+          "settlement": 79930.0,
+          "theoretical": null,
+          "days": 229,
+          "name": "FUT_DBAI_261030",
+          "instrument_code": "1611000A7"
+        },
+        {
+          "month": "202611",
+          "settlement": 78530.0,
+          "theoretical": null,
+          "days": 258,
+          "name": "FUT_DBAI_261130",
+          "instrument_code": "1611100A7"
+        },
+        {
+          "month": "202612",
+          "settlement": 77110.0,
+          "theoretical": null,
+          "days": 292,
+          "name": "FUT_DBAI_261230",
+          "instrument_code": "1611200A7"
+        },
+        {
+          "month": "202701",
+          "settlement": 75980.0,
+          "theoretical": null,
+          "days": 320,
+          "name": "FUT_DBAI_270129",
+          "instrument_code": "1620100A7"
+        },
+        {
+          "month": "202702",
+          "settlement": 75010.0,
+          "theoretical": null,
+          "days": 348,
+          "name": "FUT_DBAI_270226",
+          "instrument_code": "1620200A7"
+        },
+        {
+          "month": "202703",
+          "settlement": 74250.0,
+          "theoretical": null,
+          "days": 379,
+          "name": "FUT_DBAI_270331",
+          "instrument_code": "1620300A7"
+        },
+        {
+          "month": "202704",
+          "settlement": 73490.0,
+          "theoretical": null,
+          "days": 414,
+          "name": "FUT_DBAI_270430",
+          "instrument_code": "1620400A7"
+        },
+        {
+          "month": "202705",
+          "settlement": 72740.0,
+          "theoretical": null,
+          "days": 440,
+          "name": "FUT_DBAI_270531",
+          "instrument_code": "1620500A7"
+        }
+      ]
+    },
+    "LNG(プラッツJKM)": {
+      "display_en": "LNG (Platts JKM)",
+      "display_ja": "LNG(プラッツJKM)",
+      "category": "energy",
+      "unit": "USD/MMBtu",
+      "curve": [
+        {
+          "month": "202605",
+          "settlement": 3210.0,
+          "theoretical": null,
+          "days": 28,
+          "name": "FUT_LNG_260415",
+          "instrument_code": "1610500B0"
+        },
+        {
+          "month": "202606",
+          "settlement": 3160.0,
+          "theoretical": null,
+          "days": 60,
+          "name": "FUT_LNG_260515",
+          "instrument_code": "1610600B0"
+        },
+        {
+          "month": "202607",
+          "settlement": 3101.0,
+          "theoretical": null,
+          "days": 89,
+          "name": "FUT_LNG_260615",
+          "instrument_code": "1610700B0"
+        },
+        {
+          "month": "202608",
+          "settlement": 3029.0,
+          "theoretical": null,
+          "days": 119,
+          "name": "FUT_LNG_260715",
+          "instrument_code": "1610800B0"
+        },
+        {
+          "month": "202609",
+          "settlement": 2965.0,
+          "theoretical": null,
+          "days": 151,
+          "name": "FUT_LNG_260814",
+          "instrument_code": "1610900B0"
+        },
+        {
+          "month": "202610",
+          "settlement": 2884.0,
+          "theoretical": null,
+          "days": 181,
+          "name": "FUT_LNG_260915",
+          "instrument_code": "1611000B0"
+        },
+        {
+          "month": "202611",
+          "settlement": 2863.0,
+          "theoretical": null,
+          "days": 211,
+          "name": "FUT_LNG_261015",
+          "instrument_code": "1611100B0"
+        },
+        {
+          "month": "202612",
+          "settlement": 2882.0,
+          "theoretical": null,
+          "days": 242,
+          "name": "FUT_LNG_261113",
+          "instrument_code": "1611200B0"
+        },
+        {
+          "month": "202701",
+          "settlement": 2836.0,
+          "theoretical": null,
+          "days": 272,
+          "name": "FUT_LNG_261215",
+          "instrument_code": "1620100B0"
+        },
+        {
+          "month": "202702",
+          "settlement": 2772.0,
+          "theoretical": null,
+          "days": 305,
+          "name": "FUT_LNG_270115",
+          "instrument_code": "1620200B0"
+        },
+        {
+          "month": "202703",
+          "settlement": 2516.0,
+          "theoretical": null,
+          "days": 334,
+          "name": "FUT_LNG_270215",
+          "instrument_code": "1620300B0"
+        },
+        {
+          "month": "202704",
+          "settlement": 2164.0,
+          "theoretical": null,
+          "days": 362,
+          "name": "FUT_LNG_270315",
+          "instrument_code": "1620400B0"
+        },
+        {
+          "month": "202705",
+          "settlement": 1987.0,
+          "theoretical": null,
+          "days": 393,
+          "name": "FUT_LNG_270415",
+          "instrument_code": "1620500B0"
+        },
+        {
+          "month": "202706",
+          "settlement": 1939.0,
+          "theoretical": null,
+          "days": 424,
+          "name": "FUT_LNG_270514",
+          "instrument_code": "1620600B0"
+        },
+        {
+          "month": "202707",
+          "settlement": 1931.0,
+          "theoretical": null,
+          "days": 454,
+          "name": "FUT_LNG_270615",
+          "instrument_code": "1620700B0"
+        }
+      ],
+      "prev_curve": [
+        {
+          "month": "202605",
+          "settlement": 3081.0,
+          "theoretical": null,
+          "days": 29,
+          "name": "FUT_LNG_260415",
+          "instrument_code": "1610500B0"
+        },
+        {
+          "month": "202606",
+          "settlement": 2992.0,
+          "theoretical": null,
+          "days": 61,
+          "name": "FUT_LNG_260515",
+          "instrument_code": "1610600B0"
+        },
+        {
+          "month": "202607",
+          "settlement": 2934.0,
+          "theoretical": null,
+          "days": 90,
+          "name": "FUT_LNG_260615",
+          "instrument_code": "1610700B0"
+        },
+        {
+          "month": "202608",
+          "settlement": 2846.0,
+          "theoretical": null,
+          "days": 120,
+          "name": "FUT_LNG_260715",
+          "instrument_code": "1610800B0"
+        },
+        {
+          "month": "202609",
+          "settlement": 2785.0,
+          "theoretical": null,
+          "days": 152,
+          "name": "FUT_LNG_260814",
+          "instrument_code": "1610900B0"
+        },
+        {
+          "month": "202610",
+          "settlement": 2717.0,
+          "theoretical": null,
+          "days": 182,
+          "name": "FUT_LNG_260915",
+          "instrument_code": "1611000B0"
+        },
+        {
+          "month": "202611",
+          "settlement": 2696.0,
+          "theoretical": null,
+          "days": 212,
+          "name": "FUT_LNG_261015",
+          "instrument_code": "1611100B0"
+        },
+        {
+          "month": "202612",
+          "settlement": 2714.0,
+          "theoretical": null,
+          "days": 243,
+          "name": "FUT_LNG_261113",
+          "instrument_code": "1611200B0"
+        },
+        {
+          "month": "202701",
+          "settlement": 2694.0,
+          "theoretical": null,
+          "days": 273,
+          "name": "FUT_LNG_261215",
+          "instrument_code": "1620100B0"
+        },
+        {
+          "month": "202702",
+          "settlement": 2642.0,
+          "theoretical": null,
+          "days": 306,
+          "name": "FUT_LNG_270115",
+          "instrument_code": "1620200B0"
+        },
+        {
+          "month": "202703",
+          "settlement": 2417.0,
+          "theoretical": null,
+          "days": 335,
+          "name": "FUT_LNG_270215",
+          "instrument_code": "1620300B0"
+        },
+        {
+          "month": "202704",
+          "settlement": 2139.0,
+          "theoretical": null,
+          "days": 363,
+          "name": "FUT_LNG_270315",
+          "instrument_code": "1620400B0"
+        },
+        {
+          "month": "202705",
+          "settlement": 1983.0,
+          "theoretical": null,
+          "days": 394,
+          "name": "FUT_LNG_270415",
+          "instrument_code": "1620500B0"
+        },
+        {
+          "month": "202706",
+          "settlement": 1933.0,
+          "theoretical": null,
+          "days": 425,
+          "name": "FUT_LNG_270514",
+          "instrument_code": "1620600B0"
+        },
+        {
+          "month": "202707",
+          "settlement": 1931.0,
+          "theoretical": null,
+          "days": 455,
+          "name": "FUT_LNG_270615",
+          "instrument_code": "1620700B0"
+        }
+      ]
+    },
+    "バージガソリン": {
+      "display_en": "Barge Gasoline",
+      "display_ja": "バージガソリン",
+      "category": "energy",
+      "unit": "JPY/kl",
+      "curve": [
+        {
+          "month": "202604",
+          "settlement": 150000.0,
+          "theoretical": null,
+          "days": 6,
+          "name": "FUT_GAS_260325",
+          "instrument_code": "1610400A8"
+        },
+        {
+          "month": "202605",
+          "settlement": 150000.0,
+          "theoretical": null,
+          "days": 36,
+          "name": "FUT_GAS_260424",
+          "instrument_code": "1610500A8"
+        },
+        {
+          "month": "202606",
+          "settlement": 150000.0,
+          "theoretical": null,
+          "days": 67,
+          "name": "FUT_GAS_260525",
+          "instrument_code": "1610600A8"
+        },
+        {
+          "month": "202607",
+          "settlement": 150000.0,
+          "theoretical": null,
+          "days": 98,
+          "name": "FUT_GAS_260625",
+          "instrument_code": "1610700A8"
+        },
+        {
+          "month": "202608",
+          "settlement": 150000.0,
+          "theoretical": null,
+          "days": 127,
+          "name": "FUT_GAS_260724",
+          "instrument_code": "1610800A8"
+        },
+        {
+          "month": "202609",
+          "settlement": 150000.0,
+          "theoretical": null,
+          "days": 159,
+          "name": "FUT_GAS_260825",
+          "instrument_code": "1610900A8"
+        }
+      ],
+      "prev_curve": [
+        {
+          "month": "202604",
+          "settlement": 150000.0,
+          "theoretical": null,
+          "days": 7,
+          "name": "FUT_GAS_260325",
+          "instrument_code": "1610400A8"
+        },
+        {
+          "month": "202605",
+          "settlement": 150000.0,
+          "theoretical": null,
+          "days": 37,
+          "name": "FUT_GAS_260424",
+          "instrument_code": "1610500A8"
+        },
+        {
+          "month": "202606",
+          "settlement": 150000.0,
+          "theoretical": null,
+          "days": 68,
+          "name": "FUT_GAS_260525",
+          "instrument_code": "1610600A8"
+        },
+        {
+          "month": "202607",
+          "settlement": 150000.0,
+          "theoretical": null,
+          "days": 99,
+          "name": "FUT_GAS_260625",
+          "instrument_code": "1610700A8"
+        },
+        {
+          "month": "202608",
+          "settlement": 150000.0,
+          "theoretical": null,
+          "days": 128,
+          "name": "FUT_GAS_260724",
+          "instrument_code": "1610800A8"
+        },
+        {
+          "month": "202609",
+          "settlement": 150000.0,
+          "theoretical": null,
+          "days": 160,
+          "name": "FUT_GAS_260825",
+          "instrument_code": "1610900A8"
+        }
+      ]
+    },
+    "バージ灯油": {
+      "display_en": "Barge Kerosene",
+      "display_ja": "バージ灯油",
+      "category": "energy",
+      "unit": "JPY/kl",
+      "curve": [
+        {
+          "month": "202604",
+          "settlement": 140000.0,
+          "theoretical": null,
+          "days": 6,
+          "name": "FUT_KRO_260325",
+          "instrument_code": "1610400A9"
+        },
+        {
+          "month": "202605",
+          "settlement": 140000.0,
+          "theoretical": null,
+          "days": 36,
+          "name": "FUT_KRO_260424",
+          "instrument_code": "1610500A9"
+        },
+        {
+          "month": "202606",
+          "settlement": 140000.0,
+          "theoretical": null,
+          "days": 67,
+          "name": "FUT_KRO_260525",
+          "instrument_code": "1610600A9"
+        },
+        {
+          "month": "202607",
+          "settlement": 140000.0,
+          "theoretical": null,
+          "days": 98,
+          "name": "FUT_KRO_260625",
+          "instrument_code": "1610700A9"
+        },
+        {
+          "month": "202608",
+          "settlement": 140000.0,
+          "theoretical": null,
+          "days": 127,
+          "name": "FUT_KRO_260724",
+          "instrument_code": "1610800A9"
+        },
+        {
+          "month": "202609",
+          "settlement": 140000.0,
+          "theoretical": null,
+          "days": 159,
+          "name": "FUT_KRO_260825",
+          "instrument_code": "1610900A9"
+        }
+      ],
+      "prev_curve": [
+        {
+          "month": "202604",
+          "settlement": 140000.0,
+          "theoretical": null,
+          "days": 7,
+          "name": "FUT_KRO_260325",
+          "instrument_code": "1610400A9"
+        },
+        {
+          "month": "202605",
+          "settlement": 140000.0,
+          "theoretical": null,
+          "days": 37,
+          "name": "FUT_KRO_260424",
+          "instrument_code": "1610500A9"
+        },
+        {
+          "month": "202606",
+          "settlement": 140000.0,
+          "theoretical": null,
+          "days": 68,
+          "name": "FUT_KRO_260525",
+          "instrument_code": "1610600A9"
+        },
+        {
+          "month": "202607",
+          "settlement": 140000.0,
+          "theoretical": null,
+          "days": 99,
+          "name": "FUT_KRO_260625",
+          "instrument_code": "1610700A9"
+        },
+        {
+          "month": "202608",
+          "settlement": 140000.0,
+          "theoretical": null,
+          "days": 128,
+          "name": "FUT_KRO_260724",
+          "instrument_code": "1610800A9"
+        },
+        {
+          "month": "202609",
+          "settlement": 140000.0,
+          "theoretical": null,
+          "days": 160,
+          "name": "FUT_KRO_260825",
+          "instrument_code": "1610900A9"
+        }
+      ]
+    },
+    "バージ軽油": {
+      "display_en": "Barge Gas Oil",
+      "display_ja": "バージ軽油",
+      "category": "energy",
+      "unit": "JPY/kl",
+      "curve": [
+        {
+          "month": "202604",
+          "settlement": 115900.0,
+          "theoretical": null,
+          "days": 6,
+          "name": "FUT_GAO_260325",
+          "instrument_code": "1610400AA"
+        },
+        {
+          "month": "202605",
+          "settlement": 115200.0,
+          "theoretical": null,
+          "days": 36,
+          "name": "FUT_GAO_260424",
+          "instrument_code": "1610500AA"
+        },
+        {
+          "month": "202606",
+          "settlement": 114500.0,
+          "theoretical": null,
+          "days": 67,
+          "name": "FUT_GAO_260525",
+          "instrument_code": "1610600AA"
+        },
+        {
+          "month": "202607",
+          "settlement": 113800.0,
+          "theoretical": null,
+          "days": 98,
+          "name": "FUT_GAO_260625",
+          "instrument_code": "1610700AA"
+        },
+        {
+          "month": "202608",
+          "settlement": 113100.0,
+          "theoretical": null,
+          "days": 127,
+          "name": "FUT_GAO_260724",
+          "instrument_code": "1610800AA"
+        },
+        {
+          "month": "202609",
+          "settlement": 112500.0,
+          "theoretical": null,
+          "days": 159,
+          "name": "FUT_GAO_260825",
+          "instrument_code": "1610900AA"
+        }
+      ],
+      "prev_curve": [
+        {
+          "month": "202604",
+          "settlement": 121300.0,
+          "theoretical": null,
+          "days": 7,
+          "name": "FUT_GAO_260325",
+          "instrument_code": "1610400AA"
+        },
+        {
+          "month": "202605",
+          "settlement": 120500.0,
+          "theoretical": null,
+          "days": 37,
+          "name": "FUT_GAO_260424",
+          "instrument_code": "1610500AA"
+        },
+        {
+          "month": "202606",
+          "settlement": 119700.0,
+          "theoretical": null,
+          "days": 68,
+          "name": "FUT_GAO_260525",
+          "instrument_code": "1610600AA"
+        },
+        {
+          "month": "202607",
+          "settlement": 118900.0,
+          "theoretical": null,
+          "days": 99,
+          "name": "FUT_GAO_260625",
+          "instrument_code": "1610700AA"
+        },
+        {
+          "month": "202608",
+          "settlement": 118100.0,
+          "theoretical": null,
+          "days": 128,
+          "name": "FUT_GAO_260724",
+          "instrument_code": "1610800AA"
+        },
+        {
+          "month": "202609",
+          "settlement": 117400.0,
+          "theoretical": null,
+          "days": 160,
+          "name": "FUT_GAO_260825",
+          "instrument_code": "1610900AA"
+        }
+      ]
+    },
+    "中京ガソリン": {
+      "display_en": "Chukyo Gasoline",
+      "display_ja": "中京ガソリン",
+      "category": "energy",
+      "unit": "JPY/kl",
+      "curve": [
+        {
+          "month": "202604",
+          "settlement": 140000.0,
+          "theoretical": null,
+          "days": 6,
+          "name": "FUT_CGAS_260325",
+          "instrument_code": "1610400AB"
+        },
+        {
+          "month": "202605",
+          "settlement": 140000.0,
+          "theoretical": null,
+          "days": 36,
+          "name": "FUT_CGAS_260424",
+          "instrument_code": "1610500AB"
+        },
+        {
+          "month": "202606",
+          "settlement": 140000.0,
+          "theoretical": null,
+          "days": 67,
+          "name": "FUT_CGAS_260525",
+          "instrument_code": "1610600AB"
+        },
+        {
+          "month": "202607",
+          "settlement": 140000.0,
+          "theoretical": null,
+          "days": 98,
+          "name": "FUT_CGAS_260625",
+          "instrument_code": "1610700AB"
+        },
+        {
+          "month": "202608",
+          "settlement": 140000.0,
+          "theoretical": null,
+          "days": 127,
+          "name": "FUT_CGAS_260724",
+          "instrument_code": "1610800AB"
+        },
+        {
+          "month": "202609",
+          "settlement": 140000.0,
+          "theoretical": null,
+          "days": 159,
+          "name": "FUT_CGAS_260825",
+          "instrument_code": "1610900AB"
+        }
+      ],
+      "prev_curve": [
+        {
+          "month": "202604",
+          "settlement": 140000.0,
+          "theoretical": null,
+          "days": 7,
+          "name": "FUT_CGAS_260325",
+          "instrument_code": "1610400AB"
+        },
+        {
+          "month": "202605",
+          "settlement": 140000.0,
+          "theoretical": null,
+          "days": 37,
+          "name": "FUT_CGAS_260424",
+          "instrument_code": "1610500AB"
+        },
+        {
+          "month": "202606",
+          "settlement": 140000.0,
+          "theoretical": null,
+          "days": 68,
+          "name": "FUT_CGAS_260525",
+          "instrument_code": "1610600AB"
+        },
+        {
+          "month": "202607",
+          "settlement": 140000.0,
+          "theoretical": null,
+          "days": 99,
+          "name": "FUT_CGAS_260625",
+          "instrument_code": "1610700AB"
+        },
+        {
+          "month": "202608",
+          "settlement": 140000.0,
+          "theoretical": null,
+          "days": 128,
+          "name": "FUT_CGAS_260724",
+          "instrument_code": "1610800AB"
+        },
+        {
+          "month": "202609",
+          "settlement": 140000.0,
+          "theoretical": null,
+          "days": 160,
+          "name": "FUT_CGAS_260825",
+          "instrument_code": "1610900AB"
+        }
+      ]
+    },
+    "中京灯油": {
+      "display_en": "Chukyo Kerosene",
+      "display_ja": "中京灯油",
+      "category": "energy",
+      "unit": "JPY/kl",
+      "curve": [
+        {
+          "month": "202604",
+          "settlement": 130000.0,
+          "theoretical": null,
+          "days": 6,
+          "name": "FUT_CKRO_260325",
+          "instrument_code": "1610400AC"
+        },
+        {
+          "month": "202605",
+          "settlement": 130000.0,
+          "theoretical": null,
+          "days": 36,
+          "name": "FUT_CKRO_260424",
+          "instrument_code": "1610500AC"
+        },
+        {
+          "month": "202606",
+          "settlement": 130000.0,
+          "theoretical": null,
+          "days": 67,
+          "name": "FUT_CKRO_260525",
+          "instrument_code": "1610600AC"
+        },
+        {
+          "month": "202607",
+          "settlement": 130000.0,
+          "theoretical": null,
+          "days": 98,
+          "name": "FUT_CKRO_260625",
+          "instrument_code": "1610700AC"
+        },
+        {
+          "month": "202608",
+          "settlement": 130000.0,
+          "theoretical": null,
+          "days": 127,
+          "name": "FUT_CKRO_260724",
+          "instrument_code": "1610800AC"
+        },
+        {
+          "month": "202609",
+          "settlement": 130000.0,
+          "theoretical": null,
+          "days": 159,
+          "name": "FUT_CKRO_260825",
+          "instrument_code": "1610900AC"
+        }
+      ],
+      "prev_curve": [
+        {
+          "month": "202604",
+          "settlement": 130000.0,
+          "theoretical": null,
+          "days": 7,
+          "name": "FUT_CKRO_260325",
+          "instrument_code": "1610400AC"
+        },
+        {
+          "month": "202605",
+          "settlement": 130000.0,
+          "theoretical": null,
+          "days": 37,
+          "name": "FUT_CKRO_260424",
+          "instrument_code": "1610500AC"
+        },
+        {
+          "month": "202606",
+          "settlement": 130000.0,
+          "theoretical": null,
+          "days": 68,
+          "name": "FUT_CKRO_260525",
+          "instrument_code": "1610600AC"
+        },
+        {
+          "month": "202607",
+          "settlement": 130000.0,
+          "theoretical": null,
+          "days": 99,
+          "name": "FUT_CKRO_260625",
+          "instrument_code": "1610700AC"
+        },
+        {
+          "month": "202608",
+          "settlement": 130000.0,
+          "theoretical": null,
+          "days": 128,
+          "name": "FUT_CKRO_260724",
+          "instrument_code": "1610800AC"
+        },
+        {
+          "month": "202609",
+          "settlement": 130000.0,
+          "theoretical": null,
+          "days": 160,
+          "name": "FUT_CKRO_260825",
+          "instrument_code": "1610900AC"
+        }
+      ]
+    },
+    "金": {
+      "display_en": "Gold",
+      "display_ja": "金",
+      "category": "metals",
+      "unit": "JPY/g",
+      "curve": [
+        {
+          "month": "-",
+          "settlement": 24731.0,
+          "theoretical": null,
+          "days": null,
+          "name": "FUT_GLDD",
+          "instrument_code": "1699900A2"
+        },
+        {
+          "month": "202604",
+          "settlement": 24890.0,
+          "theoretical": null,
+          "days": 36,
+          "name": "FUT_GLD_260424",
+          "instrument_code": "1610400A0"
+        },
+        {
+          "month": "202604",
+          "settlement": 24890.0,
+          "theoretical": null,
+          "days": 36,
+          "name": "FUT_GLDM_260423",
+          "instrument_code": "1610400A1"
+        },
+        {
+          "month": "202606",
+          "settlement": 24954.0,
+          "theoretical": null,
+          "days": 98,
+          "name": "FUT_GLD_260625",
+          "instrument_code": "1610600A0"
+        },
+        {
+          "month": "202606",
+          "settlement": 24954.0,
+          "theoretical": null,
+          "days": 98,
+          "name": "FUT_GLDM_260624",
+          "instrument_code": "1610600A1"
+        },
+        {
+          "month": "202608",
+          "settlement": 25000.0,
+          "theoretical": null,
+          "days": 160,
+          "name": "FUT_GLD_260826",
+          "instrument_code": "1610800A0"
+        },
+        {
+          "month": "202608",
+          "settlement": 25000.0,
+          "theoretical": null,
+          "days": 160,
+          "name": "FUT_GLDM_260825",
+          "instrument_code": "1610800A1"
+        },
+        {
+          "month": "202610",
+          "settlement": 25064.0,
+          "theoretical": null,
+          "days": 222,
+          "name": "FUT_GLD_261027",
+          "instrument_code": "1611000A0"
+        },
+        {
+          "month": "202610",
+          "settlement": 25064.0,
+          "theoretical": null,
+          "days": 222,
+          "name": "FUT_GLDM_261026",
+          "instrument_code": "1611000A1"
+        },
+        {
+          "month": "202612",
+          "settlement": 25316.0,
+          "theoretical": null,
+          "days": 279,
+          "name": "FUT_GLD_261223",
+          "instrument_code": "1611200A0"
+        },
+        {
+          "month": "202612",
+          "settlement": 25316.0,
+          "theoretical": null,
+          "days": 279,
+          "name": "FUT_GLDM_261222",
+          "instrument_code": "1611200A1"
+        },
+        {
+          "month": "202702",
+          "settlement": 25514.0,
+          "theoretical": null,
+          "days": 340,
+          "name": "FUT_GLD_270222",
+          "instrument_code": "1620200A0"
+        },
+        {
+          "month": "202702",
+          "settlement": 25514.0,
+          "theoretical": null,
+          "days": 340,
+          "name": "FUT_GLDM_270219",
+          "instrument_code": "1620200A1"
+        }
+      ],
+      "prev_curve": [
+        {
+          "month": "-",
+          "settlement": 25355.0,
+          "theoretical": null,
+          "days": null,
+          "name": "FUT_GLDD",
+          "instrument_code": "1699900A2"
+        },
+        {
+          "month": "202604",
+          "settlement": 25610.0,
+          "theoretical": null,
+          "days": 37,
+          "name": "FUT_GLD_260424",
+          "instrument_code": "1610400A0"
+        },
+        {
+          "month": "202604",
+          "settlement": 25610.0,
+          "theoretical": null,
+          "days": 37,
+          "name": "FUT_GLDM_260423",
+          "instrument_code": "1610400A1"
+        },
+        {
+          "month": "202606",
+          "settlement": 25716.0,
+          "theoretical": null,
+          "days": 99,
+          "name": "FUT_GLD_260625",
+          "instrument_code": "1610600A0"
+        },
+        {
+          "month": "202606",
+          "settlement": 25716.0,
+          "theoretical": null,
+          "days": 99,
+          "name": "FUT_GLDM_260624",
+          "instrument_code": "1610600A1"
+        },
+        {
+          "month": "202608",
+          "settlement": 25893.0,
+          "theoretical": null,
+          "days": 161,
+          "name": "FUT_GLD_260826",
+          "instrument_code": "1610800A0"
+        },
+        {
+          "month": "202608",
+          "settlement": 25893.0,
+          "theoretical": null,
+          "days": 161,
+          "name": "FUT_GLDM_260825",
+          "instrument_code": "1610800A1"
+        },
+        {
+          "month": "202610",
+          "settlement": 26114.0,
+          "theoretical": null,
+          "days": 223,
+          "name": "FUT_GLD_261027",
+          "instrument_code": "1611000A0"
+        },
+        {
+          "month": "202610",
+          "settlement": 26114.0,
+          "theoretical": null,
+          "days": 223,
+          "name": "FUT_GLDM_261026",
+          "instrument_code": "1611000A1"
+        },
+        {
+          "month": "202612",
+          "settlement": 26433.0,
+          "theoretical": null,
+          "days": 280,
+          "name": "FUT_GLD_261223",
+          "instrument_code": "1611200A0"
+        },
+        {
+          "month": "202612",
+          "settlement": 26433.0,
+          "theoretical": null,
+          "days": 280,
+          "name": "FUT_GLDM_261222",
+          "instrument_code": "1611200A1"
+        },
+        {
+          "month": "202702",
+          "settlement": 26621.0,
+          "theoretical": null,
+          "days": 341,
+          "name": "FUT_GLD_270222",
+          "instrument_code": "1620200A0"
+        },
+        {
+          "month": "202702",
+          "settlement": 26621.0,
+          "theoretical": null,
+          "days": 341,
+          "name": "FUT_GLDM_270219",
+          "instrument_code": "1620200A1"
+        }
+      ]
+    },
+    "銀": {
+      "display_en": "Silver",
+      "display_ja": "銀",
+      "category": "metals",
+      "unit": "JPY/10g",
+      "curve": [
+        {
+          "month": "202604",
+          "settlement": 400.0,
+          "theoretical": null,
+          "days": 36,
+          "name": "FUT_SILV_260424",
+          "instrument_code": "1610400A3"
+        },
+        {
+          "month": "202606",
+          "settlement": 405.0,
+          "theoretical": null,
+          "days": 98,
+          "name": "FUT_SILV_260625",
+          "instrument_code": "1610600A3"
+        },
+        {
+          "month": "202608",
+          "settlement": 395.0,
+          "theoretical": null,
+          "days": 160,
+          "name": "FUT_SILV_260826",
+          "instrument_code": "1610800A3"
+        },
+        {
+          "month": "202610",
+          "settlement": 390.0,
+          "theoretical": null,
+          "days": 222,
+          "name": "FUT_SILV_261027",
+          "instrument_code": "1611000A3"
+        },
+        {
+          "month": "202612",
+          "settlement": 392.0,
+          "theoretical": null,
+          "days": 279,
+          "name": "FUT_SILV_261223",
+          "instrument_code": "1611200A3"
+        },
+        {
+          "month": "202702",
+          "settlement": 389.9,
+          "theoretical": null,
+          "days": 340,
+          "name": "FUT_SILV_270222",
+          "instrument_code": "1620200A3"
+        }
+      ],
+      "prev_curve": [
+        {
+          "month": "202604",
+          "settlement": 400.0,
+          "theoretical": null,
+          "days": 37,
+          "name": "FUT_SILV_260424",
+          "instrument_code": "1610400A3"
+        },
+        {
+          "month": "202606",
+          "settlement": 410.0,
+          "theoretical": null,
+          "days": 99,
+          "name": "FUT_SILV_260625",
+          "instrument_code": "1610600A3"
+        },
+        {
+          "month": "202608",
+          "settlement": 400.0,
+          "theoretical": null,
+          "days": 161,
+          "name": "FUT_SILV_260826",
+          "instrument_code": "1610800A3"
+        },
+        {
+          "month": "202610",
+          "settlement": 395.0,
+          "theoretical": null,
+          "days": 223,
+          "name": "FUT_SILV_261027",
+          "instrument_code": "1611000A3"
+        },
+        {
+          "month": "202612",
+          "settlement": 392.0,
+          "theoretical": null,
+          "days": 280,
+          "name": "FUT_SILV_261223",
+          "instrument_code": "1611200A3"
+        },
+        {
+          "month": "202702",
+          "settlement": 400.0,
+          "theoretical": null,
+          "days": 341,
+          "name": "FUT_SILV_270222",
+          "instrument_code": "1620200A3"
+        }
+      ]
+    },
+    "白金": {
+      "display_en": "Platinum",
+      "display_ja": "白金",
+      "category": "metals",
+      "unit": "JPY/g",
+      "curve": [
+        {
+          "month": "-",
+          "settlement": 9677.0,
+          "theoretical": null,
+          "days": null,
+          "name": "FUT_PLTD",
+          "instrument_code": "1699900AL"
+        },
+        {
+          "month": "202604",
+          "settlement": 10119.0,
+          "theoretical": null,
+          "days": 36,
+          "name": "FUT_PLT_260424",
+          "instrument_code": "1610400A4"
+        },
+        {
+          "month": "202604",
+          "settlement": 10119.0,
+          "theoretical": null,
+          "days": 36,
+          "name": "FUT_PLTM_260423",
+          "instrument_code": "1610400A5"
+        },
+        {
+          "month": "202606",
+          "settlement": 9790.0,
+          "theoretical": null,
+          "days": 98,
+          "name": "FUT_PLT_260625",
+          "instrument_code": "1610600A4"
+        },
+        {
+          "month": "202606",
+          "settlement": 9790.0,
+          "theoretical": null,
+          "days": 98,
+          "name": "FUT_PLTM_260624",
+          "instrument_code": "1610600A5"
+        },
+        {
+          "month": "202608",
+          "settlement": 9964.0,
+          "theoretical": null,
+          "days": 160,
+          "name": "FUT_PLT_260826",
+          "instrument_code": "1610800A4"
+        },
+        {
+          "month": "202608",
+          "settlement": 9964.0,
+          "theoretical": null,
+          "days": 160,
+          "name": "FUT_PLTM_260825",
+          "instrument_code": "1610800A5"
+        },
+        {
+          "month": "202610",
+          "settlement": 9909.0,
+          "theoretical": null,
+          "days": 222,
+          "name": "FUT_PLT_261027",
+          "instrument_code": "1611000A4"
+        },
+        {
+          "month": "202610",
+          "settlement": 9909.0,
+          "theoretical": null,
+          "days": 222,
+          "name": "FUT_PLTM_261026",
+          "instrument_code": "1611000A5"
+        },
+        {
+          "month": "202612",
+          "settlement": 10040.0,
+          "theoretical": null,
+          "days": 279,
+          "name": "FUT_PLT_261223",
+          "instrument_code": "1611200A4"
+        },
+        {
+          "month": "202612",
+          "settlement": 10040.0,
+          "theoretical": null,
+          "days": 279,
+          "name": "FUT_PLTM_261222",
+          "instrument_code": "1611200A5"
+        },
+        {
+          "month": "202702",
+          "settlement": 10076.0,
+          "theoretical": null,
+          "days": 340,
+          "name": "FUT_PLT_270222",
+          "instrument_code": "1620200A4"
+        },
+        {
+          "month": "202702",
+          "settlement": 10076.0,
+          "theoretical": null,
+          "days": 340,
+          "name": "FUT_PLTM_270219",
+          "instrument_code": "1620200A5"
+        }
+      ],
+      "prev_curve": [
+        {
+          "month": "-",
+          "settlement": 10389.0,
+          "theoretical": null,
+          "days": null,
+          "name": "FUT_PLTD",
+          "instrument_code": "1699900AL"
+        },
+        {
+          "month": "202604",
+          "settlement": 10707.0,
+          "theoretical": null,
+          "days": 37,
+          "name": "FUT_PLT_260424",
+          "instrument_code": "1610400A4"
+        },
+        {
+          "month": "202604",
+          "settlement": 10707.0,
+          "theoretical": null,
+          "days": 37,
+          "name": "FUT_PLTM_260423",
+          "instrument_code": "1610400A5"
+        },
+        {
+          "month": "202606",
+          "settlement": 10482.0,
+          "theoretical": null,
+          "days": 99,
+          "name": "FUT_PLT_260625",
+          "instrument_code": "1610600A4"
+        },
+        {
+          "month": "202606",
+          "settlement": 10482.0,
+          "theoretical": null,
+          "days": 99,
+          "name": "FUT_PLTM_260624",
+          "instrument_code": "1610600A5"
+        },
+        {
+          "month": "202608",
+          "settlement": 10495.0,
+          "theoretical": null,
+          "days": 161,
+          "name": "FUT_PLT_260826",
+          "instrument_code": "1610800A4"
+        },
+        {
+          "month": "202608",
+          "settlement": 10495.0,
+          "theoretical": null,
+          "days": 161,
+          "name": "FUT_PLTM_260825",
+          "instrument_code": "1610800A5"
+        },
+        {
+          "month": "202610",
+          "settlement": 10611.0,
+          "theoretical": null,
+          "days": 223,
+          "name": "FUT_PLT_261027",
+          "instrument_code": "1611000A4"
+        },
+        {
+          "month": "202610",
+          "settlement": 10611.0,
+          "theoretical": null,
+          "days": 223,
+          "name": "FUT_PLTM_261026",
+          "instrument_code": "1611000A5"
+        },
+        {
+          "month": "202612",
+          "settlement": 10723.0,
+          "theoretical": null,
+          "days": 280,
+          "name": "FUT_PLT_261223",
+          "instrument_code": "1611200A4"
+        },
+        {
+          "month": "202612",
+          "settlement": 10723.0,
+          "theoretical": null,
+          "days": 280,
+          "name": "FUT_PLTM_261222",
+          "instrument_code": "1611200A5"
+        },
+        {
+          "month": "202702",
+          "settlement": 10714.0,
+          "theoretical": null,
+          "days": 341,
+          "name": "FUT_PLT_270222",
+          "instrument_code": "1620200A4"
+        },
+        {
+          "month": "202702",
+          "settlement": 10714.0,
+          "theoretical": null,
+          "days": 341,
+          "name": "FUT_PLTM_270219",
+          "instrument_code": "1620200A5"
+        }
+      ]
+    },
+    "パラジウム": {
+      "display_en": "Palladium",
+      "display_ja": "パラジウム",
+      "category": "metals",
+      "unit": "JPY/g",
+      "curve": [
+        {
+          "month": "202604",
+          "settlement": 7800.0,
+          "theoretical": null,
+          "days": 36,
+          "name": "FUT_PALD_260424",
+          "instrument_code": "1610400A6"
+        },
+        {
+          "month": "202606",
+          "settlement": 7800.0,
+          "theoretical": null,
+          "days": 98,
+          "name": "FUT_PALD_260625",
+          "instrument_code": "1610600A6"
+        },
+        {
+          "month": "202608",
+          "settlement": 7800.0,
+          "theoretical": null,
+          "days": 160,
+          "name": "FUT_PALD_260826",
+          "instrument_code": "1610800A6"
+        },
+        {
+          "month": "202610",
+          "settlement": 7800.0,
+          "theoretical": null,
+          "days": 222,
+          "name": "FUT_PALD_261027",
+          "instrument_code": "1611000A6"
+        },
+        {
+          "month": "202612",
+          "settlement": 7800.0,
+          "theoretical": null,
+          "days": 279,
+          "name": "FUT_PALD_261223",
+          "instrument_code": "1611200A6"
+        },
+        {
+          "month": "202702",
+          "settlement": 7800.0,
+          "theoretical": null,
+          "days": 340,
+          "name": "FUT_PALD_270222",
+          "instrument_code": "1620200A6"
+        }
+      ],
+      "prev_curve": [
+        {
+          "month": "202604",
+          "settlement": 8100.0,
+          "theoretical": null,
+          "days": 37,
+          "name": "FUT_PALD_260424",
+          "instrument_code": "1610400A6"
+        },
+        {
+          "month": "202606",
+          "settlement": 8100.0,
+          "theoretical": null,
+          "days": 99,
+          "name": "FUT_PALD_260625",
+          "instrument_code": "1610600A6"
+        },
+        {
+          "month": "202608",
+          "settlement": 8100.0,
+          "theoretical": null,
+          "days": 161,
+          "name": "FUT_PALD_260826",
+          "instrument_code": "1610800A6"
+        },
+        {
+          "month": "202610",
+          "settlement": 8100.0,
+          "theoretical": null,
+          "days": 223,
+          "name": "FUT_PALD_261027",
+          "instrument_code": "1611000A6"
+        },
+        {
+          "month": "202612",
+          "settlement": 8100.0,
+          "theoretical": null,
+          "days": 280,
+          "name": "FUT_PALD_261223",
+          "instrument_code": "1611200A6"
+        },
+        {
+          "month": "202702",
+          "settlement": 8100.0,
+          "theoretical": null,
+          "days": 341,
+          "name": "FUT_PALD_270222",
+          "instrument_code": "1620200A6"
+        }
+      ]
+    },
+    "ゴム(RSS3)": {
+      "display_en": "Rubber (RSS3)",
+      "display_ja": "ゴム(RSS3)",
+      "category": "industrial",
+      "unit": "JPY/kg",
+      "curve": [
+        {
+          "month": "202603",
+          "settlement": 375.0,
+          "theoretical": null,
+          "days": 6,
+          "name": "FUT_RSS3_260325",
+          "instrument_code": "1610300AK"
+        },
+        {
+          "month": "202604",
+          "settlement": 354.9,
+          "theoretical": null,
+          "days": 35,
+          "name": "FUT_RSS3_260423",
+          "instrument_code": "1610400AK"
+        },
+        {
+          "month": "202605",
+          "settlement": 360.5,
+          "theoretical": null,
+          "days": 67,
+          "name": "FUT_RSS3_260525",
+          "instrument_code": "1610500AK"
+        },
+        {
+          "month": "202606",
+          "settlement": 364.5,
+          "theoretical": null,
+          "days": 97,
+          "name": "FUT_RSS3_260624",
+          "instrument_code": "1610600AK"
+        },
+        {
+          "month": "202607",
+          "settlement": 364.9,
+          "theoretical": null,
+          "days": 130,
+          "name": "FUT_RSS3_260727",
+          "instrument_code": "1610700AK"
+        },
+        {
+          "month": "202608",
+          "settlement": 367.0,
+          "theoretical": null,
+          "days": 159,
+          "name": "FUT_RSS3_260825",
+          "instrument_code": "1610800AK"
+        },
+        {
+          "month": "202609",
+          "settlement": 369.9,
+          "theoretical": null,
+          "days": 189,
+          "name": "FUT_RSS3_260924",
+          "instrument_code": "1610900AK"
+        },
+        {
+          "month": "202610",
+          "settlement": 373.0,
+          "theoretical": null,
+          "days": 221,
+          "name": "FUT_RSS3_261026",
+          "instrument_code": "1611000AK"
+        },
+        {
+          "month": "202611",
+          "settlement": 373.0,
+          "theoretical": null,
+          "days": 250,
+          "name": "FUT_RSS3_261124",
+          "instrument_code": "1611100AK"
+        },
+        {
+          "month": "202612",
+          "settlement": 373.0,
+          "theoretical": null,
+          "days": 278,
+          "name": "FUT_RSS3_261222",
+          "instrument_code": "1611200AK"
+        },
+        {
+          "month": "202701",
+          "settlement": 373.0,
+          "theoretical": null,
+          "days": 312,
+          "name": "FUT_RSS3_270125",
+          "instrument_code": "1620100AK"
+        },
+        {
+          "month": "202702",
+          "settlement": 373.0,
+          "theoretical": null,
+          "days": 337,
+          "name": "FUT_RSS3_270219",
+          "instrument_code": "1620200AK"
+        }
+      ],
+      "prev_curve": [
+        {
+          "month": "202603",
+          "settlement": 375.0,
+          "theoretical": null,
+          "days": 7,
+          "name": "FUT_RSS3_260325",
+          "instrument_code": "1610300AK"
+        },
+        {
+          "month": "202604",
+          "settlement": 358.1,
+          "theoretical": null,
+          "days": 36,
+          "name": "FUT_RSS3_260423",
+          "instrument_code": "1610400AK"
+        },
+        {
+          "month": "202605",
+          "settlement": 367.7,
+          "theoretical": null,
+          "days": 68,
+          "name": "FUT_RSS3_260525",
+          "instrument_code": "1610500AK"
+        },
+        {
+          "month": "202606",
+          "settlement": 368.0,
+          "theoretical": null,
+          "days": 98,
+          "name": "FUT_RSS3_260624",
+          "instrument_code": "1610600AK"
+        },
+        {
+          "month": "202607",
+          "settlement": 368.3,
+          "theoretical": null,
+          "days": 131,
+          "name": "FUT_RSS3_260727",
+          "instrument_code": "1610700AK"
+        },
+        {
+          "month": "202608",
+          "settlement": 370.5,
+          "theoretical": null,
+          "days": 160,
+          "name": "FUT_RSS3_260825",
+          "instrument_code": "1610800AK"
+        },
+        {
+          "month": "202609",
+          "settlement": 373.0,
+          "theoretical": null,
+          "days": 190,
+          "name": "FUT_RSS3_260924",
+          "instrument_code": "1610900AK"
+        },
+        {
+          "month": "202610",
+          "settlement": 373.0,
+          "theoretical": null,
+          "days": 222,
+          "name": "FUT_RSS3_261026",
+          "instrument_code": "1611000AK"
+        },
+        {
+          "month": "202611",
+          "settlement": 373.0,
+          "theoretical": null,
+          "days": 251,
+          "name": "FUT_RSS3_261124",
+          "instrument_code": "1611100AK"
+        },
+        {
+          "month": "202612",
+          "settlement": 373.0,
+          "theoretical": null,
+          "days": 279,
+          "name": "FUT_RSS3_261222",
+          "instrument_code": "1611200AK"
+        },
+        {
+          "month": "202701",
+          "settlement": 373.0,
+          "theoretical": null,
+          "days": 313,
+          "name": "FUT_RSS3_270125",
+          "instrument_code": "1620100AK"
+        },
+        {
+          "month": "202702",
+          "settlement": 373.0,
+          "theoretical": null,
+          "days": 338,
+          "name": "FUT_RSS3_270219",
+          "instrument_code": "1620200AK"
+        }
+      ]
+    },
+    "ゴム(TSR20)": {
+      "display_en": "Rubber (TSR20)",
+      "display_ja": "ゴム(TSR20)",
+      "category": "industrial",
+      "unit": "JPY/kg",
+      "curve": [
+        {
+          "month": "202604",
+          "settlement": 310.0,
+          "theoretical": null,
+          "days": 12,
+          "name": "FUT_TSR2_260331",
+          "instrument_code": "1610400AM"
+        },
+        {
+          "month": "202605",
+          "settlement": 310.0,
+          "theoretical": null,
+          "days": 42,
+          "name": "FUT_TSR2_260430",
+          "instrument_code": "1610500AM"
+        },
+        {
+          "month": "202606",
+          "settlement": 310.0,
+          "theoretical": null,
+          "days": 71,
+          "name": "FUT_TSR2_260529",
+          "instrument_code": "1610600AM"
+        },
+        {
+          "month": "202607",
+          "settlement": 310.0,
+          "theoretical": null,
+          "days": 103,
+          "name": "FUT_TSR2_260630",
+          "instrument_code": "1610700AM"
+        },
+        {
+          "month": "202608",
+          "settlement": 310.0,
+          "theoretical": null,
+          "days": 134,
+          "name": "FUT_TSR2_260731",
+          "instrument_code": "1610800AM"
+        },
+        {
+          "month": "202609",
+          "settlement": 310.0,
+          "theoretical": null,
+          "days": 165,
+          "name": "FUT_TSR2_260831",
+          "instrument_code": "1610900AM"
+        },
+        {
+          "month": "202610",
+          "settlement": 310.0,
+          "theoretical": null,
+          "days": 195,
+          "name": "FUT_TSR2_260930",
+          "instrument_code": "1611000AM"
+        },
+        {
+          "month": "202611",
+          "settlement": 310.0,
+          "theoretical": null,
+          "days": 225,
+          "name": "FUT_TSR2_261030",
+          "instrument_code": "1611100AM"
+        },
+        {
+          "month": "202612",
+          "settlement": 310.0,
+          "theoretical": null,
+          "days": 256,
+          "name": "FUT_TSR2_261130",
+          "instrument_code": "1611200AM"
+        },
+        {
+          "month": "202701",
+          "settlement": 310.0,
+          "theoretical": null,
+          "days": 286,
+          "name": "FUT_TSR2_261230",
+          "instrument_code": "1620100AM"
+        },
+        {
+          "month": "202702",
+          "settlement": 310.0,
+          "theoretical": null,
+          "days": 316,
+          "name": "FUT_TSR2_270129",
+          "instrument_code": "1620200AM"
+        },
+        {
+          "month": "202703",
+          "settlement": 310.0,
+          "theoretical": null,
+          "days": 344,
+          "name": "FUT_TSR2_270226",
+          "instrument_code": "1620300AM"
+        }
+      ],
+      "prev_curve": [
+        {
+          "month": "202604",
+          "settlement": 310.0,
+          "theoretical": null,
+          "days": 13,
+          "name": "FUT_TSR2_260331",
+          "instrument_code": "1610400AM"
+        },
+        {
+          "month": "202605",
+          "settlement": 310.0,
+          "theoretical": null,
+          "days": 43,
+          "name": "FUT_TSR2_260430",
+          "instrument_code": "1610500AM"
+        },
+        {
+          "month": "202606",
+          "settlement": 310.0,
+          "theoretical": null,
+          "days": 72,
+          "name": "FUT_TSR2_260529",
+          "instrument_code": "1610600AM"
+        },
+        {
+          "month": "202607",
+          "settlement": 310.0,
+          "theoretical": null,
+          "days": 104,
+          "name": "FUT_TSR2_260630",
+          "instrument_code": "1610700AM"
+        },
+        {
+          "month": "202608",
+          "settlement": 310.0,
+          "theoretical": null,
+          "days": 135,
+          "name": "FUT_TSR2_260731",
+          "instrument_code": "1610800AM"
+        },
+        {
+          "month": "202609",
+          "settlement": 310.0,
+          "theoretical": null,
+          "days": 166,
+          "name": "FUT_TSR2_260831",
+          "instrument_code": "1610900AM"
+        },
+        {
+          "month": "202610",
+          "settlement": 310.0,
+          "theoretical": null,
+          "days": 196,
+          "name": "FUT_TSR2_260930",
+          "instrument_code": "1611000AM"
+        },
+        {
+          "month": "202611",
+          "settlement": 310.0,
+          "theoretical": null,
+          "days": 226,
+          "name": "FUT_TSR2_261030",
+          "instrument_code": "1611100AM"
+        },
+        {
+          "month": "202612",
+          "settlement": 310.0,
+          "theoretical": null,
+          "days": 257,
+          "name": "FUT_TSR2_261130",
+          "instrument_code": "1611200AM"
+        },
+        {
+          "month": "202701",
+          "settlement": 310.0,
+          "theoretical": null,
+          "days": 287,
+          "name": "FUT_TSR2_261230",
+          "instrument_code": "1620100AM"
+        },
+        {
+          "month": "202702",
+          "settlement": 310.0,
+          "theoretical": null,
+          "days": 317,
+          "name": "FUT_TSR2_270129",
+          "instrument_code": "1620200AM"
+        },
+        {
+          "month": "202703",
+          "settlement": 310.0,
+          "theoretical": null,
+          "days": 345,
+          "name": "FUT_TSR2_270226",
+          "instrument_code": "1620300AM"
+        }
+      ]
+    },
+    "上海天然ゴム": {
+      "display_en": "Shanghai Natural Rubber",
+      "display_ja": "上海天然ゴム",
+      "category": "industrial",
+      "unit": "JPY/kg",
+      "curve": [
+        {
+          "month": "202605",
+          "settlement": 16035.0,
+          "theoretical": null,
+          "days": 60,
+          "name": "FUT_SHRU_260515",
+          "instrument_code": "1610500AP"
+        },
+        {
+          "month": "202609",
+          "settlement": 15985.0,
+          "theoretical": null,
+          "days": 181,
+          "name": "FUT_SHRU_260915",
+          "instrument_code": "1610900AP"
+        },
+        {
+          "month": "202701",
+          "settlement": 16635.0,
+          "theoretical": null,
+          "days": 305,
+          "name": "FUT_SHRU_270115",
+          "instrument_code": "1620100AP"
+        }
+      ],
+      "prev_curve": [
+        {
+          "month": "202605",
+          "settlement": 16390.0,
+          "theoretical": null,
+          "days": 61,
+          "name": "FUT_SHRU_260515",
+          "instrument_code": "1610500AP"
+        },
+        {
+          "month": "202609",
+          "settlement": 16300.0,
+          "theoretical": null,
+          "days": 182,
+          "name": "FUT_SHRU_260915",
+          "instrument_code": "1610900AP"
+        },
+        {
+          "month": "202701",
+          "settlement": 17055.0,
+          "theoretical": null,
+          "days": 306,
+          "name": "FUT_SHRU_270115",
+          "instrument_code": "1620100AP"
+        }
+      ]
+    },
+    "とうもろこし": {
+      "display_en": "Corn",
+      "display_ja": "とうもろこし",
+      "category": "agriculture",
+      "unit": "JPY/t",
+      "curve": [
+        {
+          "month": "202605",
+          "settlement": 39000.0,
+          "theoretical": null,
+          "days": 27,
+          "name": "FUT_CORN_260415",
+          "instrument_code": "1610500AG"
+        },
+        {
+          "month": "202607",
+          "settlement": 39000.0,
+          "theoretical": null,
+          "days": 88,
+          "name": "FUT_CORN_260615",
+          "instrument_code": "1610700AG"
+        },
+        {
+          "month": "202609",
+          "settlement": 39000.0,
+          "theoretical": null,
+          "days": 148,
+          "name": "FUT_CORN_260814",
+          "instrument_code": "1610900AG"
+        },
+        {
+          "month": "202611",
+          "settlement": 39000.0,
+          "theoretical": null,
+          "days": 210,
+          "name": "FUT_CORN_261015",
+          "instrument_code": "1611100AG"
+        },
+        {
+          "month": "202701",
+          "settlement": 39000.0,
+          "theoretical": null,
+          "days": 271,
+          "name": "FUT_CORN_261215",
+          "instrument_code": "1620100AG"
+        },
+        {
+          "month": "202703",
+          "settlement": 39000.0,
+          "theoretical": null,
+          "days": 333,
+          "name": "FUT_CORN_270215",
+          "instrument_code": "1620300AG"
+        }
+      ],
+      "prev_curve": [
+        {
+          "month": "202605",
+          "settlement": 39000.0,
+          "theoretical": null,
+          "days": 28,
+          "name": "FUT_CORN_260415",
+          "instrument_code": "1610500AG"
+        },
+        {
+          "month": "202607",
+          "settlement": 39000.0,
+          "theoretical": null,
+          "days": 89,
+          "name": "FUT_CORN_260615",
+          "instrument_code": "1610700AG"
+        },
+        {
+          "month": "202609",
+          "settlement": 39000.0,
+          "theoretical": null,
+          "days": 149,
+          "name": "FUT_CORN_260814",
+          "instrument_code": "1610900AG"
+        },
+        {
+          "month": "202611",
+          "settlement": 39000.0,
+          "theoretical": null,
+          "days": 211,
+          "name": "FUT_CORN_261015",
+          "instrument_code": "1611100AG"
+        },
+        {
+          "month": "202701",
+          "settlement": 39000.0,
+          "theoretical": null,
+          "days": 272,
+          "name": "FUT_CORN_261215",
+          "instrument_code": "1620100AG"
+        },
+        {
+          "month": "202703",
+          "settlement": 39000.0,
+          "theoretical": null,
+          "days": 334,
+          "name": "FUT_CORN_270215",
+          "instrument_code": "1620300AG"
+        }
+      ]
+    },
+    "大豆": {
+      "display_en": "Soybeans",
+      "display_ja": "大豆",
+      "category": "agriculture",
+      "unit": "JPY/t",
+      "curve": [
+        {
+          "month": "202604",
+          "settlement": 64000.0,
+          "theoretical": null,
+          "days": 27,
+          "name": "FUT_SOYB_260415",
+          "instrument_code": "1610400AH"
+        },
+        {
+          "month": "202606",
+          "settlement": 64000.0,
+          "theoretical": null,
+          "days": 88,
+          "name": "FUT_SOYB_260615",
+          "instrument_code": "1610600AH"
+        },
+        {
+          "month": "202608",
+          "settlement": 64000.0,
+          "theoretical": null,
+          "days": 148,
+          "name": "FUT_SOYB_260814",
+          "instrument_code": "1610800AH"
+        },
+        {
+          "month": "202610",
+          "settlement": 64000.0,
+          "theoretical": null,
+          "days": 210,
+          "name": "FUT_SOYB_261015",
+          "instrument_code": "1611000AH"
+        },
+        {
+          "month": "202612",
+          "settlement": 64000.0,
+          "theoretical": null,
+          "days": 271,
+          "name": "FUT_SOYB_261215",
+          "instrument_code": "1611200AH"
+        },
+        {
+          "month": "202702",
+          "settlement": 64000.0,
+          "theoretical": null,
+          "days": 333,
+          "name": "FUT_SOYB_270215",
+          "instrument_code": "1620200AH"
+        }
+      ],
+      "prev_curve": [
+        {
+          "month": "202604",
+          "settlement": 64000.0,
+          "theoretical": null,
+          "days": 28,
+          "name": "FUT_SOYB_260415",
+          "instrument_code": "1610400AH"
+        },
+        {
+          "month": "202606",
+          "settlement": 64000.0,
+          "theoretical": null,
+          "days": 89,
+          "name": "FUT_SOYB_260615",
+          "instrument_code": "1610600AH"
+        },
+        {
+          "month": "202608",
+          "settlement": 64000.0,
+          "theoretical": null,
+          "days": 149,
+          "name": "FUT_SOYB_260814",
+          "instrument_code": "1610800AH"
+        },
+        {
+          "month": "202610",
+          "settlement": 64000.0,
+          "theoretical": null,
+          "days": 211,
+          "name": "FUT_SOYB_261015",
+          "instrument_code": "1611000AH"
+        },
+        {
+          "month": "202612",
+          "settlement": 64000.0,
+          "theoretical": null,
+          "days": 272,
+          "name": "FUT_SOYB_261215",
+          "instrument_code": "1611200AH"
+        },
+        {
+          "month": "202702",
+          "settlement": 64000.0,
+          "theoretical": null,
+          "days": 334,
+          "name": "FUT_SOYB_270215",
+          "instrument_code": "1620200AH"
+        }
+      ]
+    },
+    "小豆": {
+      "display_en": "Azuki Beans",
+      "display_ja": "小豆",
+      "category": "agriculture",
+      "unit": "JPY/bag",
+      "curve": [
+        {
+          "month": "202603",
+          "settlement": 12300.0,
+          "theoretical": null,
+          "days": 7,
+          "name": "FUT_REDB_260326",
+          "instrument_code": "1610300AJ"
+        },
+        {
+          "month": "202604",
+          "settlement": 12300.0,
+          "theoretical": null,
+          "days": 36,
+          "name": "FUT_REDB_260424",
+          "instrument_code": "1610400AJ"
+        },
+        {
+          "month": "202605",
+          "settlement": 12300.0,
+          "theoretical": null,
+          "days": 68,
+          "name": "FUT_REDB_260526",
+          "instrument_code": "1610500AJ"
+        },
+        {
+          "month": "202606",
+          "settlement": 12300.0,
+          "theoretical": null,
+          "days": 98,
+          "name": "FUT_REDB_260625",
+          "instrument_code": "1610600AJ"
+        },
+        {
+          "month": "202607",
+          "settlement": 12300.0,
+          "theoretical": null,
+          "days": 131,
+          "name": "FUT_REDB_260728",
+          "instrument_code": "1610700AJ"
+        },
+        {
+          "month": "202608",
+          "settlement": 12300.0,
+          "theoretical": null,
+          "days": 160,
+          "name": "FUT_REDB_260826",
+          "instrument_code": "1610800AJ"
+        }
+      ],
+      "prev_curve": [
+        {
+          "month": "202603",
+          "settlement": 12300.0,
+          "theoretical": null,
+          "days": 8,
+          "name": "FUT_REDB_260326",
+          "instrument_code": "1610300AJ"
+        },
+        {
+          "month": "202604",
+          "settlement": 12300.0,
+          "theoretical": null,
+          "days": 37,
+          "name": "FUT_REDB_260424",
+          "instrument_code": "1610400AJ"
+        },
+        {
+          "month": "202605",
+          "settlement": 12300.0,
+          "theoretical": null,
+          "days": 69,
+          "name": "FUT_REDB_260526",
+          "instrument_code": "1610500AJ"
+        },
+        {
+          "month": "202606",
+          "settlement": 12300.0,
+          "theoretical": null,
+          "days": 99,
+          "name": "FUT_REDB_260625",
+          "instrument_code": "1610600AJ"
+        },
+        {
+          "month": "202607",
+          "settlement": 12300.0,
+          "theoretical": null,
+          "days": 132,
+          "name": "FUT_REDB_260728",
+          "instrument_code": "1610700AJ"
+        },
+        {
+          "month": "202608",
+          "settlement": 12300.0,
+          "theoretical": null,
+          "days": 161,
+          "name": "FUT_REDB_260826",
+          "instrument_code": "1610800AJ"
+        }
+      ]
+    }
+  },
+  "commodity_count": 17
 }

@@ -2,9 +2,16 @@
 
 from __future__ import annotations
 
+import hashlib
+
 from src.csv_parser import parse_csv, parse_trade_date
 from src.repository import Repository
 from src.storage import StorageBackend
+
+
+def compute_file_hash(data: bytes) -> str:
+    """Compute SHA-256 hash of file contents."""
+    return hashlib.sha256(data).hexdigest()
 
 
 def import_csv_file(
@@ -13,13 +20,26 @@ def import_csv_file(
     """Import a single CSV file into the database.
 
     Returns (trade_date, record_count) tuple.
+    Raises DuplicateDataError if the same data has already been imported.
     """
     trade_date = parse_trade_date(filename)
     data = storage.read_file(filename)
+    file_hash = compute_file_hash(data)
+
+    if repo.hash_exists(file_hash):
+        raise DuplicateDataError(
+            f"Same data already imported (hash match). "
+            f"File '{filename}' is likely a holiday duplicate."
+        )
+
     records = parse_csv(data)
     inserted = repo.bulk_insert(trade_date, records)
-    repo.log_import(filename, trade_date, inserted)
+    repo.log_import(filename, trade_date, inserted, file_hash=file_hash)
     return trade_date, inserted
+
+
+class DuplicateDataError(Exception):
+    """Raised when a CSV file has the same content as a previously imported file."""
 
 
 def import_all_new(storage: StorageBackend, repo: Repository) -> list[tuple[str, int]]:
@@ -37,6 +57,8 @@ def import_all_new(storage: StorageBackend, repo: Repository) -> list[tuple[str,
         try:
             result = import_csv_file(filename, storage, repo)
             results.append(result)
+        except DuplicateDataError as e:
+            print(f"  SKIPPED {filename}: {e}")
         except Exception as e:
             trade_date = "unknown"
             try:

@@ -16,6 +16,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from src.query import get_power_futures, summary_by_underlying
 from src.repository import get_repository
+from src.commodity_query import (
+    get_cross_commodity_snapshot,
+    get_all_commodity_forward_curves,
+)
+from src.asset_taxonomy import CATEGORY_META, ASSET_TAXONOMY
 
 SITE_DIR = Path(__file__).resolve().parent.parent / "docs"
 
@@ -67,6 +72,12 @@ def _calc_change(current: float | None, prev: float | None) -> dict:
     diff = round(current - prev, 2)
     pct = round((current - prev) / prev * 100, 2)
     return {"diff": diff, "pct": pct}
+
+
+def _build_month_map_prev(cat_key: str, prev_forward_curves: dict) -> dict:
+    """Build month -> item map from previous day forward curves."""
+    items = prev_forward_curves.get(cat_key, [])
+    return {it["month"]: it for it in items if len(it.get("month", "")) == 6}
 
 
 def generate_data_json(repo) -> dict:
@@ -181,6 +192,95 @@ def generate_data_json(repo) -> dict:
     # Import log
     import_dates = [entry["trade_date"] for entry in log if entry["status"] == "success"]
 
+    # Commodity snapshot (non-power commodities with DoD changes)
+    commodity_snapshot = get_cross_commodity_snapshot(repo, latest_date, prev_date)
+
+    # Commodity forward curves
+    commodity_curves = get_all_commodity_forward_curves(repo, latest_date, prev_date)
+    # Simplify for JSON serialization
+    commodity_curves_json = {}
+    for name, cdata in commodity_curves.items():
+        commodity_curves_json[name] = {
+            "display_en": cdata["display_en"],
+            "display_ja": cdata["display_ja"],
+            "category": cdata["category"],
+            "unit": cdata["unit"],
+            "curve": cdata["curve"],
+            "prev_curve": cdata["prev_curve"],
+        }
+
+    # ── Power Heatmap: price changes + E-W spreads ──
+    heatmap_types = {
+        "東・ベース": "東・ベース(月次)",
+        "東・日中": "東・日中(月次)",
+        "西・ベース": "西・ベース(月次)",
+        "西・日中": "西・日中(月次)",
+    }
+    # Collect monthly data per type
+    heatmap_price_changes: dict[str, list] = {}
+    for label, cat_key in heatmap_types.items():
+        items = forward_curves.get(cat_key, [])
+        heatmap_price_changes[label] = [
+            {
+                "month": it["month"],
+                "settlement": it["settlement"],
+                "prev": it.get("prev_settlement"),
+                "diff": it.get("change_diff"),
+                "pct": it.get("change_pct"),
+            }
+            for it in items
+            if len(it.get("month", "")) == 6  # monthly only
+        ]
+
+    # Compute E-W spreads
+    def _build_month_map(cat_key: str) -> dict:
+        items = forward_curves.get(cat_key, [])
+        return {it["month"]: it for it in items if len(it.get("month", "")) == 6}
+
+    east_base_map = _build_month_map("東・ベース(月次)")
+    west_base_map = _build_month_map("西・ベース(月次)")
+    east_peak_map = _build_month_map("東・日中(月次)")
+    west_peak_map = _build_month_map("西・日中(月次)")
+
+    prev_east_base_map = _build_month_map_prev("東・ベース(月次)", prev_forward_curves)
+    prev_west_base_map = _build_month_map_prev("西・ベース(月次)", prev_forward_curves)
+    prev_east_peak_map = _build_month_map_prev("東・日中(月次)", prev_forward_curves)
+    prev_west_peak_map = _build_month_map_prev("西・日中(月次)", prev_forward_curves)
+
+    heatmap_months = sorted(set(east_base_map.keys()) & set(west_base_map.keys()))
+
+    spread_base = []
+    spread_peak = []
+    for m in heatmap_months:
+        eb = east_base_map[m].get("settlement")
+        wb = west_base_map[m].get("settlement")
+        ep = east_peak_map.get(m, {}).get("settlement")
+        wp = west_peak_map.get(m, {}).get("settlement")
+
+        s_base = round(eb - wb, 2) if eb is not None and wb is not None else None
+        s_peak = round(ep - wp, 2) if ep is not None and wp is not None else None
+
+        # Previous day spreads
+        peb = prev_east_base_map.get(m, {}).get("settlement")
+        pwb = prev_west_base_map.get(m, {}).get("settlement")
+        pep = prev_east_peak_map.get(m, {}).get("settlement")
+        pwp = prev_west_peak_map.get(m, {}).get("settlement")
+
+        ps_base = round(peb - pwb, 2) if peb is not None and pwb is not None else None
+        ps_peak = round(pep - pwp, 2) if pep is not None and pwp is not None else None
+
+        sc_base = round(s_base - ps_base, 2) if s_base is not None and ps_base is not None else None
+        sc_peak = round(s_peak - ps_peak, 2) if s_peak is not None and ps_peak is not None else None
+
+        spread_base.append({"month": m, "spread": s_base, "prev_spread": ps_base, "spread_change": sc_base})
+        spread_peak.append({"month": m, "spread": s_peak, "prev_spread": ps_peak, "spread_change": sc_peak})
+
+    power_heatmap = {
+        "months": heatmap_months,
+        "price_changes": heatmap_price_changes,
+        "spreads": {"base": spread_base, "peak": spread_peak},
+    }
+
     return {
         "latest_date": latest_date,
         "prev_date": prev_date,
@@ -194,6 +294,7 @@ def generate_data_json(repo) -> dict:
         "forward_curves": forward_curves,
         "prev_forward_curves": prev_forward_curves,
         "top_movers": top_movers,
+        "power_heatmap": power_heatmap,
         "power_futures": [
             {
                 "name": r["instrument_name"],
@@ -214,6 +315,9 @@ def generate_data_json(repo) -> dict:
             for r in power_fut
         ],
         "summary": summary,
+        "commodity_snapshot": commodity_snapshot,
+        "commodity_curves": commodity_curves_json,
+        "commodity_count": len(commodity_snapshot),
     }
 
 
@@ -240,6 +344,7 @@ def generate_html(data: dict) -> str:
     underlying_count = data.get("underlying_count", 0)
     dates = data.get("import_dates", [])
     power_count = data.get("power_futures_count", 0)
+    commodity_count = data.get("commodity_count", 0)
 
     # Power futures table rows (with change column)
     power_rows = ""
@@ -290,12 +395,54 @@ def generate_html(data: dict) -> str:
     for cat_name in sorted(data.get("forward_curves", {}).keys()):
         curve_options += f'          <option value="{cat_name}">{cat_name}</option>\n'
 
+    # Build commodity snapshot table rows
+    commodity_rows = ""
+    for cs in data.get("commodity_snapshot", []):
+        price = cs["settlement"]
+        unit = cs.get("unit", "")
+        cat_meta = CATEGORY_META.get(cs["category"], {})
+        cat_label = cat_meta.get("display_en", cs["category"])
+        diff = cs.get("change_diff")
+        pct = cs.get("change_pct")
+        if diff is not None:
+            sign = "+" if diff >= 0 else ""
+            css_cls = "positive" if diff > 0 else "negative" if diff < 0 else ""
+            diff_cell = f'<td class="num change {css_cls}">{sign}{diff:.2f}</td>'
+            pct_cell = f'<td class="num change {css_cls}">{sign}{pct:.1f}%</td>'
+        else:
+            diff_cell = '<td class="num change">-</td>'
+            pct_cell = '<td class="num change">-</td>'
+        commodity_rows += f"""            <tr>
+              <td>{cs['display_en']}<span class="commodity-ja">{cs['display_ja']}</span></td>
+              <td><span class="cat-badge" style="background:{cat_meta.get('color', '#666')}22;color:{cat_meta.get('color', '#666')}">{cat_label}</span></td>
+              <td>{cs.get('contract_month', '')}</td>
+              <td class="num">{price:.2f}</td>
+              <td class="num" style="opacity:0.7">{unit}</td>
+              {diff_cell}
+              {pct_cell}
+            </tr>\n"""
+
+    # Build commodity curve selector options
+    commodity_curve_options = ""
+    for cname in sorted(data.get("commodity_curves", {}).keys()):
+        cdata = data["commodity_curves"][cname]
+        commodity_curve_options += f'          <option value="{cname}">{cdata["display_en"]} ({cdata["display_ja"]})</option>\n'
+
+    # Build category meta JSON for JS
+    category_meta_json = json.dumps(
+        {k: {"color": v["color"], "display_en": v["display_en"]} for k, v in CATEGORY_META.items()},
+        ensure_ascii=False,
+    )
+
     # Inline JSON for chart data (avoids fetch/CORS issues on file://)
     chart_data = {
         "overview_chart": data.get("overview_chart", {}),
         "prev_overview_chart": data.get("prev_overview_chart", {}),
         "forward_curves": data.get("forward_curves", {}),
         "prev_forward_curves": data.get("prev_forward_curves", {}),
+        "commodity_curves": data.get("commodity_curves", {}),
+        "commodity_snapshot": data.get("commodity_snapshot", []),
+        "power_heatmap": data.get("power_heatmap", {}),
     }
     chart_data_json = json.dumps(chart_data, ensure_ascii=False)
     prev_label = prev_date or "N/A"
@@ -305,7 +452,7 @@ def generate_html(data: dict) -> str:
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DataServer In-House — Energy Futures Dashboard</title>
+  <title>DataServer In-House — Market Analytics Dashboard</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/apexcharts@3"></script>
 </head>
@@ -331,6 +478,14 @@ def generate_html(data: dict) -> str:
         <span>&#8651;</span>
         <span class="nav-tooltip">East-West Spread</span>
       </a>
+      <a href="#priceHeatmap" class="nav-item">
+        <span>&#9619;</span>
+        <span class="nav-tooltip">Price Heatmap</span>
+      </a>
+      <a href="#spreadHeatmap" class="nav-item">
+        <span>&#9608;</span>
+        <span class="nav-tooltip">Spread Matrix</span>
+      </a>
       <a href="#movers" class="nav-item">
         <span>&#128293;</span>
         <span class="nav-tooltip">Top Movers</span>
@@ -342,6 +497,19 @@ def generate_html(data: dict) -> str:
       <a href="#summary" class="nav-item">
         <span>&#9881;</span>
         <span class="nav-tooltip">Summary</span>
+      </a>
+      <div style="width:32px;height:1px;background:var(--border-subtle);margin:8px 0"></div>
+      <a href="#commodities" class="nav-item">
+        <span>&#9632;</span>
+        <span class="nav-tooltip">Commodities</span>
+      </a>
+      <a href="#commodity-curves" class="nav-item">
+        <span>&#9650;</span>
+        <span class="nav-tooltip">Commodity Curves</span>
+      </a>
+      <a href="#cross-market" class="nav-item">
+        <span>&#9619;</span>
+        <span class="nav-tooltip">Cross-Market</span>
       </a>
       <div style="width:32px;height:1px;background:var(--border-subtle);margin:8px 0"></div>
       <a href="#spot" class="nav-item">
@@ -362,7 +530,7 @@ def generate_html(data: dict) -> str:
     <header class="header">
       <div class="header-left">
         <h1>DataServer In-House</h1>
-        <div class="subtitle">JPX Derivative Theoretical Price — Energy Futures Analytics</div>
+        <div class="subtitle">JPX Derivative & Commodity Analytics</div>
       </div>
       <div class="header-right">
         <div class="header-badge">
@@ -376,7 +544,7 @@ def generate_html(data: dict) -> str:
     <div class="container">
 
       <!-- KPI Cards -->
-      <div class="kpi-row">
+      <div class="kpi-row" style="grid-template-columns:repeat(5,1fr)">
         <div class="kpi-card">
           <div class="kpi-icon">&#128202;</div>
           <div class="kpi-value" data-target="{total}">{total:,}</div>
@@ -397,6 +565,11 @@ def generate_html(data: dict) -> str:
           <div class="kpi-value" data-target="{len(dates)}">{len(dates)}</div>
           <div class="kpi-label">Import Days</div>
         </div>
+        <div class="kpi-card">
+          <div class="kpi-icon">&#9632;</div>
+          <div class="kpi-value" data-target="{commodity_count}">{commodity_count}</div>
+          <div class="kpi-label">Commodities</div>
+        </div>
       </div>
 
       <!-- Bento Grid -->
@@ -406,7 +579,14 @@ def generate_html(data: dict) -> str:
         <div class="card card-full" id="overview">
           <div class="card-header">
             <div class="card-title"><span class="icon">&#9670;</span> Forward Curve Comparison (Monthly)</div>
-            <div class="card-badge">4 Areas</div>
+            <div style="display:flex;align-items:center;gap:0.75rem">
+              <select id="overviewModeSelect" style="padding:0.4rem 2rem 0.4rem 0.8rem;font-size:0.78rem;font-family:Inter,sans-serif;border:1px solid var(--border-subtle);border-radius:4px;background:var(--bg-surface);color:var(--text-primary);cursor:pointer;appearance:none;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394A3B8' d='M6 8L1 3h10z'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 8px center">
+                <option value="base">Base Load (East vs West)</option>
+                <option value="peak">Peak Load (East vs West)</option>
+                <option value="all">All 4 Areas</option>
+              </select>
+              <div class="card-badge" id="overviewBadge">East vs West</div>
+            </div>
           </div>
           <div class="card-body">
             <div class="chart-container" id="overviewChart" style="min-height:380px"></div>
@@ -437,6 +617,28 @@ def generate_html(data: dict) -> str:
           </div>
           <div class="card-body">
             <div class="chart-container" id="spreadChart" style="min-height:320px"></div>
+          </div>
+        </div>
+
+        <!-- Power Price Change Heatmap -->
+        <div class="card card-full" id="priceHeatmap">
+          <div class="card-header">
+            <div class="card-title"><span class="icon">&#9619;</span> Power Price Changes — DoD % Change Heatmap</div>
+            <div class="card-badge">24 months &times; 4 areas</div>
+          </div>
+          <div class="card-body">
+            <div class="chart-container" id="priceHeatmapChart" style="min-height:420px"></div>
+          </div>
+        </div>
+
+        <!-- E-W Spread Heatmap -->
+        <div class="card card-full" id="spreadHeatmap">
+          <div class="card-header">
+            <div class="card-title"><span class="icon">&#8651;</span> East-West Spread Matrix</div>
+            <div class="card-badge">{latest} vs {prev_label}</div>
+          </div>
+          <div class="card-body">
+            <div class="chart-container" id="spreadHeatmapChart" style="min-height:420px"></div>
           </div>
         </div>
 
@@ -530,6 +732,68 @@ def generate_html(data: dict) -> str:
         </div>
 
       </div><!-- /bento-grid -->
+
+      <!-- ==================== Commodity Section ==================== -->
+      <div class="section-title" id="commodities" style="margin-top:2.5rem">COMMODITY MARKET OVERVIEW</div>
+
+      <div class="bento-grid">
+
+        <!-- Commodity Snapshot Table -->
+        <div class="card card-full">
+          <div class="card-header">
+            <div class="card-title"><span class="icon">&#9632;</span> Commodity Market Overview</div>
+            <div class="card-badge">{commodity_count} assets</div>
+          </div>
+          <div class="card-body">
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Asset</th>
+                    <th>Category</th>
+                    <th>Contract</th>
+                    <th class="num">Price</th>
+                    <th class="num">Unit</th>
+                    <th class="num">Change</th>
+                    <th class="num">%Change</th>
+                  </tr>
+                </thead>
+                <tbody>
+{commodity_rows}                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Commodity Forward Curves -->
+        <div class="card card-full" id="commodity-curves">
+          <div class="card-header">
+            <div class="card-title"><span class="icon">&#9650;</span> Commodity Forward Curves</div>
+            <div class="card-badge" id="commodityCurveBadge">Select</div>
+          </div>
+          <div class="card-body">
+            <div class="curve-selector">
+              <label for="commoditySelect">Commodity:</label>
+              <select id="commoditySelect" style="min-width:280px">
+{commodity_curve_options}          </select>
+              <span class="curve-info" id="commodityCurveInfo"></span>
+            </div>
+            <div class="chart-container" id="commodityCurveChart" style="min-height:380px"></div>
+          </div>
+        </div>
+
+        <!-- Cross-Market Daily Changes -->
+        <div class="card card-full" id="cross-market">
+          <div class="card-header">
+            <div class="card-title"><span class="icon">&#9619;</span> Cross-Market Daily Changes</div>
+            <div class="card-badge">{latest} vs {prev_label}</div>
+          </div>
+          <div class="card-body">
+            <div class="chart-container" id="crossMarketChart" style="min-height:400px"></div>
+          </div>
+        </div>
+
+      </div><!-- /bento-grid commodity -->
 
       <!-- ==================== Spot Analysis Section ==================== -->
       <div class="section-title" id="spot" style="margin-top:2.5rem">SPOT PRICE ANALYSIS</div>
@@ -632,7 +896,7 @@ def generate_html(data: dict) -> str:
     </div><!-- /container -->
 
     <div class="footer">
-      DataServer In-House — JPX Derivative Data Analytics Platform &middot; Generated {generated}
+      DataServer In-House — JPX Derivative & Commodity Market Analytics Platform &middot; Generated {generated}
     </div>
 
   </div><!-- /main-content -->
@@ -640,6 +904,7 @@ def generate_html(data: dict) -> str:
 
 <script>
 const chartData = {chart_data_json};
+const categoryMeta = {category_meta_json};
 
 (function() {{
     'use strict';
@@ -699,16 +964,38 @@ const chartData = {chart_data_json};
     }};
 
     // ============================================
-    // 1. Overview: 4 main monthly curves
+    // 1. Overview: Forward Curve with Base/Peak selector
     // ============================================
     const overview = chartData.overview_chart;
-    const lineConfigs = {{
-      '\u6771\u30fb\u30d9\u30fc\u30b9(\u6708\u6b21)': {{ color: colors.blue, name: 'East Base' }},
-      '\u6771\u30fb\u65e5\u4e2d(\u6708\u6b21)': {{ color: colors.cyan, name: 'East Peak' }},
-      '\u897f\u30fb\u30d9\u30fc\u30b9(\u6708\u6b21)': {{ color: colors.amber, name: 'West Base' }},
-      '\u897f\u30fb\u65e5\u4e2d(\u6708\u6b21)': {{ color: colors.pink, name: 'West Peak' }}
+    const prevOverview = chartData.prev_overview_chart || {{}};
+
+    const overviewModes = {{
+      base: {{
+        cats: [
+          {{ key: '\u6771\u30fb\u30d9\u30fc\u30b9(\u6708\u6b21)', color: colors.blue, name: 'East Base' }},
+          {{ key: '\u897f\u30fb\u30d9\u30fc\u30b9(\u6708\u6b21)', color: colors.amber, name: 'West Base' }},
+        ],
+        badge: 'Base Load',
+      }},
+      peak: {{
+        cats: [
+          {{ key: '\u6771\u30fb\u65e5\u4e2d(\u6708\u6b21)', color: colors.cyan, name: 'East Peak' }},
+          {{ key: '\u897f\u30fb\u65e5\u4e2d(\u6708\u6b21)', color: colors.pink, name: 'West Peak' }},
+        ],
+        badge: 'Peak Load',
+      }},
+      all: {{
+        cats: [
+          {{ key: '\u6771\u30fb\u30d9\u30fc\u30b9(\u6708\u6b21)', color: colors.blue, name: 'East Base' }},
+          {{ key: '\u6771\u30fb\u65e5\u4e2d(\u6708\u6b21)', color: colors.cyan, name: 'East Peak' }},
+          {{ key: '\u897f\u30fb\u30d9\u30fc\u30b9(\u6708\u6b21)', color: colors.amber, name: 'West Base' }},
+          {{ key: '\u897f\u30fb\u65e5\u4e2d(\u6708\u6b21)', color: colors.pink, name: 'West Peak' }},
+        ],
+        badge: '4 Areas',
+      }},
     }};
 
+    // Collect all months across all curves
     const allMonths = new Set();
     Object.values(overview).forEach(items => {{
       items.forEach(item => allMonths.add(item.month));
@@ -716,55 +1003,65 @@ const chartData = {chart_data_json};
     const months = Array.from(allMonths).sort();
     const monthLabels = months.map(m => m.substring(0, 4) + '/' + m.substring(4));
 
-    const prevOverview = chartData.prev_overview_chart || {{}};
+    let overviewInstance = null;
 
-    const overviewSeries = [];
-    const overviewColors = [];
-    const overviewDash = [];
-    const overviewWidths = [];
+    function renderOverview(mode) {{
+      const cfg = overviewModes[mode];
+      document.getElementById('overviewBadge').textContent = cfg.badge;
 
-    Object.entries(overview).forEach(([cat, items]) => {{
-      const priceMap = {{}};
-      items.forEach(item => {{ priceMap[item.month] = item.price; }});
-      const cfg = lineConfigs[cat] || {{ color: '#999', name: cat }};
-      overviewSeries.push({{
-        name: cfg.name,
-        data: months.map(m => priceMap[m] || null)
+      const series = [];
+      const chartColors = [];
+      const dashArr = [];
+      const widths = [];
+
+      // Current day curves
+      cfg.cats.forEach(c => {{
+        const items = overview[c.key] || [];
+        const priceMap = {{}};
+        items.forEach(item => {{ priceMap[item.month] = item.price; }});
+        series.push({{ name: c.name, data: months.map(m => priceMap[m] || null) }});
+        chartColors.push(c.color);
+        dashArr.push(0);
+        widths.push(2.5);
       }});
-      overviewColors.push(cfg.color);
-      overviewDash.push(0);
-      overviewWidths.push(2.5);
-    }});
 
-    // Add previous day lines (dashed, dimmed)
-    Object.entries(overview).forEach(([cat, items]) => {{
-      const prevItems = prevOverview[cat] || [];
-      if (prevItems.length === 0) return;
-      const prevMap = {{}};
-      prevItems.forEach(item => {{ prevMap[item.month] = item.price; }});
-      const cfg = lineConfigs[cat] || {{ color: '#999', name: cat }};
-      overviewSeries.push({{
-        name: cfg.name + ' (prev)',
-        data: months.map(m => prevMap[m] || null)
+      // Previous day curves (dashed)
+      cfg.cats.forEach(c => {{
+        const prevItems = (prevOverview[c.key] || []);
+        if (prevItems.length === 0) return;
+        const prevMap = {{}};
+        prevItems.forEach(item => {{ prevMap[item.month] = item.price; }});
+        series.push({{ name: c.name + ' (prev)', data: months.map(m => prevMap[m] || null) }});
+        chartColors.push(c.color + '55');
+        dashArr.push(5);
+        widths.push(1.2);
       }});
-      overviewColors.push(cfg.color + '55');
-      overviewDash.push(5);
-      overviewWidths.push(1.2);
-    }});
 
-    new ApexCharts(document.getElementById('overviewChart'), {{
-      ...baseChartOpts,
-      chart: {{ ...baseChartOpts.chart, type: 'area', height: 380, animations: {{ enabled: true, easing: 'easeinout', speed: 800 }} }},
-      series: overviewSeries,
-      colors: overviewColors,
-      stroke: {{ curve: 'smooth', width: overviewWidths, dashArray: overviewDash }},
-      fill: {{ type: 'gradient', gradient: {{ shadeIntensity: 1, opacityFrom: 0.15, opacityTo: 0.01, stops: [0, 95, 100] }} }},
-      xaxis: {{ ...baseChartOpts.xaxis, categories: monthLabels, title: {{ text: 'Contract Month', style: {{ color: colors.textLight, fontSize: '11px' }} }} }},
-      yaxis: {{ ...baseChartOpts.yaxis, title: {{ text: 'JPY/kWh', style: {{ color: colors.textLight, fontSize: '11px' }} }} }},
-      markers: {{ size: 3, strokeWidth: 0, hover: {{ size: 6 }} }},
-      legend: {{ ...baseChartOpts.legend, position: 'top', horizontalAlign: 'right' }},
-      dataLabels: {{ enabled: false }}
-    }}).render();
+      if (overviewInstance) overviewInstance.destroy();
+
+      overviewInstance = new ApexCharts(document.getElementById('overviewChart'), {{
+        ...baseChartOpts,
+        chart: {{ ...baseChartOpts.chart, type: 'area', height: 380, animations: {{ enabled: true, easing: 'easeinout', speed: 600 }} }},
+        series: series,
+        colors: chartColors,
+        stroke: {{ curve: 'smooth', width: widths, dashArray: dashArr }},
+        fill: {{ type: 'gradient', gradient: {{ shadeIntensity: 1, opacityFrom: 0.15, opacityTo: 0.01, stops: [0, 95, 100] }} }},
+        xaxis: {{ ...baseChartOpts.xaxis, categories: monthLabels, title: {{ text: 'Contract Month', style: {{ color: colors.textLight, fontSize: '11px' }} }} }},
+        yaxis: {{ ...baseChartOpts.yaxis, title: {{ text: 'JPY/kWh', style: {{ color: colors.textLight, fontSize: '11px' }} }} }},
+        markers: {{ size: 3, strokeWidth: 0, hover: {{ size: 6 }} }},
+        legend: {{ ...baseChartOpts.legend, position: 'top', horizontalAlign: 'right' }},
+        dataLabels: {{ enabled: false }}
+      }});
+      overviewInstance.render();
+    }}
+
+    // Initial render: Base Load
+    renderOverview('base');
+
+    // Selector event
+    document.getElementById('overviewModeSelect').addEventListener('change', function() {{
+      renderOverview(this.value);
+    }});
 
     // ============================================
     // 2. Interactive curve selector
@@ -934,7 +1231,397 @@ const chartData = {chart_data_json};
     }}
 
     // ============================================
-    // 4. KPI count-up animation
+    // 3b. Power Price Change Heatmap
+    // ============================================
+    const heatmapData = chartData.power_heatmap || {{}};
+    if (heatmapData.price_changes && document.getElementById('priceHeatmapChart')) {{
+      const typeKeys = ['\u6771\u30fb\u30d9\u30fc\u30b9', '\u6771\u30fb\u65e5\u4e2d', '\u897f\u30fb\u30d9\u30fc\u30b9', '\u897f\u30fb\u65e5\u4e2d'];
+      const typeLabels = ['East Base', 'East Peak', 'West Base', 'West Peak'];
+
+      // ApexCharts heatmap: series = rows (reversed for display), data = columns
+      const priceSeries = typeLabels.map((label, idx) => {{
+        const items = heatmapData.price_changes[typeKeys[idx]] || [];
+        return {{
+          name: label,
+          data: items.map(it => ({{
+            x: it.month.substring(0, 4) + '/' + it.month.substring(4),
+            y: it.pct !== null && it.pct !== undefined ? it.pct : 0,
+            settlement: it.settlement,
+            prev: it.prev,
+            diff: it.diff,
+          }}))
+        }};
+      }}).reverse();
+
+      new ApexCharts(document.getElementById('priceHeatmapChart'), {{
+        chart: {{
+          type: 'heatmap',
+          height: 420,
+          background: 'transparent',
+          fontFamily: "'Inter', sans-serif",
+          toolbar: {{ show: true, tools: {{ download: true, selection: false, zoom: false, zoomin: false, zoomout: false, pan: false, reset: false }} }},
+        }},
+        theme: {{ mode: 'dark' }},
+        series: priceSeries,
+        plotOptions: {{
+          heatmap: {{
+            shadeIntensity: 0,
+            radius: 2,
+            enableShades: false,
+            colorScale: {{
+              ranges: [
+                {{ from: -20, to: -5, color: '#DC2626', name: '< -5%' }},
+                {{ from: -5, to: -2, color: '#EF4444', name: '-5% to -2%' }},
+                {{ from: -2, to: -0.5, color: '#F87171', name: '-2% to -0.5%' }},
+                {{ from: -0.5, to: 0.5, color: '#374151', name: 'Flat' }},
+                {{ from: 0.5, to: 2, color: '#34D399', name: '+0.5% to +2%' }},
+                {{ from: 2, to: 5, color: '#10B981', name: '+2% to +5%' }},
+                {{ from: 5, to: 20, color: '#059669', name: '> +5%' }},
+              ]
+            }}
+          }}
+        }},
+        dataLabels: {{
+          enabled: true,
+          formatter: function(val) {{ return val !== 0 ? (val > 0 ? '+' : '') + val.toFixed(1) + '%' : '-'; }},
+          style: {{ fontSize: '10px', fontFamily: 'JetBrains Mono, monospace', fontWeight: 500, colors: ['#E2E8F0'] }}
+        }},
+        grid: {{ show: false }},
+        xaxis: {{
+          labels: {{ style: {{ colors: colors.text, fontSize: '10px' }}, rotate: -45, rotateAlways: false }},
+          position: 'top',
+          axisBorder: {{ show: false }},
+          axisTicks: {{ show: false }},
+        }},
+        yaxis: {{
+          labels: {{ style: {{ colors: colors.text, fontSize: '11px' }} }}
+        }},
+        legend: {{
+          show: true,
+          position: 'bottom',
+          labels: {{ colors: colors.text }},
+          fontSize: '11px',
+        }},
+        tooltip: {{
+          custom: function({{ seriesIndex, dataPointIndex, w }}) {{
+            const d = w.config.series[seriesIndex].data[dataPointIndex];
+            const name = w.config.series[seriesIndex].name;
+            const pctColor = d.y >= 0 ? '#10B981' : '#EF4444';
+            const sign = d.y >= 0 ? '+' : '';
+            let html = '<div style="padding:10px 14px;font-family:JetBrains Mono,monospace;font-size:12px;background:#151B28;border:1px solid #1E293B">';
+            html += '<div style="color:#F1F5F9;font-weight:600;margin-bottom:6px">' + name + ' — ' + d.x + '</div>';
+            html += '<div style="color:#94A3B8">Settlement: <span style="color:#E2E8F0">' + (d.settlement !== null ? d.settlement.toFixed(2) : 'N/A') + ' JPY/kWh</span></div>';
+            if (d.prev !== null && d.prev !== undefined) {{
+              html += '<div style="color:#94A3B8">Previous: <span style="color:#94A3B8">' + d.prev.toFixed(2) + '</span></div>';
+            }}
+            if (d.diff !== null && d.diff !== undefined) {{
+              html += '<div style="color:#94A3B8">Change: <span style="color:' + pctColor + '">' + (d.diff >= 0 ? '+' : '') + d.diff.toFixed(2) + '</span></div>';
+            }}
+            html += '<div style="color:' + pctColor + ';font-weight:600;font-size:13px;margin-top:4px">' + sign + d.y.toFixed(2) + '%</div>';
+            html += '</div>';
+            return html;
+          }}
+        }}
+      }}).render();
+    }}
+
+    // ============================================
+    // 3c. E-W Spread Heatmap
+    // ============================================
+    if (heatmapData.spreads && document.getElementById('spreadHeatmapChart')) {{
+      const baseSpreads = heatmapData.spreads.base || [];
+      const peakSpreads = heatmapData.spreads.peak || [];
+
+      const spreadSeries = [
+        {{
+          name: 'Peak Spread Change',
+          data: peakSpreads.map(s => ({{
+            x: s.month.substring(0, 4) + '/' + s.month.substring(4),
+            y: s.spread_change !== null ? s.spread_change : 0,
+            spread: s.spread,
+            prevSpread: s.prev_spread,
+          }}))
+        }},
+        {{
+          name: 'Base Spread Change',
+          data: baseSpreads.map(s => ({{
+            x: s.month.substring(0, 4) + '/' + s.month.substring(4),
+            y: s.spread_change !== null ? s.spread_change : 0,
+            spread: s.spread,
+            prevSpread: s.prev_spread,
+          }}))
+        }},
+        {{
+          name: 'Peak Spread (JPY/kWh)',
+          data: peakSpreads.map(s => ({{
+            x: s.month.substring(0, 4) + '/' + s.month.substring(4),
+            y: s.spread !== null ? s.spread : 0,
+            prevSpread: s.prev_spread,
+            spreadChange: s.spread_change,
+          }}))
+        }},
+        {{
+          name: 'Base Spread (JPY/kWh)',
+          data: baseSpreads.map(s => ({{
+            x: s.month.substring(0, 4) + '/' + s.month.substring(4),
+            y: s.spread !== null ? s.spread : 0,
+            prevSpread: s.prev_spread,
+            spreadChange: s.spread_change,
+          }}))
+        }},
+      ];
+
+      new ApexCharts(document.getElementById('spreadHeatmapChart'), {{
+        chart: {{
+          type: 'heatmap',
+          height: 420,
+          background: 'transparent',
+          fontFamily: "'Inter', sans-serif",
+          toolbar: {{ show: true, tools: {{ download: true, selection: false, zoom: false, zoomin: false, zoomout: false, pan: false, reset: false }} }},
+        }},
+        theme: {{ mode: 'dark' }},
+        series: spreadSeries,
+        plotOptions: {{
+          heatmap: {{
+            shadeIntensity: 0,
+            radius: 2,
+            enableShades: false,
+            colorScale: {{
+              ranges: [
+                {{ from: -3, to: -1, color: '#DC2626', name: '< -1.0' }},
+                {{ from: -1, to: -0.3, color: '#F87171', name: '-1.0 to -0.3' }},
+                {{ from: -0.3, to: 0.3, color: '#374151', name: 'Flat' }},
+                {{ from: 0.3, to: 1, color: '#60A5FA', name: '+0.3 to +1.0' }},
+                {{ from: 1, to: 3, color: '#2563EB', name: '+1.0 to +3.0' }},
+                {{ from: 3, to: 10, color: '#1D4ED8', name: '> +3.0' }},
+              ]
+            }}
+          }}
+        }},
+        dataLabels: {{
+          enabled: true,
+          formatter: function(val) {{ return val !== 0 ? (val > 0 ? '+' : '') + val.toFixed(1) : '-'; }},
+          style: {{ fontSize: '10px', fontFamily: 'JetBrains Mono, monospace', fontWeight: 500, colors: ['#E2E8F0'] }}
+        }},
+        grid: {{ show: false }},
+        xaxis: {{
+          labels: {{ style: {{ colors: colors.text, fontSize: '10px' }}, rotate: -45, rotateAlways: false }},
+          position: 'top',
+          axisBorder: {{ show: false }},
+          axisTicks: {{ show: false }},
+        }},
+        yaxis: {{
+          labels: {{ style: {{ colors: colors.text, fontSize: '11px' }} }}
+        }},
+        legend: {{
+          show: true,
+          position: 'bottom',
+          labels: {{ colors: colors.text }},
+          fontSize: '11px',
+        }},
+        tooltip: {{
+          custom: function({{ seriesIndex, dataPointIndex, w }}) {{
+            const d = w.config.series[seriesIndex].data[dataPointIndex];
+            const name = w.config.series[seriesIndex].name;
+            let html = '<div style="padding:10px 14px;font-family:JetBrains Mono,monospace;font-size:12px;background:#151B28;border:1px solid #1E293B">';
+            html += '<div style="color:#F1F5F9;font-weight:600;margin-bottom:6px">' + name + ' — ' + d.x + '</div>';
+            if (name.includes('Change')) {{
+              if (d.spread !== undefined && d.spread !== null) {{
+                html += '<div style="color:#94A3B8">Today Spread: <span style="color:#E2E8F0">' + d.spread.toFixed(2) + ' JPY/kWh</span></div>';
+              }}
+              if (d.prevSpread !== undefined && d.prevSpread !== null) {{
+                html += '<div style="color:#94A3B8">Prev Spread: <span style="color:#94A3B8">' + d.prevSpread.toFixed(2) + '</span></div>';
+              }}
+              const chgColor = d.y >= 0 ? '#10B981' : '#EF4444';
+              html += '<div style="color:' + chgColor + ';font-weight:600;font-size:13px;margin-top:4px">Change: ' + (d.y >= 0 ? '+' : '') + d.y.toFixed(2) + '</div>';
+            }} else {{
+              html += '<div style="color:#E2E8F0;font-weight:600;font-size:14px">' + d.y.toFixed(2) + ' JPY/kWh</div>';
+              if (d.prevSpread !== undefined && d.prevSpread !== null) {{
+                html += '<div style="color:#94A3B8">Prev: ' + d.prevSpread.toFixed(2) + '</div>';
+              }}
+              if (d.spreadChange !== undefined && d.spreadChange !== null) {{
+                const chgColor = d.spreadChange >= 0 ? '#10B981' : '#EF4444';
+                html += '<div style="color:' + chgColor + '">DoD: ' + (d.spreadChange >= 0 ? '+' : '') + d.spreadChange.toFixed(2) + '</div>';
+              }}
+            }}
+            html += '</div>';
+            return html;
+          }}
+        }}
+      }}).render();
+    }}
+
+    // ============================================
+    // 4. Commodity Forward Curves
+    // ============================================
+    const commodityCurves = chartData.commodity_curves || {{}};
+    const commoditySelect = document.getElementById('commoditySelect');
+    let commodityCurveInstance = null;
+
+    function renderCommodityCurve(underlyingName) {{
+      const data = commodityCurves[underlyingName];
+      if (!data) return;
+
+      const curveData = data.curve || [];
+      const prevCurveData = data.prev_curve || [];
+      const unit = data.unit || '';
+
+      document.getElementById('commodityCurveInfo').textContent = curveData.length + ' contracts | ' + unit;
+      document.getElementById('commodityCurveBadge').textContent = data.display_en;
+
+      const labels = curveData.map(i => {{
+        const m = i.month;
+        if (m.length === 6) return m.substring(0, 4) + '/' + m.substring(4);
+        if (m.length === 8) return m.substring(0, 4) + '/' + m.substring(4, 6) + '/' + m.substring(6);
+        return m;
+      }});
+
+      const series = [{{
+        name: 'Settlement (' + data.display_en + ')',
+        data: curveData.map(i => i.settlement)
+      }}];
+
+      const catColor = (categoryMeta[data.category] || {{}}).color || colors.blue;
+      const chartColors = [catColor];
+      const dashArrays = [0];
+      const widths = [2.5];
+
+      // Previous day curve overlay
+      if (prevCurveData.length > 0) {{
+        const prevMap = {{}};
+        prevCurveData.forEach(p => {{ prevMap[p.month] = p.settlement; }});
+        series.push({{
+          name: 'Prev Day',
+          data: curveData.map(i => prevMap[i.month] || null)
+        }});
+        chartColors.push(colors.amber);
+        dashArrays.push(5);
+        widths.push(1.5);
+      }}
+
+      if (commodityCurveInstance) commodityCurveInstance.destroy();
+
+      commodityCurveInstance = new ApexCharts(document.getElementById('commodityCurveChart'), {{
+        ...baseChartOpts,
+        chart: {{ ...baseChartOpts.chart, type: 'area', height: 380, animations: {{ enabled: true, easing: 'easeinout', speed: 600 }} }},
+        series: series,
+        colors: chartColors,
+        stroke: {{ curve: 'smooth', width: widths, dashArray: dashArrays }},
+        fill: {{ type: 'gradient', gradient: {{ shadeIntensity: 1, opacityFrom: 0.2, opacityTo: 0.01, stops: [0, 95, 100] }} }},
+        xaxis: {{ ...baseChartOpts.xaxis, categories: labels, title: {{ text: 'Contract Month', style: {{ color: colors.textLight, fontSize: '11px' }} }} }},
+        yaxis: {{
+          ...baseChartOpts.yaxis,
+          title: {{ text: unit, style: {{ color: colors.textLight, fontSize: '11px' }} }},
+          labels: {{
+            style: {{ colors: colors.text, fontSize: '11px', fontFamily: "'JetBrains Mono', monospace" }},
+            formatter: v => v !== null ? v.toLocaleString() : ''
+          }}
+        }},
+        markers: {{ size: 4, strokeWidth: 0, hover: {{ size: 7 }} }},
+        title: {{ text: data.display_en + ' (' + data.display_ja + ')', align: 'left', style: {{ fontSize: '14px', fontWeight: 600, color: '#F1F5F9' }} }},
+        legend: {{ ...baseChartOpts.legend, position: 'top', horizontalAlign: 'right' }},
+        dataLabels: {{ enabled: false }},
+        tooltip: {{
+          theme: 'dark',
+          style: {{ fontSize: '12px', fontFamily: "'JetBrains Mono', monospace" }},
+          custom: function({{ series: s, seriesIndex, dataPointIndex, w }}) {{
+            const item = curveData[dataPointIndex];
+            let html = '<div style="padding:8px 12px;font-family:JetBrains Mono,monospace;font-size:12px">';
+            html += '<div style="color:#F1F5F9;font-weight:600;margin-bottom:4px">' + (item.name || item.month) + '</div>';
+            html += '<div style="color:#94A3B8">Settlement: <span style="color:' + catColor + '">' + (item.settlement !== null ? item.settlement.toLocaleString() : 'N/A') + ' ' + unit + '</span></div>';
+            if (item.theoretical !== null && item.theoretical !== undefined) {{
+              html += '<div style="color:#94A3B8">Theoretical: <span style="color:#8B5CF6">' + item.theoretical.toLocaleString() + '</span></div>';
+            }}
+            html += '<div style="color:#64748B;margin-top:2px">DTE: ' + (item.days || 'N/A') + '</div>';
+            html += '</div>';
+            return html;
+          }}
+        }}
+      }});
+      commodityCurveInstance.render();
+    }}
+
+    if (commoditySelect) {{
+      commoditySelect.addEventListener('change', () => renderCommodityCurve(commoditySelect.value));
+      if (commoditySelect.options.length > 0) renderCommodityCurve(commoditySelect.value);
+    }}
+
+    // ============================================
+    // 5. Cross-Market Daily Changes
+    // ============================================
+    const commoditySnapshot = chartData.commodity_snapshot || [];
+    if (commoditySnapshot.length > 0 && document.getElementById('crossMarketChart')) {{
+      const sorted = [...commoditySnapshot]
+        .filter(a => a.change_pct !== null && a.change_pct !== undefined)
+        .sort((a, b) => Math.abs(b.change_pct) - Math.abs(a.change_pct));
+
+      if (sorted.length > 0) {{
+        const cmLabels = sorted.map(s => s.display_en);
+        const cmValues = sorted.map(s => s.change_pct);
+        const cmColors = sorted.map(s => s.change_pct >= 0 ? colors.green : colors.red);
+
+        new ApexCharts(document.getElementById('crossMarketChart'), {{
+          ...baseChartOpts,
+          chart: {{ ...baseChartOpts.chart, type: 'bar', height: Math.max(300, sorted.length * 32), animations: {{ enabled: true, easing: 'easeinout', speed: 600 }} }},
+          series: [{{ name: 'Daily Change %', data: cmValues }}],
+          plotOptions: {{
+            bar: {{
+              horizontal: true,
+              borderRadius: 4,
+              barHeight: '65%',
+              distributed: true,
+              colors: {{
+                ranges: [
+                  {{ from: -9999, to: -0.001, color: colors.red }},
+                  {{ from: 0, to: 9999, color: colors.green }}
+                ]
+              }}
+            }}
+          }},
+          colors: cmColors,
+          xaxis: {{
+            ...baseChartOpts.xaxis,
+            categories: cmLabels,
+            title: {{ text: 'Change (%)', style: {{ color: colors.textLight, fontSize: '11px' }} }},
+            labels: {{
+              style: {{ colors: colors.text, fontSize: '11px', fontFamily: "'JetBrains Mono', monospace" }},
+              formatter: v => (v >= 0 ? '+' : '') + v.toFixed(1) + '%'
+            }}
+          }},
+          yaxis: {{
+            labels: {{
+              style: {{ colors: colors.text, fontSize: '11px', fontFamily: "'Inter', sans-serif" }}
+            }}
+          }},
+          dataLabels: {{
+            enabled: true,
+            formatter: function(v) {{ return (v >= 0 ? '+' : '') + v.toFixed(2) + '%'; }},
+            style: {{ fontSize: '11px', fontFamily: "'JetBrains Mono', monospace", colors: ['#F1F5F9'] }},
+            offsetX: 6
+          }},
+          legend: {{ show: false }},
+          tooltip: {{
+            theme: 'dark',
+            style: {{ fontSize: '12px', fontFamily: "'JetBrains Mono', monospace" }},
+            custom: function({{ series: s, seriesIndex, dataPointIndex }}) {{
+              const item = sorted[dataPointIndex];
+              const chgColor = item.change_pct >= 0 ? colors.green : colors.red;
+              const sign = item.change_pct >= 0 ? '+' : '';
+              const diffSign = item.change_diff >= 0 ? '+' : '';
+              return '<div style="padding:8px 12px;font-family:JetBrains Mono,monospace;font-size:12px">'
+                + '<div style="color:#F1F5F9;font-weight:600;margin-bottom:4px">' + item.display_en + '</div>'
+                + '<div style="color:#94A3B8">' + item.display_ja + '</div>'
+                + '<div style="color:#94A3B8">Price: <span style="color:#3B82F6">' + item.settlement.toLocaleString() + ' ' + item.unit + '</span></div>'
+                + '<div style="color:' + chgColor + ';font-weight:600">' + diffSign + (item.change_diff || 0).toFixed(2) + ' (' + sign + item.change_pct.toFixed(2) + '%)</div>'
+                + '</div>';
+            }}
+          }}
+        }}).render();
+      }}
+    }}
+
+    // ============================================
+    // 6. KPI count-up animation
     // ============================================
     function animateValue(el, end) {{
       const duration = 1200;
@@ -958,7 +1645,7 @@ const chartData = {chart_data_json};
     }});
 
     // ============================================
-    // 5. Sidebar active state on scroll
+    // 7. Sidebar active state on scroll
     // ============================================
     const sections = document.querySelectorAll('[id]');
     const navItems = document.querySelectorAll('.nav-item');
@@ -980,7 +1667,7 @@ const chartData = {chart_data_json};
     }});
 
     // ============================================
-    // 6. Spot Analysis — CSV Upload & Processing
+    // 8. Spot Analysis — CSV Upload & Processing
     // ============================================
     const uploadZone = document.getElementById('uploadZone');
     const spotFileInput = document.getElementById('spotFileInput');
@@ -1323,6 +2010,23 @@ const chartData = {chart_data_json};
 }})();
 </script>
 
+<style>
+.commodity-ja {{
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-muted, #64748B);
+  margin-top: 2px;
+}}
+.cat-badge {{
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}}
+</style>
+
 </body>
 </html>"""
 
@@ -1353,12 +2057,14 @@ def main():
 
         # Report curve stats
         curves = data.get("forward_curves", {})
+        commodity_count = data.get("commodity_count", 0)
         print(f"\nSite generated successfully!")
         print(f"  Total records: {data['total_records']:,}")
         print(f"  Power futures: {data['power_futures_count']}")
         print(f"  Forward curves: {len(curves)}")
         for cat, items in sorted(curves.items()):
             print(f"    {cat}: {len(items)} 限月")
+        print(f"  Commodities: {commodity_count}")
         print(f"\n  Open in browser: {html_path}")
     finally:
         repo.close()
