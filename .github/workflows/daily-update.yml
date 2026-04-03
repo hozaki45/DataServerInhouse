@@ -31,6 +31,9 @@ jobs:
       - name: Install dependencies
         run: uv sync
 
+      - name: Rebuild database from CSV history
+        run: uv run python scripts/import_csv.py
+
       - name: Fetch JPX data and update dashboard
         run: uv run python scripts/fetch_jpx.py
 
@@ -50,6 +53,6 @@ jobs:
 
           TRADE_DATE=$(ls -t Data/rb*.csv | head -1 | grep -oP '\d{8}' | sed 's/\(.\{4\}\)\(.\{2\}\)/\1-\2-/')
 
-          git add Data/ db/ docs/
+          git add Data/ docs/
           git commit -m "Daily update: ${TRADE_DATE} JPX settlement prices"
           git push
