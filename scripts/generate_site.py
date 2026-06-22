@@ -17,10 +17,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from src.query import get_power_futures, summary_by_underlying
 from src.repository import get_repository
 from src.commodity_query import (
+    find_nearest_business_day_before,
     get_cross_commodity_snapshot,
     get_all_commodity_forward_curves,
+    get_commodity_forward_curve,
+    get_front_month_price,
 )
-from src.asset_taxonomy import CATEGORY_META, ASSET_TAXONOMY
+from src.asset_taxonomy import CATEGORY_META, ASSET_TAXONOMY, COMMODITY_CATEGORIES
 
 SITE_DIR = Path(__file__).resolve().parent.parent / "docs"
 
@@ -519,6 +522,11 @@ def generate_html(data: dict) -> str:
       <a href="#spotVsFutures" class="nav-item">
         <span>&#8646;</span>
         <span class="nav-tooltip">Spot vs Futures</span>
+      </a>
+      <div style="width:32px;height:1px;background:var(--border-subtle);margin:8px 0"></div>
+      <a href="weekly_compare.html" class="nav-item">
+        <span>&#9776;</span>
+        <span class="nav-tooltip">週次比較 (Weekly)</span>
       </a>
     </div>
   </nav>
@@ -2031,6 +2039,986 @@ const categoryMeta = {category_meta_json};
 </html>"""
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Weekly Compare Page (週次比較ページ)
+# ─────────────────────────────────────────────────────────────────────────────
+
+MAIN_POWER_CURVES = ["東・ベース(月次)", "東・日中(月次)", "西・ベース(月次)", "西・日中(月次)"]
+
+# 電力関連の原燃料 (発電燃料・石油製品)。電力先物のドライバー
+FUEL_UNDERLYINGS = [
+    "LNG(プラッツJKM)",
+    "ドバイ原油",
+    "バージガソリン",
+    "バージ灯油",
+    "バージ軽油",
+    "中京ガソリン",
+    "中京灯油",
+]
+# フォワードカーブを描く対象（流動性が高く限月数が複数あるもの）
+FUEL_CURVE_TARGETS = ["LNG(プラッツJKM)", "ドバイ原油"]
+
+
+def generate_weekly_compare_data(repo, latest_date: str, base_date: str) -> dict:
+    """Build the dict consumed by generate_weekly_compare_html.
+
+    Focus: power futures (12 curves) + power-related fuel commodities
+    (LNG, crude, petroleum products). Equity/bond/FX/metals/agriculture
+    are intentionally excluded — this page is the JERA-style "電力先物
+    weekly briefing" view.
+    """
+    # ── Power futures: today and base ──
+    power_today = [r for r in get_power_futures(repo, latest_date) if not r.get("put_call")]
+    power_base = [r for r in get_power_futures(repo, base_date) if not r.get("put_call")]
+    prev_power_map = {
+        r["instrument_name"]: r.get("settlement_price")
+        for r in power_base
+        if r.get("settlement_price") is not None
+    }
+
+    # All 12 power curves (today + base) — used for overlays and sub-cat summary
+    all_curve_cats = list(CURVE_CATEGORIES.keys())
+    power_curves_today: dict[str, list] = {c: [] for c in all_curve_cats}
+    power_curves_base: dict[str, list] = {c: [] for c in all_curve_cats}
+    for r in power_today:
+        cat = classify_power_future(r["instrument_name"])
+        if cat in power_curves_today:
+            power_curves_today[cat].append({
+                "month": r.get("contract_month", ""),
+                "price": r.get("settlement_price"),
+            })
+    for r in power_base:
+        cat = classify_power_future(r["instrument_name"])
+        if cat in power_curves_base:
+            power_curves_base[cat].append({
+                "month": r.get("contract_month", ""),
+                "price": r.get("settlement_price"),
+            })
+    for d in (power_curves_today, power_curves_base):
+        for cat in d:
+            d[cat].sort(key=lambda x: x["month"])
+
+    # Power rows (per-contract) — for tables, sorting, top movers
+    power_rows: list[dict] = []
+    for r in power_today:
+        name = r["instrument_name"]
+        sub = classify_power_future(name) or "Power"
+        settle = r.get("settlement_price")
+        prev = prev_power_map.get(name)
+        change = _calc_change(settle, prev)
+        power_rows.append({
+            "name": name,
+            "display": name,
+            "category": "energy",
+            "asset_type": "power",
+            "sub_category": sub,
+            "contract_month": r.get("contract_month", ""),
+            "price": settle,
+            "prev_price": prev,
+            "diff": change["diff"],
+            "pct": change["pct"],
+        })
+
+    # 12 power sub-category summary (avg WoW % per curve type)
+    power_subcat_summary = []
+    for cat in all_curve_cats:
+        pcts = [r["pct"] for r in power_rows if r["sub_category"] == cat and r["pct"] is not None]
+        if not pcts:
+            continue
+        up = sum(1 for p in pcts if p > 0)
+        down = sum(1 for p in pcts if p < 0)
+        flat = sum(1 for p in pcts if p == 0)
+        power_subcat_summary.append({
+            "sub_category": cat,
+            "avg_pct": round(sum(pcts) / len(pcts), 2),
+            "count_up": up,
+            "count_down": down,
+            "count_flat": flat,
+            "count_total": len(pcts),
+        })
+
+    # Main KPI cards — the 4 monthly curves (East/West × Base/Peak)
+    main_kpi = []
+    subcat_lookup = {s["sub_category"]: s for s in power_subcat_summary}
+    for cat in MAIN_POWER_CURVES:
+        s = subcat_lookup.get(cat)
+        main_kpi.append({
+            "label": cat,
+            "avg_pct": s["avg_pct"] if s else None,
+            "count_up": s["count_up"] if s else 0,
+            "count_down": s["count_down"] if s else 0,
+            "count_total": s["count_total"] if s else 0,
+        })
+
+    # ── Fuel section: LNG, crude, petroleum products ──
+    fuel_rows: list[dict] = []
+    for name in FUEL_UNDERLYINGS:
+        info = ASSET_TAXONOMY.get(name)
+        if not info:
+            continue
+        today_front = get_front_month_price(repo, latest_date, name)
+        base_front = get_front_month_price(repo, base_date, name)
+        if not today_front or today_front.get("settlement") is None:
+            continue
+        price = today_front["settlement"]
+        prev = base_front["settlement"] if base_front else None
+        change = _calc_change(price, prev)
+        fuel_rows.append({
+            "name": info["display_ja"],
+            "display": f'{info["display_en"]} ({info["display_ja"]})',
+            "display_en": info["display_en"],
+            "display_ja": info["display_ja"],
+            "category": "energy",
+            "asset_type": "fuel",
+            "sub_category": info.get("subcategory", ""),
+            "contract_month": today_front.get("month", ""),
+            "price": price,
+            "prev_price": prev,
+            "diff": change["diff"],
+            "pct": change["pct"],
+            "unit": info.get("unit", ""),
+        })
+
+    # Fuel forward curves (LNG JKM, Dubai Crude) — full curve today vs base
+    fuel_curves_today: dict[str, list] = {}
+    fuel_curves_base: dict[str, list] = {}
+    for underlying in FUEL_CURVE_TARGETS:
+        cur_today = get_commodity_forward_curve(repo, latest_date, underlying)
+        cur_base = get_commodity_forward_curve(repo, base_date, underlying)
+        if not cur_today:
+            continue
+        fuel_curves_today[underlying] = [
+            {"month": p["month"], "price": p["settlement"]}
+            for p in cur_today if p.get("settlement") is not None and p.get("month")
+        ]
+        fuel_curves_base[underlying] = [
+            {"month": p["month"], "price": p["settlement"]}
+            for p in cur_base if p.get("settlement") is not None and p.get("month")
+        ]
+
+    # ── Top movers (split into power vs fuel) ──
+    valid_power = [r for r in power_rows if r["pct"] is not None]
+    power_top_gainers = sorted(
+        [r for r in valid_power if r["pct"] > 0], key=lambda x: x["pct"], reverse=True
+    )[:15]
+    power_top_losers = sorted(
+        [r for r in valid_power if r["pct"] < 0], key=lambda x: x["pct"]
+    )[:15]
+
+    valid_fuel = [r for r in fuel_rows if r["pct"] is not None]
+    fuel_top_gainers = sorted(
+        [r for r in valid_fuel if r["pct"] > 0], key=lambda x: x["pct"], reverse=True
+    )[:15]
+    fuel_top_losers = sorted(
+        [r for r in valid_fuel if r["pct"] < 0], key=lambda x: x["pct"]
+    )[:15]
+
+    # Combined rows (power + fuel) for the all-symbols table
+    all_rows = power_rows + fuel_rows
+    valid_all = [r for r in all_rows if r["pct"] is not None]
+
+    counts = {
+        "up": sum(1 for r in valid_all if r["pct"] > 0),
+        "down": sum(1 for r in valid_all if r["pct"] < 0),
+        "flat": sum(1 for r in valid_all if r["pct"] == 0),
+        "total_valid": len(valid_all),
+        "total_rows": len(all_rows),
+        "power_count": len(power_rows),
+        "fuel_count": len(fuel_rows),
+    }
+
+    def _parse(s: str):
+        return datetime.strptime(s, "%Y-%m-%d" if "-" in s else "%Y%m%d")
+
+    try:
+        day_diff = (_parse(latest_date) - _parse(base_date)).days
+    except ValueError:
+        day_diff = None
+
+    return {
+        "latest_date": latest_date,
+        "base_date": base_date,
+        "calendar_days_back": day_diff,
+        "rows": all_rows,
+        "main_kpi": main_kpi,
+        "power_subcat_summary": power_subcat_summary,
+        "power_forward_curves": {"today": power_curves_today, "base": power_curves_base},
+        "fuel_snapshot": fuel_rows,
+        "fuel_forward_curves": {"today": fuel_curves_today, "base": fuel_curves_base},
+        "power_top_gainers": power_top_gainers,
+        "power_top_losers": power_top_losers,
+        "fuel_top_gainers": fuel_top_gainers,
+        "fuel_top_losers": fuel_top_losers,
+        "counts": counts,
+    }
+
+
+def load_news_events(yaml_path: Path, start_date: str, end_date: str) -> list[dict]:
+    """Load news/event entries from a YAML file, filtered to [start_date, end_date].
+
+    Dates in YAML are ISO (YYYY-MM-DD). Comparison done after normalising.
+    Missing/empty file returns an empty list. PyYAML is optional — if not
+    installed, returns [] gracefully so the page still renders.
+    """
+    if not yaml_path.exists():
+        return []
+    try:
+        import yaml  # type: ignore
+    except ImportError:
+        return []
+
+    try:
+        with open(yaml_path, encoding="utf-8") as f:
+            data = yaml.safe_load(f) or []
+    except Exception:
+        return []
+    if not isinstance(data, list):
+        return []
+
+    def _normalise(s: str) -> str:
+        return str(s).replace("-", "")[:8]
+
+    s_norm = _normalise(start_date)
+    e_norm = _normalise(end_date)
+    events: list[dict] = []
+    for item in data:
+        if not isinstance(item, dict):
+            continue
+        d = _normalise(item.get("date", ""))
+        if not d or not (s_norm <= d <= e_norm):
+            continue
+        events.append({
+            "date": item.get("date", ""),
+            "title": item.get("title", ""),
+            "category": item.get("category", ""),
+            "source": item.get("source", ""),
+            "url": item.get("url", ""),
+            "note": item.get("note", ""),
+        })
+    events.sort(key=lambda x: str(x["date"]))
+    return events
+
+
+def _wk_change_cell(diff, pct, *, show_pct: bool = True) -> str:
+    """Compact change cell (used in tables on the weekly page)."""
+    if diff is None or pct is None:
+        return '<td class="num change">-</td>'
+    sign = "+" if diff >= 0 else ""
+    css = "positive" if diff > 0 else "negative" if diff < 0 else ""
+    pct_html = (
+        f'<span class="change-pct">({sign}{pct:.1f}%)</span>' if show_pct else ""
+    )
+    return (
+        f'<td class="num change {css}">'
+        f'{sign}{diff:.2f}{pct_html}'
+        f'</td>'
+    )
+
+
+def _fmt_price(v) -> str:
+    if v is None:
+        return "-"
+    try:
+        return f"{float(v):.2f}"
+    except (TypeError, ValueError):
+        return str(v)
+
+
+def _fmt_date_dotted(date_str: str) -> str:
+    """Normalise to YYYY-MM-DD. Accepts ISO or packed 8-digit."""
+    if not date_str:
+        return ""
+    s = str(date_str)
+    if len(s) == 10 and s[4] == "-" and s[7] == "-":
+        return s
+    if len(s) == 8 and s.isdigit():
+        return f"{s[:4]}-{s[4:6]}-{s[6:8]}"
+    return s
+
+
+def _mover_rows_html(items: list[dict]) -> str:
+    out = ""
+    for it in items:
+        sign = "+" if (it["diff"] or 0) >= 0 else ""
+        css = "positive" if it["pct"] > 0 else "negative"
+        meta = CATEGORY_META.get(it["category"], {})
+        cat_label = meta.get("display_en", it["category"])
+        cat_color = meta.get("color", "#666")
+        out += (
+            f'<tr>'
+            f'<td>{it["display"]}'
+            f'<span class="commodity-ja" style="display:block;font-size:0.7rem;opacity:0.55">{it.get("sub_category", "")}</span></td>'
+            f'<td><span class="cat-badge" style="background:{cat_color}22;color:{cat_color}">{cat_label}</span></td>'
+            f'<td class="num">{_fmt_price(it["prev_price"])}</td>'
+            f'<td class="num">{_fmt_price(it["price"])}</td>'
+            f'<td class="num {css}">{sign}{it["diff"]:.2f}</td>'
+            f'<td class="num {css}">{sign}{it["pct"]:.2f}%</td>'
+            f'</tr>'
+        )
+    if not out:
+        out = '<tr><td colspan="6" style="text-align:center;opacity:0.6">該当銘柄なし</td></tr>'
+    return out
+
+
+def _all_rows_html(rows: list[dict]) -> str:
+    out = ""
+    for r in rows:
+        asset_type = r.get("asset_type", "power")
+        if asset_type == "power":
+            type_label, type_color = "Power", "#F59E0B"
+        else:
+            type_label, type_color = "Fuel", "#FB7185"
+        diff = r.get("diff")
+        pct = r.get("pct")
+        if diff is None or pct is None:
+            change_cell = '<td class="num change">-</td>'
+            pct_cell = '<td class="num change">-</td>'
+        else:
+            sign = "+" if diff >= 0 else ""
+            css = "positive" if diff > 0 else "negative" if diff < 0 else ""
+            change_cell = f'<td class="num {css}">{sign}{diff:.2f}</td>'
+            pct_cell = f'<td class="num {css}">{sign}{pct:.2f}%</td>'
+        out += (
+            f'<tr data-asset-type="{asset_type}" data-pct="{pct if pct is not None else ""}">'
+            f'<td>{r["display"]}</td>'
+            f'<td><span class="cat-badge" style="background:{type_color}22;color:{type_color}">{type_label}</span></td>'
+            f'<td>{r.get("sub_category", "")}</td>'
+            f'<td>{r.get("contract_month", "")}</td>'
+            f'<td class="num">{_fmt_price(r.get("prev_price"))}</td>'
+            f'<td class="num">{_fmt_price(r.get("price"))}</td>'
+            f'{change_cell}{pct_cell}'
+            f'</tr>'
+        )
+    return out
+
+
+def _asset_type_filter_options() -> str:
+    return (
+        '<option value="">All (Power + Fuel)</option>'
+        '<option value="power">Power のみ</option>'
+        '<option value="fuel">Fuel のみ</option>'
+    )
+
+
+def _fuel_snapshot_table_html(fuel_rows: list[dict]) -> str:
+    """Snapshot table of fuel front-month prices with WoW change."""
+    if not fuel_rows:
+        return '<div style="opacity:0.6;padding:12px">原燃料データがありません。</div>'
+    out = (
+        '<div class="table-wrapper"><table class="wk-table-compact"><thead><tr>'
+        '<th>原燃料</th><th>サブ</th><th>限月</th><th class="num">単位</th>'
+        '<th class="num">1週前</th><th class="num">今日</th>'
+        '<th class="num">差</th><th class="num">変化率</th>'
+        '</tr></thead><tbody>'
+    )
+    for r in fuel_rows:
+        diff = r.get("diff")
+        pct = r.get("pct")
+        if diff is None or pct is None:
+            change_cell = '<td class="num change">-</td>'
+            pct_cell = '<td class="num change">-</td>'
+        else:
+            sign = "+" if diff >= 0 else ""
+            css = "positive" if diff > 0 else "negative" if diff < 0 else ""
+            change_cell = f'<td class="num {css}">{sign}{diff:.2f}</td>'
+            pct_cell = f'<td class="num {css}">{sign}{pct:.2f}%</td>'
+        out += (
+            f'<tr>'
+            f'<td>{r.get("display_en", "")}<span class="commodity-ja">{r.get("display_ja", "")}</span></td>'
+            f'<td>{r.get("sub_category", "")}</td>'
+            f'<td>{r.get("contract_month", "")}</td>'
+            f'<td class="num" style="opacity:0.6">{r.get("unit", "")}</td>'
+            f'<td class="num">{_fmt_price(r.get("prev_price"))}</td>'
+            f'<td class="num">{_fmt_price(r.get("price"))}</td>'
+            f'{change_cell}{pct_cell}'
+            f'</tr>'
+        )
+    out += '</tbody></table></div>'
+    return out
+
+
+def _events_html(events: list[dict]) -> str:
+    if not events:
+        return (
+            '<div style="opacity:0.6;padding:12px;font-size:0.9rem">'
+            '対象期間に登録されたイベントはありません。'
+            '<br><span style="font-size:0.75rem">docs/news_events.yaml を編集してイベントを追加できます。</span>'
+            '</div>'
+        )
+    out = '<ul style="list-style:none;padding:0;margin:0">'
+    for e in events:
+        date_label = _fmt_date_dotted(str(e["date"]).replace("-", ""))
+        title = e["title"] or "(no title)"
+        url = e.get("url", "")
+        title_html = (
+            f'<a href="{url}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">{title}</a>'
+            if url else title
+        )
+        cat = e.get("category", "")
+        source = e.get("source", "")
+        note = e.get("note", "")
+        meta_bits = " · ".join([b for b in (cat, source) if b])
+        note_html = (
+            f'<div style="font-size:0.78rem;opacity:0.7;margin-top:2px">{note}</div>'
+            if note else ""
+        )
+        out += (
+            f'<li style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06)">'
+            f'<div style="font-size:0.72rem;opacity:0.6">{date_label} · {meta_bits}</div>'
+            f'<div style="font-weight:600;margin-top:2px">{title_html}</div>'
+            f'{note_html}'
+            f'</li>'
+        )
+    out += '</ul>'
+    return out
+
+
+def generate_weekly_compare_html(data: dict) -> str:
+    """Generate the docs/weekly_compare.html page.
+
+    Focused on power futures + power-related fuels (LNG, crude, petroleum
+    products). Equity/bond/FX/metals/agriculture are out of scope here —
+    this is the "電力先物 週次ブリーフィング" view.
+    """
+    latest = data.get("latest_date", "N/A")
+    base = data.get("base_date", "N/A")
+    days_back = data.get("calendar_days_back")
+    counts = data.get("counts", {})
+    rows = data.get("rows", [])
+    main_kpi = data.get("main_kpi", [])
+    power_subcat = data.get("power_subcat_summary", [])
+    power_curves = data.get("power_forward_curves", {"today": {}, "base": {}})
+    power_gainers = data.get("power_top_gainers", [])
+    power_losers = data.get("power_top_losers", [])
+    fuel_snapshot = data.get("fuel_snapshot", [])
+    fuel_curves = data.get("fuel_forward_curves", {"today": {}, "base": {}})
+    fuel_gainers = data.get("fuel_top_gainers", [])
+    fuel_losers = data.get("fuel_top_losers", [])
+    events = data.get("events", [])
+
+    latest_label = _fmt_date_dotted(latest)
+    base_label = _fmt_date_dotted(base)
+    days_back_label = f"{days_back} 日前" if isinstance(days_back, int) else "—"
+
+    power_gainers_html = _mover_rows_html(power_gainers)
+    power_losers_html = _mover_rows_html(power_losers)
+    fuel_gainers_html = _mover_rows_html(fuel_gainers)
+    fuel_losers_html = _mover_rows_html(fuel_losers)
+    all_rows_html = _all_rows_html(rows)
+    asset_options_html = _asset_type_filter_options()
+    fuel_snapshot_html = _fuel_snapshot_table_html(fuel_snapshot)
+    events_html = _events_html(events)
+
+    # KPI cards (4 main monthly power curves)
+    kpi_cards_html = ""
+    kpi_color = {
+        "東・ベース(月次)": ("var(--accent-blue)", "東 Base (月次)", "East Base"),
+        "東・日中(月次)":   ("var(--gold)",        "東 Peak (月次)", "East Peak"),
+        "西・ベース(月次)": ("var(--accent-cyan)", "西 Base (月次)", "West Base"),
+        "西・日中(月次)":   ("var(--positive)",    "西 Peak (月次)", "West Peak"),
+    }
+    for kpi in main_kpi:
+        color, ja_label, en_label = kpi_color.get(
+            kpi["label"], ("#888", kpi["label"], kpi["label"])
+        )
+        avg = kpi.get("avg_pct")
+        if avg is None:
+            avg_str = "—"
+            avg_color = "#888"
+        else:
+            sign = "+" if avg >= 0 else ""
+            avg_str = f"{sign}{avg:.2f}%"
+            avg_color = "var(--positive)" if avg > 0 else "var(--negative)" if avg < 0 else "#888"
+        kpi_cards_html += (
+            f'<div class="kpi-card" style="border-left:3px solid {color}">'
+            f'<div class="kpi-icon" style="color:{color}">&#9650;</div>'
+            f'<div class="kpi-label">{ja_label}</div>'
+            f'<div class="kpi-value" style="color:{avg_color}">{avg_str}</div>'
+            f'<div class="kpi-sub">{en_label} · 上 {kpi["count_up"]} / 下 {kpi["count_down"]} / 計 {kpi["count_total"]} 限月</div>'
+            f'</div>'
+        )
+
+    # Inline JSON for charts
+    chart_payload = json.dumps({
+        "power_subcat_summary": power_subcat,
+        "power_forward_curves": power_curves,
+        "fuel_forward_curves": fuel_curves,
+    }, ensure_ascii=False)
+
+    return f"""<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>電力先物 週次比較 — DataServer In-House</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts@3"></script>
+  <style>
+    .wk-grid {{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }}
+    .wk-grid-4 {{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }}
+    .wk-filters {{ display:flex; gap:12px; align-items:center; margin-bottom:12px; flex-wrap:wrap; }}
+    .wk-filters input, .wk-filters select {{
+      background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
+      color:inherit; padding:6px 10px; border-radius:6px; font-size:0.85rem; min-width:180px;
+    }}
+    .wk-filters input:focus, .wk-filters select:focus {{
+      outline:none; border-color:var(--accent-blue);
+    }}
+    th[data-sort] {{ cursor:pointer; user-select:none; }}
+    th[data-sort]:hover {{ color:var(--accent-blue); }}
+    .wk-table-compact td, .wk-table-compact th {{ padding:6px 10px; font-size:0.82rem; }}
+    .wk-section-divider {{
+      margin:32px 0 12px 0; padding:8px 14px; border-left:3px solid var(--accent-blue);
+      background:linear-gradient(90deg, rgba(59,130,246,0.10), transparent);
+      border-radius:4px;
+      display:flex; align-items:baseline; gap:10px;
+    }}
+    .wk-section-divider.fuel {{ border-color:#FB7185; background:linear-gradient(90deg, rgba(251,113,133,0.10), transparent); }}
+    .wk-section-divider h2 {{ font-size:1.05rem; margin:0; font-weight:700; }}
+    .wk-section-divider .wk-section-tag {{ font-size:0.7rem; opacity:0.55; letter-spacing:0.04em; }}
+    .wk-mini-summary {{
+      display:flex; gap:18px; flex-wrap:wrap; margin-top:8px;
+      font-size:0.78rem; opacity:0.85;
+    }}
+    .wk-mini-summary span b {{ font-weight:700; }}
+    @media (max-width: 980px) {{
+      .wk-grid, .wk-grid-4 {{ grid-template-columns:1fr; }}
+    }}
+  </style>
+</head>
+<body>
+
+<div class="bg-gradient"></div>
+
+<div class="app-layout">
+
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">DS</div>
+    <div class="sidebar-nav">
+      <a href="index.html" class="nav-item">
+        <span>&#9670;</span>
+        <span class="nav-tooltip">Dashboard</span>
+      </a>
+      <a href="weekly_compare.html" class="nav-item active">
+        <span>&#9776;</span>
+        <span class="nav-tooltip">Weekly Compare</span>
+      </a>
+      <div style="width:32px;height:1px;background:var(--border-subtle);margin:8px 0"></div>
+      <a href="#wk-power-movers" class="nav-item">
+        <span>&#9889;</span>
+        <span class="nav-tooltip">電力 Movers</span>
+      </a>
+      <a href="#wk-power-subcat" class="nav-item">
+        <span>&#9619;</span>
+        <span class="nav-tooltip">電力 12 サブカテゴリ</span>
+      </a>
+      <a href="#wk-power-curves" class="nav-item">
+        <span>&#9699;</span>
+        <span class="nav-tooltip">電力カーブ重ね合わせ</span>
+      </a>
+      <a href="#wk-fuel-snap" class="nav-item">
+        <span>&#9876;</span>
+        <span class="nav-tooltip">原燃料スナップショット</span>
+      </a>
+      <a href="#wk-fuel-curves" class="nav-item">
+        <span>&#9696;</span>
+        <span class="nav-tooltip">原燃料カーブ</span>
+      </a>
+      <a href="#wk-all" class="nav-item">
+        <span>&#9783;</span>
+        <span class="nav-tooltip">全銘柄テーブル</span>
+      </a>
+      <a href="#wk-events" class="nav-item">
+        <span>&#128240;</span>
+        <span class="nav-tooltip">News & Events</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main-content">
+
+    <header class="header">
+      <div class="header-left">
+        <h1>電力先物 週次比較</h1>
+        <div class="subtitle">電力先物 + 電力関連原燃料(LNG · 原油 · 石油製品) · WoW {days_back_label}</div>
+      </div>
+      <div class="header-right">
+        <div class="header-badge"><span class="dot"></span>WoW</div>
+        <div class="header-date">{latest_label}<br><span style="font-size:0.65rem;color:#64748B">vs {base_label}</span></div>
+      </div>
+    </header>
+
+    <div class="container">
+
+      <!-- KPI Cards: 4 main monthly power curves' avg WoW% -->
+      <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+        {kpi_cards_html}
+      </div>
+      <div class="wk-mini-summary">
+        <span>&#9889; 電力 <b>{counts.get("power_count", 0)}</b> 限月</span>
+        <span>&#9876; 原燃料 <b>{counts.get("fuel_count", 0)}</b> 銘柄</span>
+        <span style="color:var(--positive)">&#9650; 上昇 <b>{counts.get("up", 0)}</b></span>
+        <span style="color:var(--negative)">&#9660; 下落 <b>{counts.get("down", 0)}</b></span>
+        <span>= 横ばい <b>{counts.get("flat", 0)}</b></span>
+      </div>
+
+      <!-- ─── 電力セクション ─── -->
+      <div class="wk-section-divider"><h2>&#9889; 電力先物</h2><span class="wk-section-tag">Power Futures</span></div>
+
+      <section id="wk-power-movers" class="card-grid">
+        <div class="card card-wide">
+          <div class="card-header">
+            <div class="card-title"><span class="icon" style="color:var(--positive)">&#9650;</span> 電力 Top Gainers</div>
+            <div class="card-badge">{len(power_gainers)}</div>
+          </div>
+          <div class="card-body">
+            <div class="table-wrapper">
+              <table class="wk-table-compact">
+                <thead><tr>
+                  <th>銘柄</th><th>サブ</th><th class="num">1週前</th><th class="num">今日</th><th class="num">差</th><th class="num">変化率</th>
+                </tr></thead>
+                <tbody>{power_gainers_html}</tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="card card-wide">
+          <div class="card-header">
+            <div class="card-title"><span class="icon" style="color:var(--negative)">&#9660;</span> 電力 Top Losers</div>
+            <div class="card-badge">{len(power_losers)}</div>
+          </div>
+          <div class="card-body">
+            <div class="table-wrapper">
+              <table class="wk-table-compact">
+                <thead><tr>
+                  <th>銘柄</th><th>サブ</th><th class="num">1週前</th><th class="num">今日</th><th class="num">差</th><th class="num">変化率</th>
+                </tr></thead>
+                <tbody>{power_losers_html}</tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="wk-power-subcat" class="card-grid" style="margin-top:16px">
+        <div class="card card-full">
+          <div class="card-header">
+            <div class="card-title"><span class="icon">&#9619;</span> 電力 12 サブカテゴリ別 平均 WoW%</div>
+            <div class="card-badge">{len(power_subcat)} curves</div>
+          </div>
+          <div class="card-body">
+            <div id="wk-subcat-chart" class="chart-container" style="min-height:360px"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="wk-power-curves" class="card-grid wk-grid-4" style="margin-top:16px">
+        <div class="card">
+          <div class="card-header"><div class="card-title">東・ベース (月次)</div></div>
+          <div class="card-body"><div id="wk-curve-EEB" class="chart-container" style="min-height:280px"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">東・日中 (月次)</div></div>
+          <div class="card-body"><div id="wk-curve-EEP" class="chart-container" style="min-height:280px"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">西・ベース (月次)</div></div>
+          <div class="card-body"><div id="wk-curve-EWB" class="chart-container" style="min-height:280px"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">西・日中 (月次)</div></div>
+          <div class="card-body"><div id="wk-curve-EWP" class="chart-container" style="min-height:280px"></div></div>
+        </div>
+      </section>
+
+      <!-- ─── 原燃料セクション ─── -->
+      <div class="wk-section-divider fuel"><h2>&#9876; 電力関連 原燃料</h2><span class="wk-section-tag">Power-related Fuels (LNG / Crude / Petroleum)</span></div>
+
+      <section id="wk-fuel-snap" class="card-grid">
+        <div class="card card-full">
+          <div class="card-header">
+            <div class="card-title"><span class="icon">&#9876;</span> 原燃料スナップショット (Front-month)</div>
+            <div class="card-badge">{len(fuel_snapshot)} symbols</div>
+          </div>
+          <div class="card-body">{fuel_snapshot_html}</div>
+        </div>
+      </section>
+
+      <section class="card-grid" style="margin-top:16px">
+        <div class="card card-wide">
+          <div class="card-header">
+            <div class="card-title"><span class="icon" style="color:var(--positive)">&#9650;</span> 原燃料 Top Gainers</div>
+            <div class="card-badge">{len(fuel_gainers)}</div>
+          </div>
+          <div class="card-body">
+            <div class="table-wrapper">
+              <table class="wk-table-compact">
+                <thead><tr>
+                  <th>銘柄</th><th>サブ</th><th class="num">1週前</th><th class="num">今日</th><th class="num">差</th><th class="num">変化率</th>
+                </tr></thead>
+                <tbody>{fuel_gainers_html}</tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="card card-wide">
+          <div class="card-header">
+            <div class="card-title"><span class="icon" style="color:var(--negative)">&#9660;</span> 原燃料 Top Losers</div>
+            <div class="card-badge">{len(fuel_losers)}</div>
+          </div>
+          <div class="card-body">
+            <div class="table-wrapper">
+              <table class="wk-table-compact">
+                <thead><tr>
+                  <th>銘柄</th><th>サブ</th><th class="num">1週前</th><th class="num">今日</th><th class="num">差</th><th class="num">変化率</th>
+                </tr></thead>
+                <tbody>{fuel_losers_html}</tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="wk-fuel-curves" class="card-grid wk-grid" style="margin-top:16px">
+        <div class="card">
+          <div class="card-header"><div class="card-title">LNG (プラッツ JKM) フォワードカーブ</div></div>
+          <div class="card-body"><div id="wk-fcurve-LNG" class="chart-container" style="min-height:280px"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">ドバイ原油 フォワードカーブ</div></div>
+          <div class="card-body"><div id="wk-fcurve-DUBAI" class="chart-container" style="min-height:280px"></div></div>
+        </div>
+      </section>
+
+      <!-- ─── 全銘柄テーブル ─── -->
+      <section id="wk-all" class="card-grid" style="margin-top:24px">
+        <div class="card card-full">
+          <div class="card-header">
+            <div class="card-title"><span class="icon">&#9783;</span> 全銘柄 (電力 + 原燃料) 週次比較</div>
+            <div class="card-badge">{len(rows)} symbols</div>
+          </div>
+          <div class="card-body">
+            <div class="wk-filters">
+              <input id="wk-search" type="text" placeholder="銘柄名で絞り込み...">
+              <select id="wk-asset-filter">{asset_options_html}</select>
+              <span style="font-size:0.78rem;opacity:0.6" id="wk-row-count"></span>
+            </div>
+            <div class="table-wrapper">
+              <table class="wk-table-compact" id="wk-all-table">
+                <thead><tr>
+                  <th data-sort="name">銘柄</th>
+                  <th data-sort="type">種別</th>
+                  <th data-sort="sub">サブ</th>
+                  <th data-sort="month">限月</th>
+                  <th class="num" data-sort="prev">1週前</th>
+                  <th class="num" data-sort="price">今日</th>
+                  <th class="num" data-sort="diff">差</th>
+                  <th class="num" data-sort="pct">変化率</th>
+                </tr></thead>
+                <tbody>{all_rows_html}</tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- News & Events -->
+      <section id="wk-events" class="card-grid" style="margin-top:24px">
+        <div class="card card-full">
+          <div class="card-header">
+            <div class="card-title"><span class="icon">&#128240;</span> 期間内のニュース・イベント</div>
+            <div class="card-badge">{len(events)} items</div>
+          </div>
+          <div class="card-body">{events_html}</div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const weeklyData = {chart_payload};
+
+const apexCommonOpts = {{
+  chart: {{ background:'transparent', toolbar:{{show:false}}, fontFamily:'inherit' }},
+  theme: {{ mode:'dark' }},
+  grid: {{ borderColor:'rgba(255,255,255,0.06)', strokeDashArray:3 }},
+  tooltip: {{ theme:'dark' }},
+}};
+
+// 電力 12 サブカテゴリ平均 WoW% 棒チャート
+(function renderSubcatChart() {{
+  const items = weeklyData.power_subcat_summary || [];
+  if (!items.length) return;
+  const labels = items.map(i => i.sub_category);
+  const values = items.map(i => i.avg_pct == null ? 0 : i.avg_pct);
+  const colors = values.map(v => v > 0 ? '#10B981' : v < 0 ? '#EF4444' : '#64748b');
+  const opts = Object.assign({{}}, apexCommonOpts, {{
+    chart: Object.assign({{type:'bar', height:360}}, apexCommonOpts.chart),
+    series: [{{ name:'平均 WoW (%)', data: values }}],
+    xaxis: {{
+      categories: labels,
+      labels: {{ style:{{colors:'#94a3b8', fontSize:'0.7rem'}}, rotate:-30 }},
+    }},
+    yaxis: {{ labels:{{ style:{{colors:'#94a3b8'}}, formatter:(v)=> v.toFixed(2)+'%' }} }},
+    plotOptions: {{ bar:{{ distributed:true, borderRadius:4, columnWidth:'60%' }} }},
+    colors: colors,
+    legend: {{ show:false }},
+    dataLabels: {{
+      enabled:true,
+      formatter:(v)=> (v>=0?'+':'') + v.toFixed(2) + '%',
+      style: {{ colors:['#e2e8f0'], fontSize:'0.72rem' }},
+      offsetY: -16,
+    }},
+    tooltip: {{
+      theme:'dark',
+      custom: function(o) {{
+        const i = items[o.dataPointIndex];
+        if (!i) return '';
+        const sign = i.avg_pct >= 0 ? '+' : '';
+        return '<div style="padding:8px 10px">'
+          + '<div style="font-weight:600">' + i.sub_category + '</div>'
+          + '<div>平均 ' + sign + i.avg_pct.toFixed(2) + '%</div>'
+          + '<div style="font-size:0.75rem;opacity:0.75">上 ' + i.count_up + ' / 下 ' + i.count_down + ' / 計 ' + i.count_total + '</div>'
+          + '</div>';
+      }},
+    }},
+  }});
+  new ApexCharts(document.querySelector('#wk-subcat-chart'), opts).render();
+}})();
+
+// フォワードカーブ重ね合わせ (汎用)
+function renderOverlayCurve(id, today, base) {{
+  const monthSet = new Set();
+  today.forEach(p => monthSet.add(p.month));
+  base.forEach(p => monthSet.add(p.month));
+  const months = Array.from(monthSet).sort();
+  const el = document.querySelector(id);
+  if (!months.length) {{
+    if (el) el.innerHTML = '<div style="padding:24px;opacity:0.5">データなし</div>';
+    return;
+  }}
+  const tMap = Object.fromEntries(today.map(p => [p.month, p.price]));
+  const bMap = Object.fromEntries(base.map(p => [p.month, p.price]));
+  const tSeries = months.map(m => tMap[m] == null ? null : tMap[m]);
+  const bSeries = months.map(m => bMap[m] == null ? null : bMap[m]);
+  const opts = Object.assign({{}}, apexCommonOpts, {{
+    chart: Object.assign({{type:'line', height:280}}, apexCommonOpts.chart),
+    series: [
+      {{ name:'今日', data: tSeries }},
+      {{ name:'1週間前', data: bSeries }},
+    ],
+    xaxis: {{ categories: months, labels:{{ style:{{colors:'#94a3b8'}}, rotate:-45 }} }},
+    yaxis: {{ labels:{{ style:{{colors:'#94a3b8'}}, formatter:(v)=> v==null?'-':v.toFixed(2) }} }},
+    colors: ['#3B82F6', '#F59E0B'],
+    stroke: {{ width:[2.5, 1.8], dashArray:[0, 6], curve:'straight' }},
+    markers: {{ size:[4, 0] }},
+    legend: {{ labels:{{ colors:'#cbd5e1' }} }},
+    dataLabels: {{ enabled:false }},
+  }});
+  if (el) new ApexCharts(el, opts).render();
+}}
+
+function renderPowerCurve(id, cat) {{
+  const today = (weeklyData.power_forward_curves.today || {{}})[cat] || [];
+  const base = (weeklyData.power_forward_curves.base || {{}})[cat] || [];
+  renderOverlayCurve(id, today, base);
+}}
+function renderFuelCurve(id, underlying) {{
+  const today = (weeklyData.fuel_forward_curves.today || {{}})[underlying] || [];
+  const base = (weeklyData.fuel_forward_curves.base || {{}})[underlying] || [];
+  renderOverlayCurve(id, today, base);
+}}
+
+renderPowerCurve('#wk-curve-EEB', '東・ベース(月次)');
+renderPowerCurve('#wk-curve-EEP', '東・日中(月次)');
+renderPowerCurve('#wk-curve-EWB', '西・ベース(月次)');
+renderPowerCurve('#wk-curve-EWP', '西・日中(月次)');
+renderFuelCurve('#wk-fcurve-LNG', 'LNG(プラッツJKM)');
+renderFuelCurve('#wk-fcurve-DUBAI', 'ドバイ原油');
+
+// 全銘柄テーブルのフィルタ + ソート
+(function setupAllTable() {{
+  const table = document.querySelector('#wk-all-table');
+  if (!table) return;
+  const tbody = table.querySelector('tbody');
+  const allRows = Array.from(tbody.querySelectorAll('tr'));
+  const search = document.querySelector('#wk-search');
+  const assetFilter = document.querySelector('#wk-asset-filter');
+  const rowCount = document.querySelector('#wk-row-count');
+
+  function applyFilter() {{
+    const q = (search.value || '').toLowerCase();
+    const a = assetFilter.value;
+    let visible = 0;
+    allRows.forEach(tr => {{
+      const text = tr.textContent.toLowerCase();
+      const at = tr.getAttribute('data-asset-type') || '';
+      const ok = (!q || text.includes(q)) && (!a || at === a);
+      tr.style.display = ok ? '' : 'none';
+      if (ok) visible++;
+    }});
+    rowCount.textContent = visible + ' 件表示';
+  }}
+  search.addEventListener('input', applyFilter);
+  assetFilter.addEventListener('change', applyFilter);
+  applyFilter();
+
+  // Sort
+  const headers = table.querySelectorAll('th[data-sort]');
+  let sortState = {{ key:null, asc:true }};
+  headers.forEach((th, idx) => {{
+    th.addEventListener('click', () => {{
+      const key = th.getAttribute('data-sort');
+      sortState.asc = (sortState.key === key) ? !sortState.asc : true;
+      sortState.key = key;
+      const sign = sortState.asc ? 1 : -1;
+      const rowsArr = Array.from(tbody.querySelectorAll('tr'));
+      rowsArr.sort((a, b) => {{
+        const av = a.children[idx]?.textContent.trim() || '';
+        const bv = b.children[idx]?.textContent.trim() || '';
+        const an = parseFloat(av.replace(/[+%,]/g, ''));
+        const bn = parseFloat(bv.replace(/[+%,]/g, ''));
+        if (!isNaN(an) && !isNaN(bn)) return (an - bn) * sign;
+        return av.localeCompare(bv) * sign;
+      }});
+      rowsArr.forEach(r => tbody.appendChild(r));
+    }});
+  }});
+}})();
+</script>
+
+</body>
+</html>"""
+
+
+def write_weekly_compare(repo, site_dir: Path, latest_date: str) -> Path | None:
+    """Generate and write `docs/weekly_compare.html`.
+
+    Picks the comparison base date as the nearest business day at-or-before
+    (latest_date − 7 calendar days). Returns the output path, or None if
+    there is no usable history before `latest_date`.
+
+    Safe to call from any site-regeneration entry point (generate_site.main
+    or fetch_jpx.main) — keeps the weekly page in sync with the daily one.
+    """
+    base_date = find_nearest_business_day_before(repo, latest_date, days_back=7)
+    if not base_date:
+        return None
+    wk_data = generate_weekly_compare_data(repo, latest_date, base_date)
+    wk_data["events"] = load_news_events(
+        site_dir / "news_events.yaml", base_date, latest_date
+    )
+    wk_html = generate_weekly_compare_html(wk_data)
+    wk_html_path = site_dir / "weekly_compare.html"
+    with open(wk_html_path, "w", encoding="utf-8") as f:
+        f.write(wk_html)
+    return wk_html_path
+
+
 def main():
     repo = get_repository()
     try:
@@ -2054,6 +3042,14 @@ def main():
         with open(html_path, "w", encoding="utf-8") as f:
             f.write(html)
         print(f"  Written: {html_path}")
+
+        # Weekly compare page (1 週間前と比較)
+        latest_date = data["latest_date"]
+        wk_html_path = write_weekly_compare(repo, SITE_DIR, latest_date)
+        if wk_html_path:
+            print(f"  Written: {wk_html_path}")
+        else:
+            print("  Skipped weekly_compare.html (insufficient history before latest_date).")
 
         # Report curve stats
         curves = data.get("forward_curves", {})

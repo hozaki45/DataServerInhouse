@@ -103,10 +103,14 @@ def main():
                 print(f"\n  SKIPPED (holiday duplicate): {e}")
                 return
 
-        # Step 4: Regenerate site
+        # Step 4: Regenerate site (daily dashboard + weekly compare page)
         print("\n  Regenerating dashboard...")
         # Import here to avoid circular imports at module level
-        from scripts.generate_site import generate_data_json, generate_html
+        from scripts.generate_site import (
+            generate_data_json,
+            generate_html,
+            write_weekly_compare,
+        )
 
         site_dir = Path(__file__).resolve().parent.parent / "docs"
         data = generate_data_json(repo)
@@ -126,6 +130,13 @@ def main():
                 f.write(html)
 
             print(f"  Site regenerated: {html_path}")
+
+            # Weekly compare page — same lifecycle as the daily dashboard
+            wk_path = write_weekly_compare(repo, site_dir, data["latest_date"])
+            if wk_path:
+                print(f"  Weekly page: {wk_path}")
+            else:
+                print("  Weekly page skipped (insufficient history before latest_date)")
         else:
             print("  WARNING: No data for site generation")
 

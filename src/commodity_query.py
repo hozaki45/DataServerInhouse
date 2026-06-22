@@ -6,6 +6,7 @@ for forward curves, cross-asset snapshots, and time series.
 
 from __future__ import annotations
 
+from datetime import datetime, timedelta
 from typing import Any
 
 from src.asset_taxonomy import (
@@ -16,6 +17,41 @@ from src.asset_taxonomy import (
     get_display_name,
 )
 from src.repository import Repository
+
+
+def find_nearest_business_day_before(
+    repo: Repository, anchor_date: str, days_back: int = 7
+) -> str | None:
+    """Return the most recent trade_date in the DB that is at most
+    (anchor_date - days_back calendar days). If the exact date is a
+    non-business day (weekend/holiday), the nearest earlier trade_date
+    is returned. If no history before anchor_date exists, returns None.
+
+    Accepts both 'YYYY-MM-DD' (current DB format) and 'YYYYMMDD'.
+    Returns a string in the same format as trade_date stored in the DB.
+    """
+    fmt = "%Y-%m-%d" if "-" in anchor_date else "%Y%m%d"
+    try:
+        anchor_dt = datetime.strptime(anchor_date, fmt)
+    except ValueError:
+        return None
+    target_str = (anchor_dt - timedelta(days=days_back)).strftime(fmt)
+
+    log = repo.get_import_log()
+    available = sorted(
+        {
+            e["trade_date"]
+            for e in log
+            if e.get("status") == "success" and e.get("trade_date") and e["trade_date"] < anchor_date
+        },
+        reverse=True,
+    )
+    if not available:
+        return None
+    for d in available:
+        if d <= target_str:
+            return d
+    return available[-1]
 
 
 def get_commodity_futures(

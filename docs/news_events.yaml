@@ -1,0 +1,29 @@
+# Weekly compare ページ用のニュース／イベントログ
+#
+# generate_site.py が `base_date 〜 latest_date` の期間に重なる項目だけ拾います。
+# 何も書かなくてもページは生成されます（"イベント登録なし"表示）。
+#
+# Phase 2 では NewsAPI / RSS / 関係省庁の公式サイトから自動取得して
+# 同じ形式で書き出す想定です。
+#
+# 形式（フィールドはすべて任意。url, note は省略可）:
+#   - date: 2026-06-13       # ISO 形式 (YYYY-MM-DD) または YYYYMMDD
+#     title: 短いタイトル
+#     category: macro|policy|energy|geopolitics|earnings 等
+#     source: 出所
+#     url: https://...
+#     note: 1〜2 行の補足
+#
+# 例:
+# - date: 2026-06-13
+#   title: 日銀 金融政策決定会合（追加利上げ）
+#   category: macro
+#   source: 日本銀行
+#   url: https://www.boj.or.jp/
+#   note: 政策金利を 0.75% → 1.00% に引き上げ
+#
+# - date: 2026-06-16
+#   title: JEPX スポット価格急騰
+#   category: energy
+#   source: JEPX
+#   note: 関東エリアで猛暑予報を受け 24h 平均が前週比 +22% 上昇
