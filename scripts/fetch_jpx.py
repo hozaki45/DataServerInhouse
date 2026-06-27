@@ -110,6 +110,7 @@ def main():
             generate_data_json,
             generate_html,
             write_weekly_compare,
+            write_spread_analysis,
         )
 
         site_dir = Path(__file__).resolve().parent.parent / "docs"
@@ -137,6 +138,13 @@ def main():
                 print(f"  Weekly page: {wk_path}")
             else:
                 print("  Weekly page skipped (insufficient history before latest_date)")
+
+            # Spread analysis page — same lifecycle as the daily dashboard
+            sp_path = write_spread_analysis(repo, site_dir, data["latest_date"])
+            if sp_path:
+                print(f"  Spread page: {sp_path}")
+            else:
+                print("  Spread page skipped (no power forward curves)")
         else:
             print("  WARNING: No data for site generation")
 

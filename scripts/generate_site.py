@@ -24,6 +24,7 @@ from src.commodity_query import (
     get_front_month_price,
 )
 from src.asset_taxonomy import CATEGORY_META, ASSET_TAXONOMY, COMMODITY_CATEGORIES
+from src.spread_analysis import compute_spread_analysis
 
 SITE_DIR = Path(__file__).resolve().parent.parent / "docs"
 
@@ -527,6 +528,10 @@ def generate_html(data: dict) -> str:
       <a href="weekly_compare.html" class="nav-item">
         <span>&#9776;</span>
         <span class="nav-tooltip">週次比較 (Weekly)</span>
+      </a>
+      <a href="spread_analysis.html" class="nav-item">
+        <span>&#9878;</span>
+        <span class="nav-tooltip">スプレッド分析 (Spread)</span>
       </a>
     </div>
   </nav>
@@ -2604,6 +2609,10 @@ def generate_weekly_compare_html(data: dict) -> str:
         <span>&#9776;</span>
         <span class="nav-tooltip">Weekly Compare</span>
       </a>
+      <a href="spread_analysis.html" class="nav-item">
+        <span>&#9878;</span>
+        <span class="nav-tooltip">Spread Analysis</span>
+      </a>
       <div style="width:32px;height:1px;background:var(--border-subtle);margin:8px 0"></div>
       <a href="#wk-power-movers" class="nav-item">
         <span>&#9889;</span>
@@ -3019,6 +3028,348 @@ def write_weekly_compare(repo, site_dir: Path, latest_date: str) -> Path | None:
     return wk_html_path
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Spread Analysis Page (スプレッド分析) — recreates Spread Calculator_v2.xlsx
+# ─────────────────────────────────────────────────────────────────────────────
+
+def generate_spread_data(repo, latest_date: str, prev_date: str | None = None) -> dict:
+    """Thin wrapper around the self-contained spread computation module."""
+    return compute_spread_analysis(repo, latest_date, prev_date)
+
+
+# Standalone HTML built via placeholder replacement (no f-string brace doubling
+# so the embedded JS stays readable). Placeholders: __PAYLOAD__ __LATEST__
+# __HORIZON__ __PARAMS_ROWS__.
+_SPREAD_HTML_TEMPLATE = """<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>スプレッド分析 — DataServer In-House</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts@3"></script>
+  <style>
+    .sp-sliders { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+    .sp-slider label { display:block; font-size:0.8rem; opacity:0.8; margin-bottom:6px; }
+    .sp-slider input[type=range] { width:100%; accent-color:var(--accent-blue); }
+    .sp-slider .sp-val { font-weight:700; color:var(--accent-cyan); font-variant-numeric:tabular-nums; }
+    .sp-reset { margin-top:12px; background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.12); color:inherit; padding:6px 14px;
+      border-radius:6px; font-size:0.8rem; cursor:pointer; }
+    .sp-reset:hover { border-color:var(--accent-blue); }
+    .sp-params-table td { padding:4px 12px; font-size:0.82rem; }
+    .sp-params-table td:first-child { opacity:0.7; }
+    .sp-note { font-size:0.78rem; opacity:0.6; margin-top:10px; }
+    @media (max-width:980px) { .sp-sliders { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+
+<div class="bg-gradient"></div>
+
+<div class="app-layout">
+
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">DS</div>
+    <div class="sidebar-nav">
+      <a href="index.html" class="nav-item">
+        <span>&#9670;</span>
+        <span class="nav-tooltip">Dashboard</span>
+      </a>
+      <a href="weekly_compare.html" class="nav-item">
+        <span>&#9776;</span>
+        <span class="nav-tooltip">Weekly Compare</span>
+      </a>
+      <a href="spread_analysis.html" class="nav-item active">
+        <span>&#9878;</span>
+        <span class="nav-tooltip">Spread Analysis</span>
+      </a>
+      <div style="width:32px;height:1px;background:var(--border-subtle);margin:8px 0"></div>
+      <a href="#sp-forward" class="nav-item">
+        <span>&#9699;</span>
+        <span class="nav-tooltip">フォワードカーブ</span>
+      </a>
+      <a href="#sp-spark" class="nav-item">
+        <span>&#9889;</span>
+        <span class="nav-tooltip">Spark Spread</span>
+      </a>
+      <a href="#sp-params" class="nav-item">
+        <span>&#9881;</span>
+        <span class="nav-tooltip">パラメータ</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main-content">
+
+    <header class="header">
+      <div class="header-left">
+        <h1>スプレッド分析</h1>
+        <div class="subtitle">電力フォワードカーブ + ガス火力 Spark / Clean Spark スプレッド · Spread Calculator_v2 を日次再現</div>
+      </div>
+      <div class="header-right">
+        <div class="header-badge"><span class="dot"></span>Spark</div>
+        <div class="header-date">__LATEST__</div>
+      </div>
+    </header>
+
+    <div class="container">
+
+      <!-- Forward curves -->
+      <section id="sp-forward" class="card-grid">
+        <div class="card card-full">
+          <div class="card-header">
+            <div class="card-title"><span class="icon">&#9699;</span> 電力フォワードカーブ (6 系列 · ¥/kWh)</div>
+            <div class="card-badge">東/西/中部 × ベース/日中</div>
+          </div>
+          <div class="card-body">
+            <div id="sp-fwd-chart" class="chart-container" style="min-height:420px"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Parameter sliders -->
+      <section id="sp-params" class="card-grid" style="margin-top:16px">
+        <div class="card card-full">
+          <div class="card-header">
+            <div class="card-title"><span class="icon">&#9881;</span> 発電パラメータ (スライダーで Spark を再計算)</div>
+          </div>
+          <div class="card-body">
+            <div class="sp-sliders">
+              <div class="sp-slider">
+                <label>ガス火力 熱効率 <span class="sp-val" id="sp-eff-val"></span></label>
+                <input type="range" id="sp-eff" min="0.30" max="0.65" step="0.01">
+              </div>
+              <div class="sp-slider">
+                <label>ガス CO2 排出係数 (kg-CO2/kWh) <span class="sp-val" id="sp-co2f-val"></span></label>
+                <input type="range" id="sp-co2f" min="0.0" max="0.8" step="0.05">
+              </div>
+              <div class="sp-slider">
+                <label>CO2 価格 (円/t) <span class="sp-val" id="sp-co2p-val"></span></label>
+                <input type="range" id="sp-co2p" min="0" max="20000" step="500">
+              </div>
+            </div>
+            <button class="sp-reset" id="sp-reset">既定値に戻す</button>
+            <table class="sp-params-table" style="margin-top:14px">
+              __PARAMS_ROWS__
+            </table>
+            <div class="sp-note">
+              Spark[m] = 電力価格[m] − ガス発電コスト[m] ／ ガス発電コスト[m] = (JKM[m] ÷ 熱効率) ÷ 293.07 ／
+              Clean Spark[m] = Spark[m] − (CO2係数 × CO2価格 ÷ 1000) ／ 対象限月: __HORIZON__
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Spark spread -->
+      <section id="sp-spark" class="card-grid" style="margin-top:16px">
+        <div class="card card-full">
+          <div class="card-header">
+            <div class="card-title"><span class="icon">&#9889;</span> Spark Spread (ガス火力採算 · ¥/kWh)</div>
+          </div>
+          <div class="card-body">
+            <div id="sp-spark-chart" class="chart-container" style="min-height:380px"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card-grid" style="margin-top:16px">
+        <div class="card card-full">
+          <div class="card-header">
+            <div class="card-title"><span class="icon">&#127807;</span> Clean Spark Spread (CO2コスト控除後 · ¥/kWh)</div>
+          </div>
+          <div class="card-body">
+            <div id="sp-clean-chart" class="chart-container" style="min-height:380px"></div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const spreadData = __PAYLOAD__;
+
+const apexCommonOpts = {
+  chart: { background:'transparent', toolbar:{show:false}, fontFamily:'inherit' },
+  theme: { mode:'dark' },
+  grid: { borderColor:'rgba(255,255,255,0.06)', strokeDashArray:3 },
+  tooltip: { theme:'dark' },
+};
+
+const SP_COLORS = ['#3B82F6','#F59E0B','#0EA5E9','#10B981','#A855F7','#EF4444'];
+const POWER_LABELS = Object.keys(spreadData.forward_curves || {});
+const GAS_CONV = spreadData.params.gas_conv_kwh_mmbtu;
+const jkmMap = Object.fromEntries((spreadData.jkm_curve || []).map(p => [p.month, p.price]));
+const SPARK_MONTHS = (spreadData.jkm_curve || []).map(p => p.month);
+
+function fmtMonth(ym) {
+  return (ym && ym.length >= 6) ? ym.slice(0,4) + '-' + ym.slice(4,6) : ym;
+}
+
+// ── Forward curve chart (static) ──
+(function renderForward() {
+  const el = document.querySelector('#sp-fwd-chart');
+  if (!el) return;
+  const monthSet = new Set();
+  POWER_LABELS.forEach(l => (spreadData.forward_curves[l] || []).forEach(p => monthSet.add(p.month)));
+  const months = Array.from(monthSet).sort();
+  if (!months.length) { el.innerHTML = '<div style="padding:24px;opacity:0.5">データなし</div>'; return; }
+  const series = POWER_LABELS.map(l => {
+    const m = Object.fromEntries((spreadData.forward_curves[l] || []).map(p => [p.month, p.price]));
+    return { name: l, data: months.map(x => m[x] == null ? null : m[x]) };
+  });
+  const opts = Object.assign({}, apexCommonOpts, {
+    chart: Object.assign({type:'line', height:420}, apexCommonOpts.chart),
+    series: series,
+    xaxis: { categories: months.map(fmtMonth), labels:{ style:{colors:'#94a3b8'}, rotate:-45 } },
+    yaxis: { labels:{ style:{colors:'#94a3b8'}, formatter:(v)=> v==null?'-':v.toFixed(1) }, title:{ text:'¥/kWh', style:{color:'#94a3b8'} } },
+    colors: SP_COLORS,
+    stroke: { width:2.2, curve:'straight' },
+    markers: { size:0, hover:{size:4} },
+    legend: { labels:{ colors:'#cbd5e1' }, position:'top' },
+    dataLabels: { enabled:false },
+  });
+  new ApexCharts(el, opts).render();
+})();
+
+// ── Spark / Clean spark (interactive) ──
+function computeSpark(gasEff, gasCo2, co2Price) {
+  const co2 = gasCo2 * co2Price / 1000;
+  const sparkSeries = [], cleanSeries = [];
+  POWER_LABELS.forEach(label => {
+    const pmap = Object.fromEntries((spreadData.forward_curves[label] || []).map(p => [p.month, p.price]));
+    const sp = [], cl = [];
+    SPARK_MONTHS.forEach(m => {
+      if (pmap[m] == null || jkmMap[m] == null) { sp.push(null); cl.push(null); return; }
+      const gas = (jkmMap[m] / gasEff) / GAS_CONV;
+      const s = pmap[m] - gas;
+      sp.push(+s.toFixed(4));
+      cl.push(+(s - co2).toFixed(4));
+    });
+    sparkSeries.push({ name: label, data: sp });
+    cleanSeries.push({ name: label, data: cl });
+  });
+  return { sparkSeries, cleanSeries };
+}
+
+function sparkChartOpts(series, height) {
+  return Object.assign({}, apexCommonOpts, {
+    chart: Object.assign({type:'line', height:height}, apexCommonOpts.chart),
+    series: series,
+    xaxis: { categories: SPARK_MONTHS.map(fmtMonth), labels:{ style:{colors:'#94a3b8'}, rotate:-45 } },
+    yaxis: { labels:{ style:{colors:'#94a3b8'}, formatter:(v)=> v==null?'-':v.toFixed(2) }, title:{ text:'¥/kWh', style:{color:'#94a3b8'} } },
+    colors: SP_COLORS,
+    stroke: { width:2.2, curve:'straight' },
+    markers: { size:0, hover:{size:4} },
+    legend: { labels:{ colors:'#cbd5e1' }, position:'top' },
+    dataLabels: { enabled:false },
+    annotations: { yaxis: [{ y:0, borderColor:'#64748b', strokeDashArray:4,
+      label:{ text:'損益分岐 0', style:{ color:'#94a3b8', background:'transparent' } } }] },
+  });
+}
+
+const _init = computeSpark(
+  spreadData.params.gas_thermal_eff,
+  spreadData.params.gas_co2_kg_per_kwh,
+  spreadData.params.co2_price_yen_per_t
+);
+let sparkChart = null, cleanChart = null;
+if (SPARK_MONTHS.length) {
+  sparkChart = new ApexCharts(document.querySelector('#sp-spark-chart'), sparkChartOpts(_init.sparkSeries, 380));
+  cleanChart = new ApexCharts(document.querySelector('#sp-clean-chart'), sparkChartOpts(_init.cleanSeries, 380));
+  sparkChart.render();
+  cleanChart.render();
+} else {
+  ['#sp-spark-chart','#sp-clean-chart'].forEach(id => {
+    const e = document.querySelector(id);
+    if (e) e.innerHTML = '<div style="padding:24px;opacity:0.5">電力∩JKM の重なる限月がありません</div>';
+  });
+}
+
+// ── Sliders ──
+const effEl = document.querySelector('#sp-eff');
+const co2fEl = document.querySelector('#sp-co2f');
+const co2pEl = document.querySelector('#sp-co2p');
+const DEFAULTS = {
+  eff: spreadData.params.gas_thermal_eff,
+  co2f: spreadData.params.gas_co2_kg_per_kwh,
+  co2p: spreadData.params.co2_price_yen_per_t,
+};
+
+function setLabels() {
+  document.querySelector('#sp-eff-val').textContent = (+effEl.value).toFixed(2);
+  document.querySelector('#sp-co2f-val').textContent = (+co2fEl.value).toFixed(2);
+  document.querySelector('#sp-co2p-val').textContent = (+co2pEl.value).toLocaleString();
+}
+function recompute() {
+  setLabels();
+  if (!sparkChart) return;
+  const r = computeSpark(+effEl.value, +co2fEl.value, +co2pEl.value);
+  sparkChart.updateSeries(r.sparkSeries, true);
+  cleanChart.updateSeries(r.cleanSeries, true);
+}
+function resetDefaults() {
+  effEl.value = DEFAULTS.eff;
+  co2fEl.value = DEFAULTS.co2f;
+  co2pEl.value = DEFAULTS.co2p;
+  recompute();
+}
+if (effEl) {
+  resetDefaults();
+  [effEl, co2fEl, co2pEl].forEach(el => el.addEventListener('input', recompute));
+  document.querySelector('#sp-reset').addEventListener('click', resetDefaults);
+}
+</script>
+
+</body>
+</html>"""
+
+
+def generate_spread_html(data: dict) -> str:
+    """Render docs/spread_analysis.html from the spread payload."""
+    p = data.get("params", {})
+    dark = data.get("dark_spread") or {}
+    params_rows = "".join([
+        f"<tr><td>ガス火力 熱効率</td><td>{p.get('gas_thermal_eff')}</td></tr>",
+        f"<tr><td>ガス単位換算</td><td>{p.get('gas_conv_kwh_mmbtu')} kWh/MMBtu</td></tr>",
+        f"<tr><td>ガス CO2 排出係数</td><td>{p.get('gas_co2_kg_per_kwh')} kg-CO2/kWh</td></tr>",
+        f"<tr><td>CO2 価格</td><td>{p.get('co2_price_yen_per_t')} 円/t</td></tr>",
+        f"<tr><td>JKM 単位の仮定</td><td>{p.get('jkm_unit_assumption')}</td></tr>",
+        f"<tr><td>JKM 系列</td><td>{p.get('jkm_underlying')}</td></tr>",
+        f"<tr><td>FX 系列</td><td>{p.get('fx_underlying')}</td></tr>",
+        f"<tr><td>Dark Spread (石炭)</td><td>{dark.get('note', '—')}</td></tr>",
+    ])
+    payload = json.dumps(data, ensure_ascii=False)
+    return (
+        _SPREAD_HTML_TEMPLATE
+        .replace("__PAYLOAD__", payload)
+        .replace("__LATEST__", _fmt_date_dotted(data.get("latest_date", "N/A")))
+        .replace("__HORIZON__", str(data.get("horizon") or "—"))
+        .replace("__PARAMS_ROWS__", params_rows)
+    )
+
+
+def write_spread_analysis(repo, site_dir: Path, latest_date: str) -> Path | None:
+    """Generate and write docs/spread_analysis.html.
+
+    Mirrors write_weekly_compare's lifecycle so the page stays in sync with the
+    daily dashboard. Returns the path, or None if no power forward curves exist.
+    """
+    prev_date = find_nearest_business_day_before(repo, latest_date, days_back=7)
+    data = generate_spread_data(repo, latest_date, prev_date)
+    if not any(data.get("forward_curves", {}).values()):
+        return None
+    html = generate_spread_html(data)
+    out_path = site_dir / "spread_analysis.html"
+    with open(out_path, "w", encoding="utf-8") as f:
+        f.write(html)
+    return out_path
+
+
 def main():
     repo = get_repository()
     try:
@@ -3050,6 +3401,13 @@ def main():
             print(f"  Written: {wk_html_path}")
         else:
             print("  Skipped weekly_compare.html (insufficient history before latest_date).")
+
+        # Spread analysis page (スプレッド分析 — Spark/Clean Spark + forward curves)
+        sp_html_path = write_spread_analysis(repo, SITE_DIR, latest_date)
+        if sp_html_path:
+            print(f"  Written: {sp_html_path}")
+        else:
+            print("  Skipped spread_analysis.html (no power forward curves).")
 
         # Report curve stats
         curves = data.get("forward_curves", {})
